@@ -159,11 +159,11 @@ def get_all_links_df(mongodb_collection):
     lst_col = 'embedded_links'
     print(embedded_links_df.sort_values('embedded_links', ascending=False).head())
 
-    embedded_links_df_2 = pd.DataFrame({
+    embedded_links_df = pd.DataFrame({
         col: np.repeat(embedded_links_df[col].values, embedded_links_df[lst_col].str.len())
         for col in embedded_links_df.columns.difference([lst_col])
-    })
-    print(embedded_links_df_2.shape)
+    }).assign(**{lst_col:np.concatenate(embedded_links_df[lst_col].values)})[embedded_links_df.columns.tolist()]
+    print(embedded_links_df.shape)
 
     def keep_first_part_of_basepath(basepath):
         return (os.path.split(basepath))[0]
@@ -191,5 +191,8 @@ def get_all_links_df(mongodb_collection):
     print(related_links_df.shape)
     print(collection_links_df.shape)
     print(embedded_links_df.shape)
-    all_links = pd.concat([related_links_df, collection_links_df, embedded_links_df], axis=0, sort=True)
+    all_links = pd.concat(
+        [related_links_df, collection_links_df, embedded_links_df],
+        axis=0, sort=True, ignore_index=True)
+    print(all_links.shape)
     return all_links
