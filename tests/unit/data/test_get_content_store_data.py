@@ -649,5 +649,6 @@ def test_get_collection_links(mongodb):
     "ignore:collection_names is deprecated. Use list_collection_names instead.:UserWarning")
 def test_get_all_links_df(mongodb):
     # print(get_all_links_df(mongodb.content_store_data_sample).head())
-    pd_testing.assert_frame_equal(get_all_links_df(mongodb.content_store_data_sample),
-                                  pd.read_csv('tests/unit/fixtures/all_links.csv'))
+    pd_testing.assert_frame_equal(
+        get_all_links_df(mongodb.content_store_data_sample).sort_values(),
+        pd.read_csv('tests/unit/fixtures/all_links.csv'))
