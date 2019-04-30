@@ -1,13 +1,15 @@
+import logging.config
 import os
+import warnings
 import yaml
 
 import numpy as np
 import pandas as pd
 from pandas.io.json import json_normalize
-
-import warnings
+import pymongo
 
 from src.utils import text_preprocessing as tp
+
 
 warnings.filterwarnings('ignore', category=UserWarning, module='bs4')
 
@@ -149,6 +151,7 @@ def get_page_text_df(mongodb_collection):
     # concatenate text from all columns (except first 2) nto a list -> so we get a list of all the details fields that we queried
     # TODO: drop the non-listed details cols
     df['all_details'] = df.iloc[:, 2:-1].values.tolist()
+    logging.info(f' df with details text has columns={list(df.columns)} and shape={df.shape}')
     return df
 
 
@@ -166,25 +169,32 @@ def reshape_df_explode_list_column(wide_df, list_column):
         wide_df.columns.tolist()]
 
 
-def extract_embedded_links_df(content_details_df, base_path_to_content_id_mapping):
+def extract_embedded_links_df(page_text_df, base_path_to_content_id_mapping):
     """
     Takes a dataframe with  a list column (all_details), returns a dataframe with one in-page (embedded) link per row
-    :param content_details_df: pandas DataFrame with  a list column (all_details)
+    :param page_text_df: pandas DataFrame with  a list column (all_details)
     :param base_path_to_content_id_mapping: Python dictionary {page_path: content_id}
     :return:  pandas DataFrame  of embedded links with columns ['source_base_path', 'source_content_id', 'destination_base_path',
                                  'destination_content_id', 'link_type']
     """
-    content_details_df['embedded_links'] = content_details_df.apply(
+    page_text_df['embedded_links'] = page_text_df.apply(
         lambda row: tp.extract_links_from_content_details(
             data=row['all_details'],
             links=[]),
         axis=1)
-    embedded_links_df = content_details_df[['_id', 'content_id', 'embedded_links']]
+    logging.info(f'have applied extract_links_from_content_details to page_text_df')
+
+    embedded_links_df = page_text_df[['_id', 'content_id', 'embedded_links']]
+    logging.info(f'shape of df with link list (wide before melt)={embedded_links_df.shape}')
+
     embedded_links_df = reshape_df_explode_list_column(embedded_links_df, 'embedded_links')
+    logging.info(f'shape of df after melt (each link in its own row)={embedded_links_df.shape}')
 
     embedded_links_df['embedded_links'] = embedded_links_df['embedded_links'].apply(tp.clean_page_path)
     embedded_links_df['destination_content_id'] = embedded_links_df['embedded_links'].map(
         base_path_to_content_id_mapping)
+    logging.info(f'mapping of page_path to content_id has completed')
+
 
     # OUTPUT_DF_COLUMNS = ['destination_base_path', 'destination_content_id', 'source_base_path', 'source_content_id']
 
@@ -204,20 +214,40 @@ def get_all_links_df(mongodb_collection, base_path_to_content_id_mapping):
                                  'destination_content_id', 'link_type']
     """
     related_links_df = convert_link_list_to_df(get_links(mongodb_collection, 'related'), 'related')
+    logging.info(f'related links dataframe shape {related_links_df.shape}')
+
     collection_links_df = convert_link_list_to_df(get_links(mongodb_collection, 'collection'), 'collection')
+    logging.info(f'collection links dataframe shape {collection_links_df.shape}')
 
     page_text_df = get_page_text_df(mongodb_collection)
 
     embedded_links_df = extract_embedded_links_df(page_text_df, base_path_to_content_id_mapping)
+    logging.info(f'embedded links dataframe shape {embedded_links_df.shape}')
 
-    print(related_links_df.shape)
-    print(collection_links_df.shape)
-    print(embedded_links_df.shape)
-    all_links = pd.concat(
+    all_links_df = pd.concat(
         [related_links_df, collection_links_df, embedded_links_df],
         axis=0, sort=True, ignore_index=True)
-    print(all_links.shape)
-    return all_links
+
+    logging.info(f'all links dataframe shape {all_links_df.shape}')
+    return all_links_df
+
+
+if __name__ == "__main__":  # our module is being executed as a program
+    datadir = os.getenv("DATADIR")
+    logging.config.fileConfig('src/logging.conf')
+    logger = logging.getLogger('get_content_store_data')
+
+    mongo_client = pymongo.MongoClient("mongodb://localhost:27017/")
+    # TODO check this is consistent with naming of restored db in AWS
+    content_store_db = mongo_client["content_items"]
+    content_store_collection = content_store_db["content_items"]
+
+    base_path_to_content_id_mapping = get_base_path_to_content_id_mapping(content_store_collection)
+
+    output_df = get_all_links_df(content_store_collection, base_path_to_content_id_mapping)
+
+    output_df.to_csv(os.path.join(datadir, "tmp",  "all_links.csv"), index=False)
+
 
 
 
