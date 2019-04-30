@@ -11,7 +11,7 @@ def is_html(text):
         return bool(BeautifulSoup(text, "html.parser").find())
     # might be fine to except all exceptions here, as it's a low-level function
     except Exception:
-        pass
+        return False
 
 
 def extract_links_from_html(text):
@@ -33,7 +33,7 @@ def extract_links_from_html(text):
 
 def extract_links_from_content_details(data, links=[]):
     """
-    Recurses through lists and dicts to find html and then extract links
+    Recurses through lists and dicts to find html and then extract links BE VERY CAREFUL AND PASS IN LINKS, otherwise old links may persist in the list
     :param data: This function can accept a nested list or dict, or string
     :param links: list of page_paths
     :return:
