@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 from itertools import chain
 
 
-def is_html(text):
+def is_html(text)
     """
     Checks whether text is html or not
     :param text: string
@@ -53,6 +53,7 @@ def extract_links_from_content_details(data):
         return extract_links_from_html(data)
     else:
         return []
+
 
 
 def clean_page_path(page_path, sep='#'):
