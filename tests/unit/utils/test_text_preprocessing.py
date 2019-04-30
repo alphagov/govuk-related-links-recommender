@@ -48,6 +48,7 @@ def test_extract_links_from_content_details():
           '/government/publications/code-of-recommendations-for-the-welfare-of-livestock-sheep',
           '/government/publications/deer-on-farm-welfare',
           '/government/publications/rabbits-on-farm-welfare']
+
     # test dict
     assert extract_links_from_content_details({'content_type': 'text/govspeak',
      'content': 'Read the full decision in [embed:attachments:inline:d3e3f01b-020c-42d3-97b0-3bb0dfb96640].'}) == []
@@ -90,7 +91,6 @@ def test_extract_links_from_content_details():
           'content': '<p>Read the full decision in <span class="attachment-inline"><a href="https://www.gov.uk/government/consultations/16-to-19-accountability-consultation">Mr G Burns and others v GEC Solutions Ltd T/a Green Energy Consulting: 2500762/2017 and others - Judgment with Reasons</a></span>.</p>'
           }]
     ) == ['/government/consultations/16-to-19-accountability-consultation']
-
 
 
 def test_clean_page_path():
