@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+from itertools import chain
 
 
 def is_html(text):
@@ -11,7 +12,7 @@ def is_html(text):
         return bool(BeautifulSoup(text, "html.parser").find())
     # might be fine to except all exceptions here, as it's a low-level function
     except Exception:
-        pass
+        return False
 
 
 def extract_links_from_html(text):
@@ -30,24 +31,24 @@ def extract_links_from_html(text):
     return [link.replace("https://www.gov.uk/", "/") for link in links
             if (link.startswith("/") or link.startswith("https://www.gov.uk/")) and not(link.startswith('/government/uploads/system/uploads/attachment_data/file/'))]
 
-
-def extract_links_from_content_details(data, links=[]):
+def extract_links_from_content_details(data):
     """
-    Recurses through lists and dicts to find html and then extract links
+    Recurses through lists and dicts to find html and then extract links BE VERY CAREFUL AND PASS IN LINKS, otherwise old links may persist in the list
     :param data: This function can accept a nested list or dict, or string
     :param links: list of page_paths
     :return:
     """
     if type(data) == list:
-        [extract_links_from_content_details(item, links) for item in data]
-
+        return list(chain.from_iterable([
+            extract_links_from_content_details(item)
+            for item in data
+        ]))
     elif type(data) == dict:
-        extract_links_from_content_details(list(data.values()), links)
-
+        return extract_links_from_content_details(list(data.values()))
     elif is_html(data):
-            links.extend(extract_links_from_html(data))
-
-    return links
+        return extract_links_from_html(data)
+    else:
+        return []
 
 
 def clean_page_path(page_path, sep='#'):

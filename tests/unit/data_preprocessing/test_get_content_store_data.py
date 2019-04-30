@@ -4,7 +4,7 @@ import json
 import pandas as pd
 import pandas.testing as pd_testing
 
-from src.data.get_content_store_data import *
+from src.data_preprocessing.get_content_store_data import *
 
 
 # TODO: look into creating our own fixtures, with a module scope instead of function, instead of pytest-mongodb
