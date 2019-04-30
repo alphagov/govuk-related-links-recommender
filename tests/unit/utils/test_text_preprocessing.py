@@ -97,4 +97,3 @@ def test_clean_page_path():
     assert clean_page_path('//guidance/animal-welfare#animal-welfare-during-transport') == "/guidance/animal-welfare"
     # test if there are multiple hashes, only chop off last part of split
     assert clean_page_path('//guidance/#animal-welfare#animal-welfare-during-transport') == "/guidance/#animal-welfare"
-
