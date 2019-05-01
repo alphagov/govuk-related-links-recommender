@@ -13,22 +13,17 @@ from src.utils import text_preprocessing as tp
 
 warnings.filterwarnings('ignore', category=UserWarning, module='bs4')
 
-
-document_types_excluded_from_the_topic_taxonomy_filename = \
-    os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                 '..', 'config', 'document_types_excluded_from_the_topic_taxonomy.yml'
-    )
-
-
-def document_types_excluded_from_the_topic_taxonomy():
+def get_excluded_document_types():
     with open(
-        document_types_excluded_from_the_topic_taxonomy_filename,
-        'r'
+            os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                         '..', 'config', 'document_types_excluded_from_the_topic_taxonomy.yml'
+                         ),
+            'r'
     ) as f:
-        return yaml.load(f)['document_types']
+        return yaml.safe_load(f)['document_types']
 
 
-BLACKLIST_DOCUMENT_TYPES = document_types_excluded_from_the_topic_taxonomy()
+BLACKLIST_DOCUMENT_TYPES = get_excluded_document_types()
 
 RELATED_LINKS_PROJECTION = {
     "expanded_links.ordered_related_items.base_path": 1,
