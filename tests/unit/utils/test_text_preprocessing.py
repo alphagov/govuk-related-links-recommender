@@ -33,7 +33,7 @@ def test_extract_links_from_html():
     ) == []
     # test we don't pick up government uploads beginning with /government/uploads/system/uploads/attachment_data/file/
     assert extract_links_from_html(
-        '<p> adsanlksa <a href="/government/uploads/system/uploads/attachment_data/file/about/Pages/people/biographies/king">Mervyn King, Governor of the Bank of England</a></p>'
+        '<h2 id=\"summary\">Summary:</h2>\n<p>During the ground roll after landing, the nose landing gear folded backwards and the nose and propeller struck the ground.  The damage to the nose gear was consistent with overload forces, but the pilot was unable to say how such loads had been generated.</p>\n\n<h3 id=\"download-report\">Download report:</h3>\n<p><a rel=\"external\" href=\"https://assets.digital.cabinet-office.gov.uk/media/56bc45e6e5274a0369000021/Vans_RV-9A_G-XSAM_02-16.pdf\">Vans RV-9A, G-XSAM 02-16</a></p>\n\n<h3 id=\"download-glossary-of-abbreviations\">Download glossary of abbreviations:</h3>\n<p><a href=\"https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/433812/Glossary_of_abbreviations.pdf\">Glossary of abbreviations</a></p>\n\n'
     ) == []
 
 
