@@ -23,13 +23,17 @@ def extract_links_from_html(text):
     """
     links = []
     try:
-        soup = BeautifulSoup(text, "html5lib")
+        soup = BeautifulSoup(text, 'html5lib')
         links = [link.get('href') for link in soup.findAll('a', href=True)]
     # might be fine to except all exceptions here, as it's a low-level function
     except Exception:
         None
-    return [link.replace("https://www.gov.uk/", "/") for link in links
-            if (link.startswith("/") or link.startswith("https://www.gov.uk/")) and not(link.startswith('/government/uploads/system/uploads/attachment_data/file/'))]
+    return [link.replace('https://www.gov.uk/', '/') for link in links
+            if (link.startswith('/') or
+                link.startswith('https://www.gov.uk/')) and
+            not(link.startswith('https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/')) and
+            not(link.startswith('/government/uploads/system/uploads/attachment_data/file/'))]
+
 
 def extract_links_from_content_details(data):
     """
