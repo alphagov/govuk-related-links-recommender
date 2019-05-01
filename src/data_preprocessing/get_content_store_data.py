@@ -10,8 +10,8 @@ import pymongo
 
 from src.utils import text_preprocessing as tp
 
-
 warnings.filterwarnings('ignore', category=UserWarning, module='bs4')
+
 
 def get_excluded_document_types():
     with open(
@@ -144,10 +144,9 @@ def get_page_text_df(mongodb_collection):
     text_list = list(mongodb_collection.find(FILTER_BASIC, TEXT_PROJECTION))
     df = json_normalize(text_list)
     # concatenate text from all columns (except first 2) nto a list -> so we get a list of all the details fields that we queried
-    # TODO: drop the non-listed details cols
     df['all_details'] = df.iloc[:, 2:-1].values.tolist()
     logging.info(f' df with details text has columns={list(df.columns)} and shape={df.shape}')
-    return df
+    return df[['_id', 'content_id', 'all_details']]
 
 
 def reshape_df_explode_list_column(wide_df, list_column):
@@ -157,6 +156,9 @@ def reshape_df_explode_list_column(wide_df, list_column):
     :param list_column: list column name
     :return: DataFrame with one row per item in the list_column
     """
+    # repeat all columns except list_col as many times as the list is long for that row
+    # get a 1D vecotr using concatenate to flatten all values in list vector
+    # and unpack this vector into a new column called list_col
     return pd.DataFrame({
         col: np.repeat(wide_df[col].values, wide_df[list_column].str.len())
         for col in wide_df.columns.difference([list_column])
@@ -230,7 +232,7 @@ if __name__ == "__main__":  # our module is being executed as a program
 
     mongo_client = pymongo.MongoClient("mongodb://localhost:27017/")
     # TODO check this is consistent with naming of restored db in AWS
-    content_store_db = mongo_client["content_items"]
+    content_store_db = mongo_client["content_store"]
     content_store_collection = content_store_db["content_items"]
 
     base_path_to_content_id_mapping = get_base_path_to_content_id_mapping(content_store_collection)
