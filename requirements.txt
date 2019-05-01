@@ -9,6 +9,9 @@ pandas
 numpy
 pymongo
 tqdm # for progressbar for progress_apply
+node2vec
+networkx
+
 
 # test requirements
 pytest
