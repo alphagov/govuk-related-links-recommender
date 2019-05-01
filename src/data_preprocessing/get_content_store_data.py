@@ -144,10 +144,9 @@ def get_page_text_df(mongodb_collection):
     text_list = list(mongodb_collection.find(FILTER_BASIC, TEXT_PROJECTION))
     df = json_normalize(text_list)
     # concatenate text from all columns (except first 2) nto a list -> so we get a list of all the details fields that we queried
-    # TODO: drop the non-listed details cols
     df['all_details'] = df.iloc[:, 2:-1].values.tolist()
     logging.info(f' df with details text has columns={list(df.columns)} and shape={df.shape}')
-    return df
+    return df[['_id', 'content_id', 'all_details']]
 
 
 def reshape_df_explode_list_column(wide_df, list_column):
@@ -157,6 +156,9 @@ def reshape_df_explode_list_column(wide_df, list_column):
     :param list_column: list column name
     :return: DataFrame with one row per item in the list_column
     """
+    # repeat all columns except list_col as many times as the list is long for that row
+    # get a 1D vecotr using concatenate to flatten all values in list vector
+    # and unpack this vector into a new column called list_col
     return pd.DataFrame({
         col: np.repeat(wide_df[col].values, wide_df[list_column].str.len())
         for col in wide_df.columns.difference([list_column])
