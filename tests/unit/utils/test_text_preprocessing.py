@@ -41,13 +41,20 @@ def test_extract_links_from_html():
 def test_extract_links_from_content_details():
     # test string
     assert extract_links_from_content_details(
-        '<p>You’re responsible for any animals you keep on your farm and you must have enough staff with the training, knowledge and skills to look after them properly. This guide explains your responsibilities and helps you follow the Welfare of Farmed Animals Regulations 2007 and related laws.</p>\n\n<p>You and your staff must also have read, understand and have access to the welfare codes of recommendations for the animals you keep. Read the:</p>\n\n<ul>\n  <li>\n<a href="https://www.gov.uk/government/publications/poultry-on-farm-welfare">codes of recommendations and animal welfare guides</a> for laying hens, broiler (meat) chickens, ducks and turkeys</li>\n  <li>\n<a href="https://www.gov.uk/government/publications/code-of-recommendations-for-the-welfare-of-livestock-cattle">cattle code of recommendations and animal welfare guide</a> (beef cattle and dairy cows)</li>\n  <li>\n<a href="https://www.gov.uk/government/publications/code-of-recommendations-for-the-welfare-of-livestock-pigs">pigs code of recommendations and animal welfare guide</a> (including breeding sows)</li>\n  <li>specific <a href="https://www.gov.uk/government/publications/code-of-recommendations-for-the-welfare-of-livestock-sheep">sheep and goats codes of recommendations and animal welfare guides</a> (including milk sheep)</li>\n  <li>\n<a href="https://www.gov.uk/government/publications/deer-on-farm-welfare">deer code of recommendations and animal welfare guide</a> (farmed deer only)</li>\n  <li>\n<a href="https://www.gov.uk/government/publications/rabbits-on-farm-welfare">rabbits code of recommendations and animal welfare guide</a> (farmed rabbits only)</li>\n</ul>\n\n<p>The welfare codes of recommendations include both legal requirements and good practice to help you follow the law.</p>\n\n<h2 id="your-responsibilities">Your responsibilities</h2>\n\n<p>It’s against the law to neglect or be cruel to a farm animal. If you’re responsible for an animal you must make sure that you care for it properly.</p>') == ['/government/publications/poultry-on-farm-welfare',
+        '<p>You’re responsible for any animals you keep on your farm and you must have enough staff with the training, knowledge and skills to look after them properly. This guide explains your responsibilities and helps you follow the Welfare of Farmed Animals Regulations 2007 and related laws.</p>\n\n<p>You and your staff must also have read, understand and have access to the welfare codes of recommendations for the animals you keep. Read the:</p>\n\n<ul>\n  <li>\n<a href="https://www.gov.uk/government/publications/poultry-on-farm-welfare">codes of recommendations and animal welfare guides</a> for laying hens, broiler (meat) chickens, ducks and turkeys</li>\n  <li>\n<a href="https://www.gov.uk/government/publications/code-of-recommendations-for-the-welfare-of-livestock-cattle">cattle code of recommendations and animal welfare guide</a> (beef cattle and dairy cows)</li>\n  <li>\n<a href="https://www.gov.uk/government/publications/code-of-recommendations-for-the-welfare-of-livestock-pigs">pigs code of recommendations and animal welfare guide</a> (including breeding sows)</li>\n  <li>specific <a href="https://www.gov.uk/government/publications/code-of-recommendations-for-the-welfare-of-livestock-sheep">sheep and goats codes of recommendations and animal welfare guides</a> (including milk sheep)</li>\n  <li>\n<a href="https://www.gov.uk/government/publications/deer-on-farm-welfare">deer code of recommendations and animal welfare guide</a> (farmed deer only)</li>\n  <li>\n<a href="https://www.gov.uk/government/publications/rabbits-on-farm-welfare">rabbits code of recommendations and animal welfare guide</a> (farmed rabbits only)</li>\n</ul>\n\n<p>The welfare codes of recommendations include both legal requirements and good practice to help you follow the law.</p>\n\n<h2 id="your-responsibilities">Your responsibilities</h2>\n\n<p>It’s against the law to neglect or be cruel to a farm animal. If you’re responsible for an animal you must make sure that you care for it properly.</p>'
+    ) == ['/government/publications/poultry-on-farm-welfare',
           '/government/publications/code-of-recommendations-for-the-welfare-of-livestock-cattle',
           '/government/publications/code-of-recommendations-for-the-welfare-of-livestock-pigs',
           '/government/publications/code-of-recommendations-for-the-welfare-of-livestock-sheep',
           '/government/publications/deer-on-farm-welfare',
           '/government/publications/rabbits-on-farm-welfare']
     # test dict
+    assert extract_links_from_content_details({'content_type': 'text/govspeak',
+     'content': 'Read the full decision in [embed:attachments:inline:d3e3f01b-020c-42d3-97b0-3bb0dfb96640].'}) == []
+    assert extract_links_from_content_details({'content_type': 'text/html',
+     'content': '<p>Read the full decision in <span class="attachment-inline"><a href="https://www.gov.uk/government/consultations/16-to-19-accountability-consultation">Mr G Burns and others v GEC Solutions Ltd T/a Green Energy Consulting: 2500762/2017 and others - Judgment with Reasons</a></span>.</p>'}
+                                              ) == ['/government/consultations/16-to-19-accountability-consultation']
+
     # test list
     assert extract_links_from_content_details(
         [
@@ -59,7 +66,7 @@ def test_extract_links_from_content_details():
           '/government/publications/deer-on-farm-welfare',
           '/government/publications/rabbits-on-farm-welfare']
 
-    assert len(extract_links_from_content_details(
+    assert extract_links_from_content_details(
         ['<p>You’re responsible for any animals you keep on your farm and you must have enough staff with the training, knowledge and skills to look after them properly. This guide explains your responsibilities and helps you follow the Welfare of Farmed Animals Regulations 2007 and related laws.</p>\n\n<p>You and your staff must also have read, understand and have access to the welfare codes of recommendations for the animals you keep. Read the:</p>\n\n<ul>\n  <li>\n<a href="https://www.gov.uk/government/publications/poultry-on-farm-welfare">codes of recommendations and animal welfare guides</a> for laying hens, broiler (meat) chickens, ducks and turkeys</li>\n  <li>\n<a href="https://www.gov.uk/government/publications/code-of-recommendations-for-the-welfare-of-livestock-cattle">cattle code of recommendations and animal welfare guide</a> (beef cattle and dairy cows)</li>\n  <li>\n<a href="https://www.gov.uk/government/publications/code-of-recommendations-for-the-welfare-of-livestock-pigs">pigs code of recommendations and animal welfare guide</a> (including breeding sows)</li>\n  <li>specific <a href="https://www.gov.uk/government/publications/code-of-recommendations-for-the-welfare-of-livestock-sheep">sheep and goats codes of recommendations and animal welfare guides</a> (including milk sheep)</li>\n  <li>\n<a href="https://www.gov.uk/government/publications/deer-on-farm-welfare">deer code of recommendations and animal welfare guide</a> (farmed deer only)</li>\n  <li>\n<a href="https://www.gov.uk/government/publications/rabbits-on-farm-welfare">rabbits code of recommendations and animal welfare guide</a> (farmed rabbits only)</li>\n</ul>\n\n<p>The welfare codes of recommendations include both legal requirements and good practice to help you follow the law.</p>\n\n<h2 id="your-responsibilities">Your responsibilities</h2>\n\n<p>It’s against the law to neglect or be cruel to a farm animal. If you’re responsible for an animal you must make sure that you care for it properly.</p>',
          np.nan,
          np.nan,
@@ -67,13 +74,27 @@ def test_extract_links_from_content_details():
          np.nan,
          True,
          '2015-conservative-government',
-         '2015 Conservative government'])
-    ) == len(['/government/publications/poultry-on-farm-welfare',
+         '2015 Conservative government']) == ['/government/publications/poultry-on-farm-welfare',
           '/government/publications/code-of-recommendations-for-the-welfare-of-livestock-cattle',
           '/government/publications/code-of-recommendations-for-the-welfare-of-livestock-pigs',
           '/government/publications/code-of-recommendations-for-the-welfare-of-livestock-sheep',
           '/government/publications/deer-on-farm-welfare',
-          '/government/publications/rabbits-on-farm-welfare'])
+          '/government/publications/rabbits-on-farm-welfare']
+    assert extract_links_from_content_details(
+        []) == []
+    # test list of dicts
+    assert extract_links_from_content_details(
+        [{'content_type': 'text/govspeak',
+         'content': 'Read the full decision in [embed:attachments:inline:d3e3f01b-020c-42d3-97b0-3bb0dfb96640].'},
+         {'content_type': 'text/html',
+          'content': '<p>Read the full decision in <span class="attachment-inline"><a href="https://www.gov.uk/government/consultations/16-to-19-accountability-consultation">Mr G Burns and others v GEC Solutions Ltd T/a Green Energy Consulting: 2500762/2017 and others - Judgment with Reasons</a></span>.</p>'
+          }]
+    ) == ['/government/consultations/16-to-19-accountability-consultation']
 
 
-# def test_clean_page_path():
+
+def test_clean_page_path():
+    assert clean_page_path('//guidance/animal-welfare#animal-welfare-during-transport') == "/guidance/animal-welfare"
+    # test if there are multiple hashes, only chop off last part of split
+    assert clean_page_path('//guidance/#animal-welfare#animal-welfare-during-transport') == "/guidance/#animal-welfare"
+
