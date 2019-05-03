@@ -7,10 +7,13 @@ import numpy as np
 import pandas as pd
 from pandas.io.json import json_normalize
 import pymongo
+from tqdm import tqdm
 
 from src.utils import text_preprocessing as tp
 
 warnings.filterwarnings('ignore', category=UserWarning, module='bs4')
+
+tqdm.pandas()
 
 
 def get_excluded_document_types():
@@ -22,6 +25,11 @@ def get_excluded_document_types():
     ) as f:
         return yaml.safe_load(f)['document_types']
 
+
+KEYS_FOR_LINK_TYPES = {
+    "related": "ordered_related_items",
+    "collection": "documents"
+}
 
 BLACKLIST_DOCUMENT_TYPES = get_excluded_document_types()
 
@@ -101,12 +109,11 @@ def convert_link_list_to_df(link_list, link_type, columns=OUTPUT_DF_COLUMNS):
     :param columns: column names for the resulting dataframe
     :return: pandas DataFrame containing source and destination page_paths and content_ids for the specified link_type
     """
-    if link_type == 'related':
-        link_key = 'ordered_related_items'
-    elif link_type == 'collection':
-        link_key = 'documents'
-    else:
-        raise ValueError('link_type should either be "related" or "collection"')
+    try:
+        link_key = KEYS_FOR_LINK_TYPES[link_type]
+    except KeyError:
+        raise ValueError(
+            f'link_type should be one of {KEYS_FOR_LINK_TYPES.keys()}')
     df = json_normalize(link_list,
                         record_path=[['expanded_links', link_key]],
                         meta=['_id', 'content_id'],
@@ -174,7 +181,7 @@ def extract_embedded_links_df(page_text_df, base_path_to_content_id_mapping):
     :return:  pandas DataFrame  of embedded links with columns ['source_base_path', 'source_content_id', 'destination_base_path',
                                  'destination_content_id', 'link_type']
     """
-    page_text_df['embedded_links'] = page_text_df['all_details'].apply(tp.extract_links_from_content_details)
+    page_text_df['embedded_links'] = page_text_df['all_details'].progress_apply(tp.extract_links_from_content_details)
     logging.info(f'have applied extract_links_from_content_details to page_text_df')
 
     embedded_links_df = page_text_df[['_id', 'content_id', 'embedded_links']]

@@ -8,6 +8,7 @@ beautifulsoup4
 pandas
 numpy
 pymongo
+tqdm # for progressbar for progress_apply
 
 # test requirements
 pytest
