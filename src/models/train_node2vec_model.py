@@ -24,28 +24,27 @@ def build_dict(k1,v1,k2,v2):
     return agg_dict
 
 
-def train_node2_vec_model(edges_df):
-    nid_cid = build_dict(
-        edges_df.source, edges_df.source_content_id, edges_df.target,
-        edges_df.destination_content_id)
-    nid_url = build_dict(
-        edges_df.source, edges_df.source_base_path, edges_df.target,
-        edges_df.destination_base_path)
-    url_nid = build_dict(
-        edges_df.source_base_path, edges_df.source,
-        edges_df.destination_base_path, edges_df.target)
+def train_node2_vec_model(edges_df, node_id_content_id_mapping):
+
+    # nid_url = build_dict(
+    #     edges_df.source, edges_df.source_base_path, edges_df.target,
+    #     edges_df.destination_base_path)
+    # url_nid = build_dict(
+    #     edges_df.source_base_path, edges_df.source,
+    #     edges_df.destination_base_path, edges_df.target)
 
     # instantiate graph
-    graph = nx.DiGraph()
-    # add edges to graph
-    for src, dest in zip(edges_df.source, edges_df.target):
-        graph.add_edge(src, dest)
+    graph = nx.convert_matrix.from_pandas_edgelist(
+        edges_df, source='source', target='target'
+        # when we have functional network too, we can add weight
+        # , edge_attr='weight'
+    )
     # add node attributes to graph
-    attrs = {nid: {"cid": nid_cid[nid], "url": nid_url[nid]
-                   #               "test":False, "val":False,
-                   #                "label":[]
-                   } for nid in graph.nodes()}
-    nx.set_node_attributes(graph, attrs)
+    attributes = {node_id: {"content_id": node_id_content_id_mapping[node_id],
+                            # do we need url?
+                            # "url": nid_url[nid]
+                            } for node_id in graph.nodes()}
+    nx.set_node_attributes(graph, attributes)
 
     # Precompute probabilities and generate walks
     node2vec = Node2Vec(graph, dimensions=64, walk_length=30, num_walks=300, workers=1)

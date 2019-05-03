@@ -55,4 +55,7 @@ def make_structural_network(all_links_df):
     all_links_df['target'] = all_links_df['destination_content_id'].map(
         content_id_node_id_mapping)
 
-    return all_links_df
+    node_id_content_id_mapping = dict(
+        (v, k) for k, v in content_id_node_id_mapping.items())
+
+    return all_links_df, content_id_node_id_mapping, node_id_content_id_mapping
