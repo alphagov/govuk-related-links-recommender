@@ -41,6 +41,7 @@ def train_node2_vec_model(edges_df, node_id_content_id_mapping,
 
     if workers is None:
         workers = cpu_count()
+
     logger.info(f'number of workers is {workers}')
 
     graph = create_graph(edges_df, node_id_content_id_mapping)
