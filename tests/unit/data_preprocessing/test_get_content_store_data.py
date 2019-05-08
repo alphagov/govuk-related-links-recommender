@@ -1,5 +1,3 @@
-import pytest
-
 import json
 import pandas as pd
 import pandas.testing as pd_testing
@@ -68,6 +66,7 @@ def test_get_excluded_document_types():
                                              'working_group',
                                              'world_location',
                                              'worldwide_organisation']
+
 
 def test_get_links(mongodb):
     assert sorted(get_links(mongodb.content_store_data_sample, 'related'), key=lambda k: k['_id']) == sorted([
@@ -668,7 +667,8 @@ def test_get_links(mongodb):
           'content_id': '5f63b715-7631-11e4-a3cb-005056011aef'}],
         key=lambda k: k['_id']
     )
-#
+
+
 def test_convert_link_list_to_df():
     pd_testing.assert_frame_equal(convert_link_list_to_df([
         {'_id': '/agency-workers-your-rights',
@@ -1445,11 +1445,13 @@ def test_convert_link_list_to_df():
       'content_id': '5f63b715-7631-11e4-a3cb-005056011aef'}], 'collection'),
     pd.read_csv('tests/unit/collection_links.csv'))
 
+
 def test_get_base_path_to_content_id_mapping(mongodb):
     with open('tests/unit/fixtures/base_path_content_id_mapping_test_sample.json', 'r') as infile:
         mapping = json.load(infile)
 
     assert get_base_path_to_content_id_mapping(mongodb.content_store_data_sample) == mapping
+
 
 def test_get_page_text_df(mongodb):
     pd_testing.assert_frame_equal(get_page_text_df(mongodb.content_store_data_sample).sort_values(
@@ -1461,11 +1463,13 @@ def test_get_page_text_df(mongodb):
            pd.read_csv('tests/unit/text_df.csv').shape
     #
 
+
 def test_reshape_df_explode_list_column():
     wide_df = pd.DataFrame({'A':[1,2], 'B':[2, 2],'C':[[1,2],[1,2]]})
     long_df = pd.DataFrame({'A':[1, 1, 2, 2], 'B':[2, 2, 2, 2], 'C':[1, 2, 1, 2]})
     pd_testing.assert_frame_equal(reshape_df_explode_list_column(wide_df, 'C'),
                                   long_df)
+
 
 def test_extract_embedded_links_df():
     with open('tests/unit/fixtures/base_path_content_id_mapping.json', 'r') as infile:
@@ -1473,6 +1477,7 @@ def test_extract_embedded_links_df():
     pd_testing.assert_frame_equal(extract_embedded_links_df(pd.read_csv('tests/unit/text_df.csv'),
                                                             mapping),
                                   pd.read_csv('tests/unit/embedded_links.csv'))
+
 
 def test_get_all_links_df(mongodb):
     # print(get_all_links_df(mongodb.content_store_data_sample).head())
@@ -1483,81 +1488,3 @@ def test_get_all_links_df(mongodb):
             by=['source_content_id', 'destination_content_id']).reset_index(drop=True),
         pd.read_csv('tests/unit/fixtures/all_links_test_sample.csv').sort_values(
             by=['source_content_id', 'destination_content_id']).reset_index(drop=True))
-
-
-def test_get_excluded_document_types():
-    assert get_excluded_document_types() == ['about',
-                                                                 'about_our_services',
-                                                                 'access_and_opening',
-                                                                 'business_support_finder',
-                                                                 'coming_soon',
-                                                                 'complaints_procedure',
-                                                                 'completed_transaction',
-                                                                 'contact',
-                                                                 'corporate_report',
-                                                                 'dfid_research_output',
-                                                                 'equality_and_diversity',
-                                                                 'field_of_operation',
-                                                                 'finder',
-                                                                 'finder_email_signup',
-                                                                 'gone',
-                                                                 'help_page',
-                                                                 'hmrc_manual_section',
-                                                                 'homepage',
-                                                                 'html_publication',
-                                                                 'licence_finder',
-                                                                 'mainstream_browse_page',
-                                                                 'manual_section',
-                                                                 'media_enquiries',
-                                                                 'membership',
-                                                                 'ministerial_role',
-                                                                 'need',
-                                                                 'organisation',
-                                                                 'our_energy_use',
-                                                                 'our_governance',
-                                                                 'person',
-                                                                 'personal_information_charter',
-                                                                 'placeholder_ministerial_role',
-                                                                 'placeholder_person',
-                                                                 'placeholder_policy_area',
-                                                                 'placeholder_topical_event',
-                                                                 'placeholder_world_location_news_page',
-                                                                 'policy_area',
-                                                                 'publication_scheme',
-                                                                 'redirect',
-                                                                 'search',
-                                                                 'service_manual_guide',
-                                                                 'service_manual_homepage',
-                                                                 'service_manual_service_standard',
-                                                                 'service_manual_service_toolkit',
-                                                                 'service_manual_topic',
-                                                                 'service_standard_report',
-                                                                 'services_and_information',
-                                                                 'social_media_use',
-                                                                 'special_route',
-                                                                 'staff_update',
-                                                                 'taxon',
-                                                                 'topic',
-                                                                 'topical_event',
-                                                                 'topical_event_about_page',
-                                                                 'travel_advice',
-                                                                 'travel_advice_index',
-                                                                 'working_group',
-                                                                 'world_location',
-                                                                 'worldwide_organisation']
-
-# def test_get_links():
-
-# def test_convert_link_list_to_df():
-
-# def test_get_base_path_to_content_id_mapping():
-
-# def test_get_page_text_df():
-
-# def test_reshape_df_explode_list_column():
-
-# def test_extract_embedded_links_df():
-
-# def get_all_links_df():
-
-
