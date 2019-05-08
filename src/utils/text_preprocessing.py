@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 from itertools import chain
 
 
-def is_html(text)
+def is_html(text):
     """
     Checks whether text is html or not
     :param text: string

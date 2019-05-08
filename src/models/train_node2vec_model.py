@@ -1,11 +1,11 @@
 import os
-# import random
+import logging.config
 
 import networkx as nx
 from node2vec import Node2Vec
 
-# set seed for deterministic tests etc
-# random.seed(1)
+
+logging.config.fileConfig('src/logging.conf')
 
 # stuff to save model
 # DATA_DIR = os.getenv("DATA_DIR")
@@ -34,12 +34,15 @@ def train_node2_vec_model(edges_df, node_id_content_id_mapping):
     #     edges_df.destination_base_path, edges_df.target)
 
     # instantiate graph
+    logger = logging.getLogger('train_node2_vec_model.train_node2_vec_model')
+    logger.info('creating graph from edges_df')
     graph = nx.convert_matrix.from_pandas_edgelist(
         edges_df, source='source', target='target'
         # when we have functional network too, we can add weight
         # , edge_attr='weight'
     )
     # add node attributes to graph
+    logger.info('adding attributes to graph')
     attributes = {node_id: {"content_id": node_id_content_id_mapping[node_id],
                             # do we need url?
                             # "url": nid_url[nid]
@@ -47,9 +50,11 @@ def train_node2_vec_model(edges_df, node_id_content_id_mapping):
     nx.set_node_attributes(graph, attributes)
 
     # Precompute probabilities and generate walks
+    logger.info('Precompute probabilities and generate walks')
     node2vec = Node2Vec(graph, dimensions=64, walk_length=30, num_walks=300, workers=1)
     # print(datetime.now().strftime("%H:%M:%S"), "Fitting model...")
     # Embed nodes
+    logger.info('embed nodes')
     model = node2vec.fit(window=10, min_count=1, batch_words=4, seed=1, workers=1)
     # Any keywords acceptable by gensim.Word2Vec can be passed, `dimensions` and `workers` are
     # automatically passed (from the Node2Vec constructor)
