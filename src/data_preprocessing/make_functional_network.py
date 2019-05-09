@@ -1,8 +1,9 @@
-from get_bq_data import retrieve_data_from_big_query
-from get_content_store_data import reshape_df_explode_list_column
+from src.data_preprocessing.big_query_data_extractor import retrieve_data_from_big_query
+from src.data_preprocessing.get_content_store_data import reshape_df_explode_list_column
 from collections import Counter
 import logging.config
 import pandas as pd
+import numpy as np
 import os
 
 DATA_DIR = os.getenv("DATA_DIR")
@@ -21,12 +22,12 @@ def main():
     df = split_pair_string_into_two_cols(df)
     node_ids = get_node_ids(df)
     df = map_content_id_to_node_id(df, node_ids)
-    node_ids.to_csv(os.path.join(DATADIR, 'tmp', 'functional_nodes.csv.gz'), compression='gzip', index=False)
-    df.to_csv(os.path.join(DATADIR, 'tmp', 'functional_edges.csv.gz'), compression='gzip', index=False)
+    node_ids.to_csv(os.path.join(DATA_DIR, 'tmp', 'functional_nodes.csv.gz'), compression='gzip', index=False)
+    df.to_csv(os.path.join(DATA_DIR, 'tmp', 'functional_edges.csv.gz'), compression='gzip', index=False)
 
 
 def split_pair_string_into_two_cols(df):
-    df[['source_content_id', 'destination_content_id']] = df['pairs'].str.split(">>>", n=1, expand=True)
+    df[['source_content_id', 'destination_content_id']] = df['node_pair'].str.split(">>", n=1, expand=True)
     return df
 
 
@@ -68,13 +69,22 @@ def get_node_ids(df):
         list(set(df['source_content_id'].unique()).union(set(df['destination_content_id'].unique())))).reset_index(
         name="content_id")
 
-def map_content_id_to_node_id(df, node_ids_df):
-    df = pd.merge(df, node_ids_df, left_on="source_content_id", right_on="content_id", how="left")
-    df.rename(columns={'index': 'source'}, inplace=True)
-    df.drop(columns='content_id', inplace=True)
-    df = pd.merge(df, node_ids_df, left_on="destination_content_id", right_on="content_id", how="left")
-    df.rename(columns={'index': 'target'}, inplace=True)
-    return df.drop(columns=['CIDOccurrences', 'CIDSequence', 'content_id', 'node_pair'], inplace=True)
+
+def get_node_mapping(df):
+    node_map = {}
+    new_index = 0
+    for content_id in np.concatenate([long_df['source_content_id'].unique(), long_df['destination_content_id'].unique()]):
+        node_map[content_id] = new_index
+        new_index += 1
+    return node_map
+
+
+def map_content_id_to_node_id(df, node_map):
+    df['source'] = df['source_content_id'].map(node_map)
+    df['target'] = df['destination_content_id'].map(node_map)
+    return df
+
+
 
 
 if __name__ == "__main__":
