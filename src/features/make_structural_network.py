@@ -28,10 +28,10 @@ def make_structural_network_and_node_id_mappings(all_links_df):
     #  that could be extracted out. Not needed for MVP but could be considered during refactor
     for row in all_links_df.itertuples(index=False):
         if row.source_content_id not in content_id_node_id_mapping.keys():
-            content_id_node_id_mapping[row.source_content_id] = num_counter
+            content_id_node_id_mapping[row.source_content_id] = str(num_counter)
             num_counter += 1
         if row.destination_content_id not in content_id_node_id_mapping.keys():
-            content_id_node_id_mapping[row.destination_content_id] = num_counter
+            content_id_node_id_mapping[row.destination_content_id] = str(num_counter)
             num_counter += 1
 
     logger.info('adding source and target node_ids to all_links_df')

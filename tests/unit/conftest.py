@@ -20,7 +20,14 @@ def content_id_node_id_mapping_fixture():
 @pytest.fixture(scope="session")
 def structural_network_fixture():
     return pd.read_csv(
-        'tests/unit/fixtures/structural_network_test_sample.csv')
+        'tests/unit/fixtures/structural_network_test_sample.csv',
+        dtype={'destination_base_path':object,
+               'destination_content_id': object,
+               'link_type': object,
+               'source_base_path': object,
+               'source_content_id': object,
+               'source': object,
+               'target': object})
 
 
 @pytest.fixture(scope="session")
@@ -28,6 +35,4 @@ def node_id_content_id_mapping_fixture():
     with open(
             'tests/unit/fixtures/node_id_content_id_mapping.json',
             'r') as node_id_content_id_mapping_file:
-        return dict(
-            (int(node_id), content_id) for node_id, content_id in json.load(
-                node_id_content_id_mapping_file).items())
+        return json.load(node_id_content_id_mapping_file)
