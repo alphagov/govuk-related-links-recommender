@@ -1,4 +1,4 @@
-from src.data_preprocessing.make_functional_network_dicts import *
+from src.data_preprocessing.make_functional_network import *
 import pandas as pd
 import pandas.testing as pd_testing
 import pickle
