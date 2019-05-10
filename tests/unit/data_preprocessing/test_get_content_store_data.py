@@ -1479,12 +1479,12 @@ def test_extract_embedded_links_df():
                                   pd.read_csv('tests/unit/embedded_links.csv'))
 
 
-def test_get_all_links_df(mongodb):
+def test_get_all_links_df(mongodb, all_links_fixture):
     # print(get_all_links_df(mongodb.content_store_data_sample).head())
     with open('tests/unit/fixtures/base_path_content_id_mapping.json', 'r') as infile:
         mapping = json.load(infile)
     pd_testing.assert_frame_equal(
         get_all_links_df(mongodb.content_store_data_sample, mapping).sort_values(
             by=['source_content_id', 'destination_content_id']).reset_index(drop=True),
-        pd.read_csv('tests/unit/fixtures/all_links_test_sample.csv').sort_values(
+        all_links_fixture.sort_values(
             by=['source_content_id', 'destination_content_id']).reset_index(drop=True))
