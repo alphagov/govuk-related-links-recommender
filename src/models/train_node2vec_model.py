@@ -41,7 +41,6 @@ def train_node2_vec_model(edges_df, node_id_content_id_mapping,
 
     if workers is None:
         workers = cpu_count()
-
     logger.info(f'number of workers is {workers}')
 
     graph = create_graph(edges_df, node_id_content_id_mapping)
@@ -69,6 +68,9 @@ if __name__ == "__main__":  # our module is being executed as a program
     module_logger.info(f'reading in structural_network.csv and node_id_content_id_mapping.json')
     edges = pd.read_csv(os.path.join(
         data_dir, 'tmp', 'structural_network.csv'))
+
+    # TODO: make this "read json file and convert the keys to ints" step into a function, for use
+    #  here and tes_make_structural_netork
     with open(
             os.path.join(data_dir, 'tmp', 'node_id_content_id_mapping.json'),
             'r') as node_id_content_id_mapping_file:
@@ -79,16 +81,14 @@ if __name__ == "__main__":  # our module is being executed as a program
     node2vec_model = train_node2_vec_model(edges,
                                            node_id_content_id_mapping_dict)
 
-    save_models_dir = os.path.join(model_dir, "tmp")
-
     # TODO:think about a function that gets the filepath for the thing and does that saving.
     #  Depends how often we do that whether it's needed. Not for MVP
-    node_embeddings_file_path = os.path.join(save_models_dir,
+    node_embeddings_file_path = os.path.join(model_dir,
                                              "n2v_node_embeddings")
     module_logger.info(f'saving node embeddings to {node_embeddings_file_path}')
     node2vec_model.wv.save_word2vec_format(node_embeddings_file_path)
 
-    node2vec_model_file_path = os.path.join(save_models_dir, "n2v.model")
+    node2vec_model_file_path = os.path.join(model_dir, "n2v.model")
     module_logger.info(f'saving model to {node2vec_model_file_path}')
     node2vec_model.save(node2vec_model_file_path)
     # should we test saving and loading models and embeddings?

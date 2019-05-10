@@ -239,7 +239,7 @@ def get_all_links_df(mongodb_collection, base_path_to_content_id_mapping):
 
 
 if __name__ == "__main__":  # our module is being executed as a program
-    datadir = os.getenv("DATADIR")
+    data_dir = os.getenv("DATA_DIR")
     logging.config.fileConfig('src/logging.conf')
     logger = logging.getLogger('get_content_store_data')
 
@@ -254,7 +254,7 @@ if __name__ == "__main__":  # our module is being executed as a program
 
     output_df = get_all_links_df(content_store_collection, base_path_to_content_id_mapping)
 
-    output_df.to_csv(os.path.join(datadir, "tmp",  "all_links.csv"), index=False)
+    output_df.to_csv(os.path.join(data_dir, "tmp",  "all_links.csv"), index=False)
 
 
 

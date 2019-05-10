@@ -10,16 +10,10 @@ random.seed(1)
 np.random.seed(1)
 
 
-def test_train_node2_vec_model():
-    structural_network = pd.read_csv(
-        'tests/unit/fixtures/structural_network_test_sample.csv')
-    with open('tests/unit/fixtures/node_id_content_id_mapping.json', 'r'
-              ) as file_2:
-        node_id_content_id_mapping = dict(
-            (int(k), v) for k, v in json.load(file_2).items())
-
-    model = train_node2_vec_model(structural_network,
-                                  node_id_content_id_mapping,
+def test_train_node2_vec_model(structural_network_fixture,
+                               node_id_content_id_mapping_fixture):
+    model = train_node2_vec_model(structural_network_fixture,
+                                  node_id_content_id_mapping_fixture,
                                   workers=1)
 
     # test we get the same most similar nodes
