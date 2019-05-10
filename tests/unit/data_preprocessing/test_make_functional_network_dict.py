@@ -45,11 +45,17 @@ def unique_sequences_weights():
     return pd.read_csv('tests/unit/fixtures/unique_sequences_weights.csv')
 
 @pytest.fixture
-def node_id_mapper():
+def node_id_mapper_small():
     return {'76698ffe-70ab-4fda-be0d-755234f6d340': 0,
                       'f9015c31-61c2-4504-8eb0-242cd75aee19': 1,
                       '1d5b7656-fdc1-4802-9974-39ac538e5a15': 2,
                       'e7bdb8d9-2c5a-488a-85ef-bb4515091bf4': 3}
+@pytest.fixture
+def node_id_mapper_big():
+    with open('/Users/ellieking/Documents/govuk-related-links-recommender/tests/unit/fixtures/test_node_dict.pkl',
+              'rb') as handle:
+        node_ids = pickle.load(handle)
+    return node_ids
 
 @pytest.fixture
 def edge_counter_sample():
@@ -66,14 +72,14 @@ def edge_counter_sample():
 
 def test_get_list_col_from_sequence(test_raw_bq_output, sequence_split_to_list):
     data_extractor = BigQueryTestDataExtractor()
-    instance = FunctionalNetworkFactory(data_extractor)
+    instance = FunctionalNetwork(data_extractor)
 
     assert instance.get_list_col_from_sequence(test_raw_bq_output) == sequence_split_to_list
 
 
 def test_get_node_pairs_from_sequence_list(sequence_split_to_list):
     data_extractor = BigQueryTestDataExtractor()
-    instance = FunctionalNetworkFactory(data_extractor)
+    instance = FunctionalNetwork(data_extractor)
 
     assert instance.get_node_pairs_from_sequence_list(
         sequence_split_to_list[0]) == [['76698ffe-70ab-4fda-be0d-755234f6d340',
@@ -113,7 +119,7 @@ def test_get_node_pairs_from_sequence_list(sequence_split_to_list):
 def test_compute_occurrences(node_pair_in_df, computed_occurrences):
     data_extractor = BigQueryTestDataExtractor()
     print(data_extractor)
-    instance = FunctionalNetworkFactory(data_extractor)
+    instance = FunctionalNetwork(data_extractor)
 
     pd_testing.assert_series_equal(instance.compute_occurrences(node_pair_in_df),
                                    computed_occurrences)
@@ -121,57 +127,57 @@ def test_compute_occurrences(node_pair_in_df, computed_occurrences):
 
 def test_get_unique_sequences_and_weights(node_pair_in_df, unique_sequences_weights):
     data_extractor = BigQueryTestDataExtractor()
-    instance = FunctionalNetworkFactory(data_extractor)
+    instance = FunctionalNetwork(data_extractor)
 
     pd_testing.assert_frame_equal(instance.get_unique_sequences_and_weights(node_pair_in_df), unique_sequences_weights)
 
 
 def test_get_edges_and_weights(node_pair_in_df, edge_counter):
     data_extractor = BigQueryTestDataExtractor()
-    instance = FunctionalNetworkFactory(data_extractor)
+    instance = FunctionalNetwork(data_extractor)
 
     df = node_pair_in_df
     df['node_pairs'] = df['node_pairs'].apply(ast.literal_eval)
 
     assert instance.get_edges_and_weights(df) == edge_counter
 
-def test_create_node_id_mapper(node_id_mapper, edge_counter_sample):
+def test_create_node_id_mapper(node_id_mapper_small, edge_counter_sample):
     data_extractor = BigQueryTestDataExtractor()
-    instance = FunctionalNetworkFactory(data_extractor)
+    instance = FunctionalNetwork(data_extractor)
 
-    assert instance.create_node_id_mapper(edge_counter_sample) == node_id_mapper
+    assert instance.create_node_id_mapper(edge_counter_sample) == node_id_mapper_small
 
 
-def test_node_writer(node_id_mapper):
+def test_node_writer(node_id_mapper_small):
     data_extractor = BigQueryTestDataExtractor()
-    instance = FunctionalNetworkFactory(data_extractor)
+    instance = FunctionalNetwork(data_extractor)
 
-    instance.node_writer("tests/unit/fixtures/node_id_check.csv.gz", "node\tnode_id\n", node_id_mapper, None)
+    instance.node_writer("tests/unit/fixtures/node_id_check.csv.gz", "node\tnode_id\n", node_id_mapper_small, None)
 
     pd_testing.assert_frame_equal(
         pd.read_csv("tests/unit/fixtures/node_id_check.csv.gz", compression='gzip'),
         pd.read_csv("tests/unit/fixtures/node_id_test.csv.gz", compression='gzip'))
 
 
-def test_edge_writer(node_id_mapper, edge_counter_sample):
+def test_edge_writer(node_id_mapper_small, edge_counter_sample):
     data_extractor = BigQueryTestDataExtractor()
-    instance = FunctionalNetworkFactory(data_extractor)
+    instance = FunctionalNetwork(data_extractor)
 
     header = "Source_node\tSource_id\tDestination_node\tDestination_id\tWeight\n"
 
-    instance.edge_writer("tests/unit/fixtures/edge_check.csv.gz", header, edge_counter_sample, node_id_mapper, None)
+    instance.edge_writer("tests/unit/fixtures/edge_check.csv.gz", header, edge_counter_sample, node_id_mapper_small, None)
 
     pd_testing.assert_frame_equal(
         pd.read_csv("tests/unit/fixtures/edge_check.csv.gz", compression='gzip'),
         pd.read_csv("tests/unit/fixtures/edge_test.csv.gz", compression='gzip'))
 
 #
-def test_create_network():
+def test_create_network(node_id_mapper_big, edge_counter):
     data_extractor = BigQueryTestDataExtractor()
-    network_factory = FunctionalNetworkFactory(data_extractor)
-    network_factory.create_network()
-
-    # we need to test the outputs from this somehow
+    network_factory = FunctionalNetwork(data_extractor)
+    edges, node_ids = network_factory.create_network()
+    assert edges == edge_counter
+    assert node_ids == node_id_mapper_big
 
 
 

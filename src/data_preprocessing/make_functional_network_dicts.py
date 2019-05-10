@@ -6,8 +6,8 @@ from collections import Counter
 from src.data_preprocessing.big_query_data_extractor import BigQueryDataExtractor
 
 
-class FunctionalNetworkFactory:
-
+class FunctionalNetwork:
+    # TODO work out how to use os.getenv in class variable
     EDGE_OUTPUT_FILE = os.path.join("data", "tmp", "functional_edges_dict.csv.gz")
     NODE_OUTPUT_FILE = os.path.join("data", "tmp", "functional_nodes_dict.csv.gz")
 
@@ -46,6 +46,8 @@ class FunctionalNetworkFactory:
         self.node_writer(self.NODE_OUTPUT_FILE, default_node_header,
                          node_ids,
                          node_attributes)
+
+        return edges, node_ids
 
     def get_list_col_from_sequence(self, df, sequence_variable='CIDSequence'):
         """
