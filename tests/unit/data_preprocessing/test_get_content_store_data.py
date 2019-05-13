@@ -1,5 +1,3 @@
-import pytest
-
 import json
 import pandas as pd
 import pandas.testing as pd_testing
@@ -68,6 +66,7 @@ def test_get_excluded_document_types():
                                              'working_group',
                                              'world_location',
                                              'worldwide_organisation']
+
 
 def test_get_links(mongodb):
     assert sorted(get_links(mongodb.content_store_data_sample, 'related'), key=lambda k: k['_id']) == sorted([
@@ -668,7 +667,8 @@ def test_get_links(mongodb):
           'content_id': '5f63b715-7631-11e4-a3cb-005056011aef'}],
         key=lambda k: k['_id']
     )
-#
+
+
 def test_convert_link_list_to_df():
     pd_testing.assert_frame_equal(convert_link_list_to_df([
         {'_id': '/agency-workers-your-rights',
@@ -1445,11 +1445,13 @@ def test_convert_link_list_to_df():
       'content_id': '5f63b715-7631-11e4-a3cb-005056011aef'}], 'collection'),
     pd.read_csv('tests/unit/collection_links.csv'))
 
+
 def test_get_base_path_to_content_id_mapping(mongodb):
     with open('tests/unit/fixtures/base_path_content_id_mapping_test_sample.json', 'r') as infile:
         mapping = json.load(infile)
 
     assert get_base_path_to_content_id_mapping(mongodb.content_store_data_sample) == mapping
+
 
 def test_get_page_text_df(mongodb):
     pd_testing.assert_frame_equal(get_page_text_df(mongodb.content_store_data_sample).sort_values(
@@ -1461,11 +1463,13 @@ def test_get_page_text_df(mongodb):
            pd.read_csv('tests/unit/text_df.csv').shape
     #
 
+
 def test_reshape_df_explode_list_column():
     wide_df = pd.DataFrame({'A':[1,2], 'B':[2, 2],'C':[[1,2],[1,2]]})
     long_df = pd.DataFrame({'A':[1, 1, 2, 2], 'B':[2, 2, 2, 2], 'C':[1, 2, 1, 2]})
     pd_testing.assert_frame_equal(reshape_df_explode_list_column(wide_df, 'C'),
                                   long_df)
+
 
 def test_extract_embedded_links_df():
     with open('tests/unit/fixtures/base_path_content_id_mapping.json', 'r') as infile:
@@ -1474,15 +1478,13 @@ def test_extract_embedded_links_df():
                                                             mapping),
                                   pd.read_csv('tests/unit/embedded_links.csv'))
 
-def test_get_all_links_df(mongodb):
+
+def test_get_all_links_df(mongodb, all_links_fixture):
     # print(get_all_links_df(mongodb.content_store_data_sample).head())
     with open('tests/unit/fixtures/base_path_content_id_mapping.json', 'r') as infile:
         mapping = json.load(infile)
     pd_testing.assert_frame_equal(
         get_all_links_df(mongodb.content_store_data_sample, mapping).sort_values(
             by=['source_content_id', 'destination_content_id']).reset_index(drop=True),
-        pd.read_csv('tests/unit/fixtures/all_links_test_sample.csv').sort_values(
+        all_links_fixture.sort_values(
             by=['source_content_id', 'destination_content_id']).reset_index(drop=True))
-
-
-
