@@ -6,17 +6,17 @@ from src.utils.miscellaneous import get_excluded_document_types
 
 class BigQueryDataExtractor:
     def __init__(self):
-        self.DATA_DIR = os.getenv('DATA_DIR')
-        self.BQ_KEY = os.getenv('BIG_QUERY_KEY')
-        self.PROJECT_ID = os.getenv('BIG_QUERY_PROJECT')
+        self.data_dir = os.getenv('DATA_DIR')
+        self.bq_key = os.getenv('BIG_QUERY_KEY')
+        self.project_id = os.getenv('BIG_QUERY_PROJECT')
 
-        self.BLACKLISTED_DOCUMENT_TYPES = ", ".join(get_excluded_document_types())
+        self.blacklisted_document_types = ", ".join(get_excluded_document_types())
 
-        self.YESTERDAY = (datetime.today()- timedelta(1)).strftime('%Y%m%d')
-        self.THREE_WEEKS_AGO = (datetime.today()- timedelta(22)).strftime('%Y%m%d')
+        self.yesterday = (datetime.today()- timedelta(1)).strftime('%Y%m%d')
+        self.three_weeks_ago = (datetime.today()- timedelta(22)).strftime('%Y%m%d')
 
         # TODO this query gets content_ids but we may want to restrict to where Occurences>1 in the query rather than dropping later
-        self.QUERY = """SELECT
+        self.query = """SELECT
           COUNT(*) AS Occurrences,
           PageSeq_Length,
           PageSequence,
@@ -64,10 +64,10 @@ class BigQueryDataExtractor:
               CROSS JOIN
                 UNNEST(sessions.hits) AS hits
               WHERE
-                _TABLE_SUFFIX BETWEEN """+f"'{self.THREE_WEEKS_AGO}'"+" AND "+f"'{self.YESTERDAY}'"+""")
+                _TABLE_SUFFIX BETWEEN """+f"'{self.three_weeks_ago}'"+" AND "+f"'{self.yesterday}'"+""")
             WHERE
               pagePath != '/'
-              AND document_type NOT IN ("""+self.BLACKLISTED_DOCUMENT_TYPES+""")
+              AND document_type NOT IN ("""+self.blacklisted_document_types+""")
               AND content_id NOT IN ( '00000000-0000-0000-0000-000000000000',
                 '[object Object]'))
           WHERE
@@ -83,7 +83,7 @@ class BigQueryDataExtractor:
           PageSeq_Length"""
 
         # TODO this query not tested
-        self.UNTESTED_QUERY = """SELECT
+        self.untested_query = """SELECT
           COUNT(*) AS Occurrences,
           PageSeq_Length,
           CIDSequence
@@ -126,10 +126,10 @@ class BigQueryDataExtractor:
               CROSS JOIN
                 UNNEST(sessions.hits) AS hits
               WHERE
-                _TABLE_SUFFIX BETWEEN """+f"'{self.THREE_WEEKS_AGO}'"+" AND "+f"'{self.YESTERDAY}'"+""")
+                _TABLE_SUFFIX BETWEEN """+f"'{self.three_weeks_ago}'"+" AND "+f"'{self.yesterday}'"+""")
             WHERE
               pagePath != '/'
-              AND document_type NOT IN ("""+self.BLACKLISTED_DOCUMENT_TYPES+""")
+              AND document_type NOT IN ("""+self.blacklisted_document_types+""")
               AND content_id NOT IN ( '00000000-0000-0000-0000-000000000000',
                 '[object Object]'))
           WHERE
@@ -144,10 +144,10 @@ class BigQueryDataExtractor:
 
     def retrieve_data_from_big_query(self):
         # previous call for 2 weeks data cost $0.12
-        return pd.read_gbq(self.QUERY,
-                            project_id=self.PROJECT_ID,
+        return pd.read_gbq(self.query,
+                            project_id=self.project_id,
                             reauth=False,
-                            private_key=self.BQ_KEY,
+                            private_key=self.bq_key,
                             dialect="standard")
 
 
