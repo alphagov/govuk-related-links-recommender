@@ -149,11 +149,12 @@ def test_node_writer(node_id_mapper_small):
     data_extractor = BigQueryTestDataExtractor()
     instance = FunctionalNetwork(data_extractor)
 
-    instance.node_writer("tests/unit/fixtures/node_id_check.csv.gz", "node\tnode_id\n", node_id_mapper_small, None)
+    instance.node_writer("tests/unit/tmp/node_id_check.csv.gz", "node\tnode_id\n", node_id_mapper_small, None)
 
     pd_testing.assert_frame_equal(
-        pd.read_csv("tests/unit/fixtures/node_id_check.csv.gz", compression='gzip'),
+        pd.read_csv("tests/unit/tmp/node_id_check.csv.gz", compression='gzip'),
         pd.read_csv("tests/unit/fixtures/node_id_test.csv.gz", compression='gzip'))
+    os.remove("tests/unit/tmp/node_id_check.csv.gz")
 
 
 def test_edge_writer(node_id_mapper_small, edge_counter_sample):
@@ -162,11 +163,13 @@ def test_edge_writer(node_id_mapper_small, edge_counter_sample):
 
     header = "Source_node\tSource_id\tDestination_node\tDestination_id\tWeight\n"
 
-    instance.edge_writer("tests/unit/fixtures/edge_check.csv.gz", header, edge_counter_sample, node_id_mapper_small, None)
+    instance.edge_writer("tests/unit/tmp/edge_check.csv.gz", header, edge_counter_sample, node_id_mapper_small, None)
 
     pd_testing.assert_frame_equal(
-        pd.read_csv("tests/unit/fixtures/edge_check.csv.gz", compression='gzip'),
+        pd.read_csv("tests/unit/tmp/edge_check.csv.gz", compression='gzip'),
         pd.read_csv("tests/unit/fixtures/edge_test.csv.gz", compression='gzip'))
+    os.remove("tests/unit/tmp/edge_check.csv.gz")
+
 
 #
 def test_create_network(node_id_mapper_big, edge_counter):
