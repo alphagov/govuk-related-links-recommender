@@ -52,7 +52,7 @@ def node_id_mapper_small():
                       'e7bdb8d9-2c5a-488a-85ef-bb4515091bf4': 3}
 @pytest.fixture
 def node_id_mapper_big():
-    with open('/tests/unit/fixtures/test_node_dict.pkl',
+    with open('tests/unit/fixtures/test_node_dict.pkl',
               'rb') as handle:
         node_ids = pickle.load(handle)
     return node_ids
