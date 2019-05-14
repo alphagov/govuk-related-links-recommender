@@ -1,6 +1,15 @@
 import yaml
 import os
 
+def read_query(filepath):
+    """(str) -> str
+    Opens the file at filepath for reading, removing /n
+    before rejoining seperate lines with " " seperator.
+    """
+    with open(filepath, 'r') as file:
+        lines = " ".join(line.strip("\n") for line in file)
+    return lines
+
 
 def get_excluded_document_types():
     with open(
