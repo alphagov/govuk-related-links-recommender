@@ -49,14 +49,14 @@ class FunctionalNetwork:
 
         return edges, node_ids
 
-    def get_list_col_from_sequence(self, df, sequence_variable='CIDSequence'):
+    def get_list_col_from_sequence(self, df):
         """
         Convert the sequence (either of pages or content IDs), which is separated by ">>" into a python list
         :param df: pandas DataFrame containing a sequence column
         :param sequence_variable: name of sequence column (default ='CIDSequence') with content_ids separated by >>
         :return: list where each element is a list of the pages/content_ids visited
         """
-        return [sequence.split(">>") for sequence in df[sequence_variable].values]
+        return [sequence.split(">>") for sequence in df['CIDSequence'].values]
 
     def get_node_pairs_from_sequence_list(self, page_list):
         """
@@ -109,7 +109,7 @@ class FunctionalNetwork:
     #     return df
 
     # TODO this should be done in the SQL query. Need to check the Occurrences between UNTESTED QUERY (no PageSequence) and QUERY.
-    def compute_occurrences(self, df, page_sequence='CIDSequence'):
+    def compute_occurrences(self, df):
         """
         conts the number of times the content_id_sequence was used.
         :param df: Pandas DataFrame containing Occurences and CIDSequence columns
@@ -117,8 +117,7 @@ class FunctionalNetwork:
         can also be used)
         :return: Pandas Series
         """
-        self.logger.debug("Computing specialized occurrences based on  \"{}\"...".format(page_sequence))
-        return df.groupby(page_sequence)['Occurrences'].transform('sum')
+        return df.groupby('CIDSequence')['Occurrences'].transform('sum')
 
     # TODO this should be in the SQL too
     def get_unique_sequences_and_weights(self, df):
