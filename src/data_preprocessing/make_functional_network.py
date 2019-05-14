@@ -110,6 +110,13 @@ class FunctionalNetwork:
 
     # TODO this should be done in the SQL query. Need to check the Occurrences between UNTESTED QUERY (no PageSequence) and QUERY.
     def compute_occurrences(self, df, page_sequence='CIDSequence'):
+        """
+        conts the number of times the content_id_sequence was used.
+        :param df: Pandas DataFrame containing Occurences and CIDSequence columns
+        :param page_sequence: Name of column to identify the sequence (default is content_id sequence but page_path
+        can also be used)
+        :return: Pandas Series
+        """
         self.logger.debug("Computing specialized occurrences based on  \"{}\"...".format(page_sequence))
         return df.groupby(page_sequence)['Occurrences'].transform('sum')
 
