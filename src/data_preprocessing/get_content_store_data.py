@@ -1,7 +1,6 @@
 import logging.config
 import os
 import warnings
-import yaml
 
 import numpy as np
 import pandas as pd
@@ -9,18 +8,9 @@ from pandas.io.json import json_normalize
 import pymongo
 
 from src.utils import text_preprocessing as tp
-
+from src.utils.miscellaneous import get_excluded_document_types
 
 warnings.filterwarnings('ignore', category=UserWarning, module='bs4')
-
-def get_excluded_document_types():
-    with open(
-            os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                         '..', 'config', 'document_types_excluded_from_the_topic_taxonomy.yml'
-                         ),
-            'r'
-    ) as f:
-        return yaml.safe_load(f)['document_types']
 
 
 BLACKLIST_DOCUMENT_TYPES = get_excluded_document_types()

@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 from datetime import datetime, timedelta
-from src.data_preprocessing.get_content_store_data import get_excluded_document_types
+from src.utils.miscellaneous import get_excluded_document_types
 
 
 class BigQueryDataExtractor:
