@@ -37,7 +37,7 @@ class FunctionalNetwork:
         default_node_header = "node\tnode_id\n"
         node_attributes = None  # not used in Node2vec algorithm
 
-        self.logger.info("Number of nodes: {} Number of edges: {}".format(len(node_ids), len(edges)))
+        self.logger.info(f"Number of nodes: {len(node_ids)} Number of edges: {len(edges)}")
         self.logger.info("Writing edge list to file...")
 
         self.edge_writer(self.EDGE_OUTPUT_FILE, default_edge_header, edges,
@@ -89,18 +89,18 @@ class FunctionalNetwork:
         with gzip.open(filename, "w") as file:
             file.write(header.encode())
             for node, nid in node_id.items():
-                file.write("{}\t{}".format(node, nid).encode())
+                file.write(f"{node}\t{nid}".encode())
                 if node_attr is not None:
-                    file.write("\t{}".format(node_attr[node]).encode())
+                    file.write(f"\t{node_attr[node]}".encode())
                 file.write("\n".encode())
 
     def edge_writer(self, filename, header, edges, node_id, node_attr):
         with gzip.open(filename, "w") as file:
             file.write(header.encode())
             for key, value in edges.items():
-                file.write("{}\t{}\t{}\t{}\t{}".format(key[0], node_id[key[0]], key[1], node_id[key[1]], value).encode())
+                file.write(f"{key[0]}\t{node_id[key[0]]}\t{key[1]}\t{node_id[key[1]]}\t{value}".encode())
                 if node_attr is not None:
-                    file.write("\t{}\t{}".format(node_attr[key[0]], node_attr[key[1]]).encode())
+                    file.write(f"\t{node_attr[key[0]]}\t{node_attr[key[1]]}".encode())
                 file.write("\n".encode())
 
     # def eval_cols(df, column_to_eval='content_id_list'):
@@ -125,7 +125,7 @@ class FunctionalNetwork:
             df['frequency_of_sequence_use'] = self.compute_occurrences(df)
         df.drop_duplicates('CIDSequence', keep="first", inplace=True)
         df.reset_index(drop=True, inplace=True)
-        logging.debug("df shape  \"{}\"...".format(df.shape))
+        logging.debug(f"df shape  \"{df.shape}\"...")
         return df
 
     # TODO delooping as default
@@ -141,15 +141,15 @@ class FunctionalNetwork:
         """
 
         df = self.get_unique_sequences_and_weights(df)
-        logging.debug("df shape after unique \"{}\"...".format(df.shape))
-        logging.debug("df cols \"{}\"...".format(df.columns))
+        logging.debug(f"df shape after unique \"{df.shape}\"...")
+        logging.debug(f"df cols \"{df.columns}\"...")
 
         edge_list_counter = Counter()
 
         for row in df.itertuples(index=False):
             for edge in row.node_pairs:
                 edge_list_counter[tuple(edge)] += row.frequency_of_sequence_use
-        logging.debug("counter len \"{}\"...".format(len(edge_list_counter)))
+        logging.debug(f"counter len \"{len(edge_list_counter)}\"...")
 
 
         return edge_list_counter
