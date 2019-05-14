@@ -118,7 +118,6 @@ def test_get_node_pairs_from_sequence_list(sequence_split_to_list):
 
 def test_compute_occurrences(node_pair_in_df, computed_occurrences):
     data_extractor = BigQueryTestDataExtractor()
-    print(data_extractor)
     instance = FunctionalNetwork(data_extractor)
 
     pd_testing.assert_series_equal(instance.compute_occurrences(node_pair_in_df),
@@ -135,11 +134,9 @@ def test_get_unique_sequences_and_weights(node_pair_in_df, unique_sequences_weig
 def test_get_edges_and_weights(node_pair_in_df, edge_counter):
     data_extractor = BigQueryTestDataExtractor()
     instance = FunctionalNetwork(data_extractor)
+    node_pair_in_df['node_pairs'] = node_pair_in_df['node_pairs'].apply(ast.literal_eval)
 
-    df = node_pair_in_df
-    df['node_pairs'] = df['node_pairs'].apply(ast.literal_eval)
-
-    assert instance.get_edges_and_weights(df) == edge_counter
+    assert instance.get_edges_and_weights(node_pair_in_df) == edge_counter
 
 def test_create_node_id_mapper(node_id_mapper_small, edge_counter_sample):
     data_extractor = BigQueryTestDataExtractor()
