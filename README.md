@@ -55,3 +55,9 @@ Project Organization
 --------
 
 <p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
+
+## Python environment
+Environment variables are used to store Big Query key and project_id. These need to be activated before
+the make_functional_network.py script can be used. 
+
+Environment variables are also used to locate data and model directories: DATA_DIR and MODEL_DIR. Make sure these are activated before runnning data pipeline.
