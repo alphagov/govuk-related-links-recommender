@@ -1,3 +1,4 @@
+import pandas as pd
 
 def test_retrieve_data_from_big_query():
     # previous call for 2 weeks data cost $0.12
