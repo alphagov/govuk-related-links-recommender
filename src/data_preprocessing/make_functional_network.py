@@ -72,7 +72,7 @@ class FunctionalNetwork:
         Generate a dictionary, assigning a node_id to each content item (node), which can be represented in the edge_list
         using either using content_ids or page_paths.
         :param edge_list: list of edges (node-pairs)
-        :return: alphabetically sorted dictionary of nodes {content_id : node_index}
+        :return: dictionary of nodes {content_id : node_index}
         """
         self.logger.debug("Creating node_id  list...")
         node_id = 0
