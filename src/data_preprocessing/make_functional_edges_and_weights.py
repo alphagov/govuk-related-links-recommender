@@ -34,7 +34,8 @@ class EdgeWeightExtractor:
 
     def extract_df_to_csv(self, file_path):
         self.df.to_csv(file_path,
-                       index=False)
+                       index=False,
+                       compression='gzip')
 
 
 if __name__ == "__main__":
@@ -44,4 +45,5 @@ if __name__ == "__main__":
     three_weeks_ago = (datetime.today() - timedelta(22)).strftime('%Y%m%d')
 
     edge_weights = EdgeWeightExtractor(blacklisted_document_types, three_weeks_ago, yesterday)
-    edge_weights.write_out_data_frame(os.path.join(data_dir, "tmp", "functional_edges_dict.csv.gz"), compression='gzip')
+    edge_weights.extract_df_to_csv(os.path.join(data_dir, "tmp", "functional_edges_dict.csv.gz"))
+    
