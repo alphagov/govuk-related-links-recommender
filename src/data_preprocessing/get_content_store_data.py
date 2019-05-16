@@ -219,11 +219,17 @@ def get_all_links_df(mongodb_collection, base_path_to_content_id_mapping):
         axis=0, sort=True, ignore_index=True)
 
     logging.info(f'all links dataframe shape {all_links_df.shape}')
+
+    # filter out any links without a destination content ID, as we are building a network based on content_ids
+    all_links_df.query('destination_content_id.notnull()', inplace=True)
+    logging.info(
+        f'all links dataframe shape f after dropping null  destination_content_ids={all_links_df.shape}')
     return all_links_df
 
 
 if __name__ == "__main__":  # our module is being executed as a program
-    datadir = os.getenv("DATA_DIR")
+    data_dir = os.getenv("DATA_DIR")
+
     logging.config.fileConfig('src/logging.conf')
     logger = logging.getLogger('get_content_store_data')
 
@@ -233,10 +239,12 @@ if __name__ == "__main__":  # our module is being executed as a program
     content_store_collection = content_store_db["content_items"]
 
     base_path_to_content_id_mapping = get_base_path_to_content_id_mapping(content_store_collection)
+    # TODO: create and save down content_id_to_base_path_mapping so we can
+    #  create links for visual inspection - do they need titles?
 
     output_df = get_all_links_df(content_store_collection, base_path_to_content_id_mapping)
 
-    output_df.to_csv(os.path.join(datadir, "tmp",  "all_links.csv"), index=False)
+    output_df.to_csv(os.path.join(data_dir, "tmp",  "all_links.csv"), index=False)
 
 
 
