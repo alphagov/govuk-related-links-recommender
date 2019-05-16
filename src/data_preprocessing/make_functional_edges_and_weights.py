@@ -32,7 +32,7 @@ class EdgeWeightExtractor:
 
         self.df = self.client.query(self.query_edge_list, job_config=self.query_config).to_dataframe()
 
-    def write_out_data_frame(self, file_path):
+    def extract_df_to_csv(self, file_path):
         self.df.to_csv(file_path,
                        index=False)
 
