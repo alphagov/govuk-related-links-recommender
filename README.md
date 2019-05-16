@@ -55,3 +55,10 @@ Project Organization
 --------
 
 <p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
+
+## Python environment
+Need to set and activate environment variables before running pipeline. To run the make_functional_edges_and_weights.py
+script, use command line to `export GOOGLE_APPLICATION_CREDENTIALS='path/to/GOV-UK BigQuery analytics-fa2ed548d98c.json'` 
+
+Environment variables are also used to locate data and model directories: DATA_DIR and MODEL_DIR. 
+Make sure these are activated before runnning data pipeline.
