@@ -3,14 +3,14 @@ import json
 import pandas as pd
 import pandas.testing as pd_testing
 
-from src.features.make_structural_network import make_structural_network_and_node_id_mappings
+from src.features.make_network import make_network_and_node_id_mappings
 
 
-def test_make_structural_network(
-        all_links_fixture, content_id_node_id_mapping_fixture,
+def test_make_network(
+        structural_edges_fixture, content_id_node_id_mapping_fixture,
         structural_network_fixture, node_id_content_id_mapping_fixture):
-    edges_df, content_id_node_id_mapping, node_id_content_id_mapping = make_structural_network_and_node_id_mappings(
-        all_links_fixture)
+    edges_df, content_id_node_id_mapping, node_id_content_id_mapping = make_network_and_node_id_mappings(
+        structural_edges_fixture)
 
     pd_testing.assert_frame_equal(
         edges_df.reset_index(drop=True),

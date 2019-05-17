@@ -1448,9 +1448,11 @@ def test_convert_link_list_to_df():
 
 def test_get_base_path_to_content_id_mapping(mongodb):
     with open('tests/unit/fixtures/base_path_content_id_mapping_test_sample.json', 'r') as infile:
-        mapping = json.load(infile)
+        base_path_content_id_mapping_test_sample = json.load(infile)
 
-    assert get_base_path_to_content_id_mapping(mongodb.content_store_data_sample) == mapping
+    page_path_content_id_mapping, content_id_base_path_mapping = get_base_path_content_id_mappings(mongodb.content_store_data_sample)
+
+    assert page_path_content_id_mapping == base_path_content_id_mapping_test_sample
 
 
 def test_get_page_text_df(mongodb):
@@ -1479,12 +1481,12 @@ def test_extract_embedded_links_df():
                                   pd.read_csv('tests/unit/embedded_links.csv'))
 
 
-def test_get_all_links_df(mongodb, all_links_fixture):
+def test_get_structural_edges_df(mongodb, structural_edges_fixture):
     # print(get_all_links_df(mongodb.content_store_data_sample).head())
     with open('tests/unit/fixtures/base_path_content_id_mapping.json', 'r') as infile:
         mapping = json.load(infile)
     pd_testing.assert_frame_equal(
-        get_all_links_df(mongodb.content_store_data_sample, mapping).sort_values(
+        get_structural_edges_df(mongodb.content_store_data_sample, mapping).sort_values(
             by=['source_content_id', 'destination_content_id']).reset_index(drop=True),
-        all_links_fixture.sort_values(
+        structural_edges_fixture.sort_values(
             by=['source_content_id', 'destination_content_id']).reset_index(drop=True))

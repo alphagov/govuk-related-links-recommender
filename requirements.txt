@@ -11,6 +11,8 @@ pymongo
 tqdm # for progressbar for progress_apply
 node2vec
 networkx
+google-auth
+google-cloud-bigquery
 
 
 # test requirements

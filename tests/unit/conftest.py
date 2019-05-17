@@ -5,8 +5,8 @@ import pytest
 
 
 @pytest.fixture(scope="session")
-def all_links_fixture():
-    return pd.read_csv('tests/unit/fixtures/all_links_test_sample.csv')
+def structural_edges_fixture():
+    return pd.read_csv('tests/unit/fixtures/structural_edges_test_sample.csv')
 
 
 @pytest.fixture(scope="session")

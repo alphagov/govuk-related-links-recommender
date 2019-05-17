@@ -1,6 +1,5 @@
 import random
-import json
-import pandas as pd
+import pytest
 import numpy as np
 
 from src.models.train_node2vec_model import train_node2_vec_model
@@ -10,6 +9,7 @@ random.seed(1)
 np.random.seed(1)
 
 
+@pytest.mark.skip(reason="Don't run up a big big query bill")
 def test_train_node2_vec_model(structural_network_fixture,
                                node_id_content_id_mapping_fixture):
     model = train_node2_vec_model(structural_network_fixture,

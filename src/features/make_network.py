@@ -5,12 +5,11 @@ import os
 import pandas as pd
 
 # link types we want to use for our structural network
-STRUCTURAL_LINK_TYPES = ['embedded_links',  'collection_links', 'related_links']
 logging.config.fileConfig('src/logging.conf')
 
 
 # TODO: come back to this and generalise fn to handle both structural and functional networks and convert to edges
-def make_structural_network_and_node_id_mappings(all_links_df):
+def make_network_and_node_id_mappings(all_links_df):
     """
     Takes a DataFrame pages and their links as content_ids, returns a DataFrame of these edges using node_ids,
     and mappings between the node_ids and content_ids
@@ -48,20 +47,44 @@ def make_structural_network_and_node_id_mappings(all_links_df):
     return all_links_df, content_id_node_id_mapping, node_id_content_id_mapping
 
 
+def combine_structural_functional_edges(structural_edges, functional_edges):
+    """
+    Combine structural and functional dataframes to get a deduplicated dataframe of edges
+    :param structural_edges: pandas DataFrame including columns ['source_node', 'destination_node'] (containing content_ids)
+    :param functional_edges: pandas DataFrame including columns ['source_node', 'destination_node'] (containing content_ids)
+    :return: pandas DataFrame with columns ['source_content_id', 'destination_content_id']
+    """
+    all_edges = pd.concat([structural_edges, functional_edges],
+                          ignore_index=True, sort=True)
+    return all_edges[['source_node', 'destination_node']].drop_duplicates()
+
+
 if __name__ == "__main__":  # our module is being executed as a program
     data_dir = os.getenv('DATA_DIR')
     module_logger = logging.getLogger('make_structural_network')
 
-    module_logger.info(f'reading {data_dir}/tmp/all_links.csv created by data_preprocessing/get_content_store_data')
-    input_df = pd.read_csv(os.path.join(data_dir, 'tmp',  'all_links.csv'))
+    module_logger.info(
+        f'reading {data_dir}/tmp/structural_edges.csv created by data_preprocessing/get_content_store_data')
+    structural_edges_df = pd.read_csv(os.path.join(data_dir, 'tmp',  'structural_edges.csv'))
 
-    module_logger.info('making structural_network_df using all_links')
-    structural_network_df, content_id_node_id_mapping_dict, node_id_content_id_mapping_dict = \
-        make_structural_network_and_node_id_mappings(input_df)
+    module_logger.info(
+        f'reading {data_dir}/tmp/functional_edges.csv.gz created by data_preprocessing/make_functional_edges_and_weights')
+    functional_edges_df = pd.read_csv(
+        os.path.join(data_dir, 'tmp', 'functional_edges.csv.gz'),
+        compression='gzip')
 
-    module_logger.info(f'saving structural_network_df to {data_dir}/tmp/structural_network.csv')
-    structural_network_df.to_csv(os.path.join(
-        data_dir, 'tmp', 'structural_network.csv'), index=False)
+    all_edges_df = combine_structural_functional_edges(structural_edges_df, functional_edges_df)
+
+    all_edges_df.to_csv(os.path.join(
+        data_dir, 'tmp', 'all_edges.csv'), index=False)
+
+    module_logger.info('making network_df with node_ids using all_links')
+    network_df, content_id_node_id_mapping_dict, node_id_content_id_mapping_dict = \
+        make_network_and_node_id_mappings(all_edges_df)
+
+    module_logger.info(f'saving network_df to {data_dir}/tmp/network.csv')
+    network_df.to_csv(os.path.join(
+        data_dir, 'tmp', 'network.csv'), index=False)
 
     module_logger.info(f'saving content_id_node_id_mapping_dict to {data_dir}/tmp/content_id_node_id_mapping.json')
     with open(

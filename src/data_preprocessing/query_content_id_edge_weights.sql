@@ -1,6 +1,6 @@
 SELECT
-  source_node,
-  destination_node,
+  source_content_id,
+  destination_content_id,
   COUNT(*) AS weight
 FROM (
   SELECT
