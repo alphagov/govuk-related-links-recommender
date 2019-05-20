@@ -1,4 +1,3 @@
-import json
 import logging.config
 import os
 
@@ -28,11 +27,12 @@ if __name__ == "__main__":  # our module is being executed as a program
 
     module_logger.info(
         f'reading {data_dir}/tmp/structural_edges.csv created by data_preprocessing/get_content_store_data')
-    structural_edges_df = pd.read_csv(os.path.join(data_dir, 'tmp',  'structural_edges.csv'))
+    structural_edges_df = pd.read_csv(os.path.join(data_dir, 'tmp', 'structural_edges.csv'))
     module_logger.info(f'structural_edges_df.shape = {structural_edges_df.shape}')
 
     module_logger.info(
-        f'reading {data_dir}/tmp/functional_edges.csv.gz created by data_preprocessing/make_functional_edges_and_weights')
+        f'reading {data_dir}/tmp/functional_edges.csv.gz created by '
+        f'data_preprocessing/make_functional_edges_and_weights')
     functional_edges_df = pd.read_csv(
         os.path.join(data_dir, 'tmp', 'functional_edges.csv'))
     module_logger.info(f'functional_edges_df.shape = {functional_edges_df.shape}')
@@ -44,4 +44,3 @@ if __name__ == "__main__":  # our module is being executed as a program
     module_logger.info(f'saving network_df to {data_dir}/tmp/network.csv')
     network_df.to_csv(os.path.join(
         data_dir, 'tmp', 'network.csv'), index=False)
-

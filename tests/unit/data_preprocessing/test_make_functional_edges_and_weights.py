@@ -1,7 +1,6 @@
-import pandas.testing as pd_testing
 import pandas as pd
 import pytest
-from src.data_preprocessing.make_functional_edges_and_weights import *
+from src.data_preprocessing.make_functional_edges_and_weights import EdgeWeightExtractor
 from src.utils.miscellaneous import get_excluded_document_types
 
 

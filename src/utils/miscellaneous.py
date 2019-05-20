@@ -1,6 +1,7 @@
 import yaml
 import os
 
+
 def read_query(filepath):
     """(str) -> str
     Opens the file at filepath for reading, removing /n

@@ -1,4 +1,3 @@
-import json
 import os
 import logging.config
 from multiprocessing import cpu_count
@@ -27,7 +26,8 @@ def train_node2_vec_model(edges_df,
     and a mapping of the node_ids (used in the DataFrame) to GOV.UK content_ids
     :param edges_df: pandas DataFrame with source and target columns (containing node_ids)
     # :param node_id_content_id_mapping: Python dictionary {node_id: content_id}
-    :param workers: (optional, default=number of CPUs) number of workers to use for the node2vec random walks and fitting
+    :param workers: (optional, default=number of CPUs) number of workers to use for the node2vec random walks and
+        fitting
     :return: a node2vec model
     """
     logger = logging.getLogger('train_node2_vec_model.train_node2_vec_model')
@@ -60,9 +60,8 @@ if __name__ == "__main__":  # our module is being executed as a program
     module_logger = logging.getLogger('train_node2_vec_model')
 
     module_logger.info(f'reading in all_edges.csv and node_id_content_id_mapping.json')
-    edges = pd.read_csv(os.path.join(
-        data_dir, 'tmp', 'network.csv')
-        ,
+    edges = pd.read_csv(
+        os.path.join(data_dir, 'tmp', 'network.csv'),
         dtype={'source_content_id': object,
                'destination_content_id': object}
     )

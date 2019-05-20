@@ -21,7 +21,7 @@ def content_id_node_id_mapping_fixture():
 def structural_network_fixture():
     return pd.read_csv(
         'tests/unit/fixtures/structural_network_test_sample.csv',
-        dtype={'destination_base_path':object,
+        dtype={'destination_base_path': object,
                'destination_content_id': object,
                'link_type': object,
                'source_base_path': object,

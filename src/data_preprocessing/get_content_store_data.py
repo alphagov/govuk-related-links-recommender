@@ -60,27 +60,27 @@ TEXT_PROJECTION = {
     "details.transaction_start_link": 1,
     "content_id": 1}
 
-FILTER_BASIC = {"$and": [
-    {"document_type": {"$nin": BLACKLIST_DOCUMENT_TYPES}},
-    {"phase": "live"}]}
+FILTER_BASIC = {"$and": [{"document_type": {"$nin": BLACKLIST_DOCUMENT_TYPES}},
+                         {"phase": "live"}]}
 
-FILTER_RELATED_LINKS = {
-    "$and": [{"expanded_links.ordered_related_items": {"$exists": True}},
-             {"document_type": {"$nin": BLACKLIST_DOCUMENT_TYPES}},
-             {"phase": "live"}]}
+FILTER_RELATED_LINKS = {"$and": [{"expanded_links.ordered_related_items": {"$exists": True}},
+                                 {"document_type": {"$nin": BLACKLIST_DOCUMENT_TYPES}},
+                                 {"phase": "live"}]}
 
-FILTER_COLLECTION_LINKS = { "$and": [{"expanded_links.documents": {"$exists": True}},
-                    { "document_type": {"$nin": BLACKLIST_DOCUMENT_TYPES}},
-                    { "phase": "live"}]}
+FILTER_COLLECTION_LINKS = {"$and": [{"expanded_links.documents": {"$exists": True}},
+                                    {"document_type": {"$nin": BLACKLIST_DOCUMENT_TYPES}},
+                                    {"phase": "live"}]}
 
 OUTPUT_DF_COLUMNS = ['destination_base_path', 'destination_content_id', 'source_base_path', 'source_content_id']
 
 
 def get_links(mongodb_collection, link_type):
     """
-    Querying a MongoDB collection and returning a list of content items and their links, of the type link_type, from the expanded_links field
+    Querying a MongoDB collection and returning a list of content items and their links, of the type link_type, from
+        the expanded_links field
     :param mongodb_collection:
-    :param link_type: either 'related' (looks in expanded_links.ordered_related_items)  or 'collection' (looks in expanded_links.documents)
+    :param link_type: either 'related' (looks in expanded_links.ordered_related_items)  or 'collection' (looks in
+        expanded_links.documents)
     :return: list of content items identified by content ID and base_path, and their links, of the type link_type, from
         the expanded_links field (content IDs and base_paths)
     """
@@ -94,9 +94,11 @@ def get_links(mongodb_collection, link_type):
 
 def convert_link_list_to_df(link_list, link_type, columns=OUTPUT_DF_COLUMNS):
     """
-    Converts a related or collection link list to a pandas DataFrame, with columns labelled consistently for onward pipeline
+    Converts a related or collection link list to a pandas DataFrame, with columns labelled consistently for
+        onward pipeline
     :param link_list: list of a pymongo cursor, created using get_links
-    :param link_type: either 'related' (from expanded_links.ordered_related_items)  or 'collection' (from expanded_links.documents)
+    :param link_type: either 'related' (from expanded_links.ordered_related_items)  or 'collection' (from
+        expanded_links.documents)
     :param columns: column names for the resulting dataframe
     :return: pandas DataFrame containing source and destination page_paths and content_ids for the specified link_type
     """
@@ -141,13 +143,15 @@ def get_path_content_id_mappings(mongodb_collection):
 
 def get_page_text_df(mongodb_collection):
     """
-    Queries a MongoDB collection, get specific fields from details using TEXT_PROJECTION, converts this cursor to a DataFrame, with all details fields in one list column
+    Queries a MongoDB collection, get specific fields from details using TEXT_PROJECTION, converts this cursor to a
+        DataFrame, with all details fields in one list column
     :param mongodb_collection:
     :return: pandas DataFrame with: _id (base_path), content_id, and all_details list column
     """
     text_list = list(mongodb_collection.find(FILTER_BASIC, TEXT_PROJECTION))
     df = json_normalize(text_list)
-    # concatenate text from all columns (except first 2) nto a list -> so we get a list of all the details fields that we queried
+    # concatenate text from all columns (except first 2) into a list -> so we get a list of all the details fields
+    # that we queried
     df['all_details'] = df.iloc[:, 2:-1].values.tolist()
     logging.info(f' df with details text has columns={list(df.columns)} and shape={df.shape}')
     return df[['_id', 'content_id', 'all_details']]
@@ -175,8 +179,8 @@ def extract_embedded_links_df(page_text_df, base_path_to_content_id_mapping):
     Takes a dataframe with  a list column (all_details), returns a dataframe with one in-page (embedded) link per row
     :param page_text_df: pandas DataFrame with  a list column (all_details)
     :param base_path_to_content_id_mapping: Python dictionary {page_path: content_id}
-    :return:  pandas DataFrame  of embedded links with columns ['source_base_path', 'source_content_id', 'destination_base_path',
-                                 'destination_content_id', 'link_type']
+    :return:  pandas DataFrame  of embedded links with columns ['source_base_path', 'source_content_id',
+        'destination_base_path','destination_content_id', 'link_type']
     """
     page_text_df['embedded_links'] = page_text_df['all_details'].progress_apply(tp.extract_links_from_content_details)
     logging.info(f'have applied extract_links_from_content_details to page_text_df')
@@ -193,11 +197,11 @@ def extract_embedded_links_df(page_text_df, base_path_to_content_id_mapping):
     logging.info(f'mapping of page_path to content_id has completed')
 
     embedded_links_df.rename(
-                             columns={
-                                 '_id': 'source_base_path',
-                                 'content_id': 'source_content_id',
-                                 'embedded_links': 'destination_base_path'},
-                             inplace=True)
+        columns={
+            '_id': 'source_base_path',
+            'content_id': 'source_content_id',
+            'embedded_links': 'destination_base_path'},
+        inplace=True)
 
     embedded_links_df['link_type'] = 'embedded_link'
     return embedded_links_df
@@ -263,9 +267,7 @@ if __name__ == "__main__":  # our module is being executed as a program
     output_df = get_structural_edges_df(content_store_collection, page_path_content_id_mapping)
 
     logger.info(f'saving structural_edges (output_df) to {data_dir}/tmp/structural_edges.json')
-    output_df.to_csv(os.path.join(data_dir, "tmp",  "structural_edges.csv"), index=False)
-
-
+    output_df.to_csv(os.path.join(data_dir, "tmp", "structural_edges.csv"), index=False)
 
 
 # This is code from a colleague's blog, with an alternative way of doing this, that we need to compare efficiency with.
@@ -283,11 +285,15 @@ if __name__ == "__main__":  # our module is being executed as a program
 #
 # ALL_LINKS_CATEGORY = 'all-links'
 # LINK_CATEGORIES = {
-#     'organisations': ['lead_organisations', 'ordered_child_organisations', 'ordered_high_profile_groups', 'ordered_parent_organisation', 'ordered_successor_organisations', 'organisations', 'supporting_organisations', 'worldwide_organisations'],
+#     'organisations': ['lead_organisations', 'ordered_child_organisations', 'ordered_high_profile_groups',
+#       'ordered_parent_organisation', 'ordered_successor_organisations', 'organisations', 'supporting_organisations',
+#       'worldwide_organisations'],
 #     'people': ['ministers', 'people', 'speaker'],
 #     'publishing-organisations': ['original_primary_publishing_organisation', 'primary_publishing_organisation'],
-#     'step-by-step': ['pages_part_of_step_nav', 'pages_related_to_step_nav', 'part_of_step_navs', 'related_to_step_navs'],
-#     'taxonomy': ['alpha_taxons', 'associated_taxons', 'child_taxons', 'legacy_taxons', 'level_one_taxons', 'parent_taxons', 'root_taxon', 'taxons', 'topic_taxonomy_taxons'],
+#     'step-by-step': ['pages_part_of_step_nav', 'pages_related_to_step_nav', 'part_of_step_navs',
+#       'related_to_step_navs'],
+#     'taxonomy': ['alpha_taxons', 'associated_taxons', 'child_taxons', 'legacy_taxons', 'level_one_taxons',
+#       'parent_taxons', 'root_taxon', 'taxons', 'topic_taxonomy_taxons'],
 # }
 #
 # if 'SHOW_CATEGORIES' in os.environ:

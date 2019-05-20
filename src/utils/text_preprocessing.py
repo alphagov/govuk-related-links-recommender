@@ -35,10 +35,10 @@ def extract_links_from_html(text):
             not(link.count('/government/uploads/system/uploads/attachment_data/file/') > 0)]
 
 
-
 def extract_links_from_content_details(data):
     """
-    Recurses through lists and dicts to find html and then extract links BE VERY CAREFUL AND PASS IN LINKS, otherwise old links may persist in the list
+    Recurses through lists and dicts to find html and then extract links BE
+    VERY CAREFUL AND PASS IN LINKS, otherwise old links may persist in the list
     :param data: This function can accept a nested list or dict, or string
     :return:
     """
