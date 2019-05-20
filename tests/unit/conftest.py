@@ -31,8 +31,29 @@ def structural_network_fixture():
 
 
 @pytest.fixture(scope="session")
+def all_network_fixture():
+    return pd.read_csv(
+        'tests/unit/fixtures/network.csv',
+        dtype={'destination_content_id': object,
+               'source_content_id': object,
+               'source': object,
+               'target': object})
+
+
+@pytest.fixture(scope="session")
 def node_id_content_id_mapping_fixture():
     with open(
             'tests/unit/fixtures/node_id_content_id_mapping.json',
             'r') as node_id_content_id_mapping_file:
         return json.load(node_id_content_id_mapping_file)
+
+
+@pytest.fixture(scope="session")
+def functional_edges_fixture():
+    return pd.read_csv("tests/unit/fixtures/test_edge_and_weights_20190512.csv").reset_index(
+        drop=True)
+
+
+@pytest.fixture(scope="function")
+def all_edges_fixture():
+    return pd.read_csv('tests/unit/fixtures/all_edges_test_sample.csv')

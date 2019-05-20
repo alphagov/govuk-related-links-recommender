@@ -9,7 +9,7 @@ random.seed(1)
 np.random.seed(1)
 
 
-@pytest.mark.skip(reason="Don't run up a big big query bill")
+@pytest.mark.skip(reason="not staying deterministic")
 def test_train_node2_vec_model(structural_network_fixture,
                                node_id_content_id_mapping_fixture):
     model = train_node2_vec_model(structural_network_fixture,
