@@ -11,21 +11,16 @@ import pandas as pd
 logging.config.fileConfig('src/logging.conf')
 
 
-def create_graph(edges_df
-                 # , node_id_content_id_mapping
-                 ):
+def create_graph(edges_df):
     logger = logging.getLogger('train_node2_vec_model.create_graph')
     logger.info('creating graph from edges_df')
     graph = nx.convert_matrix.from_pandas_edgelist(
-        edges_df, source='source_node', target='destination_node'
-        # when we have functional network too, we can add weight
-        # , edge_attr='weight'
+        edges_df, source='source_content_id', target='destination_content_id'
     )
     return graph
 
 
 def train_node2_vec_model(edges_df,
-                          # , node_id_content_id_mapping,
                           workers=None):
     """
     Train a node2vec model using a DataFrame of edges (source and target node_ids)
@@ -42,9 +37,7 @@ def train_node2_vec_model(edges_df,
 
     logger.info(f'number of workers is {workers}')
 
-    graph = create_graph(edges_df
-                         # , node_id_content_id_mapping
-                         )
+    graph = create_graph(edges_df)
 
     logger.info('Precomputing probabilities and generating walks')
     # TODO: search this parameter space systematically and change node2vec parameters
@@ -70,24 +63,11 @@ if __name__ == "__main__":  # our module is being executed as a program
     edges = pd.read_csv(os.path.join(
         data_dir, 'tmp', 'network.csv')
         ,
-        dtype={'destination_node': object,
-               'source_node': object,
-               'source': object,
-               'target': object}
+        dtype={'source_content_id': object,
+               'destination_content_id': object}
     )
 
-    # # TODO: make this "read json file and convert the keys to ints" step into a function, for use
-    # #  here and tes_make_structural_netork
-    # with open(
-    #         os.path.join(data_dir, 'tmp', 'node_id_content_id_mapping.json'),
-    #         'r') as node_id_content_id_mapping_file:
-    #     node_id_content_id_mapping_dict = json.load(
-    #             node_id_content_id_mapping_file)
-
-    node2vec_model = train_node2_vec_model(edges
-                                           # ,
-                                           # node_id_content_id_mapping_dict
-                                           )
+    node2vec_model = train_node2_vec_model(edges)
 
     # TODO:think about a function that gets the filepath for the thing and does that saving.
     #  Depends how often we do that whether it's needed. Not for MVP

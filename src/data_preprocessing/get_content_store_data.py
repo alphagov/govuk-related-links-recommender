@@ -114,7 +114,7 @@ def convert_link_list_to_df(link_list, link_type, columns=OUTPUT_DF_COLUMNS):
     return df
 
 
-def get_base_path_content_id_mappings(mongodb_collection):
+def get_path_content_id_mappings(mongodb_collection):
     """
     Queries a MongoDB collection and creates mappings of page_paths (base_paths with slugs), base_paths and content_ids
     :param mongodb_collection:
@@ -203,11 +203,11 @@ def extract_embedded_links_df(page_text_df, base_path_to_content_id_mapping):
     return embedded_links_df
 
 
-def get_structural_edges_df(mongodb_collection, base_path_to_content_id_mapping):
+def get_structural_edges_df(mongodb_collection, page_path_content_id_mapping):
     """
     Gets related, collection, and embedded links for all items in the mongodb collection
     :param mongodb_collection:
-    :param base_path_to_content_id_mapping: Python dictionary {page_path: content_id}
+    :param page_path_content_id_mapping: Python dictionary {page_path: content_id}
     :return: pandas DataFrame with columns ['source_base_path', 'source_content_id', 'destination_base_path',
                                  'destination_content_id', 'link_type']
     """
@@ -219,7 +219,7 @@ def get_structural_edges_df(mongodb_collection, base_path_to_content_id_mapping)
 
     page_text_df = get_page_text_df(mongodb_collection)
 
-    embedded_links_df = extract_embedded_links_df(page_text_df, base_path_to_content_id_mapping)
+    embedded_links_df = extract_embedded_links_df(page_text_df, page_path_content_id_mapping)
     logging.info(f'embedded links dataframe shape {embedded_links_df.shape}')
 
     structural_edges_df = pd.concat(
@@ -246,11 +246,17 @@ if __name__ == "__main__":  # our module is being executed as a program
     content_store_db = mongo_client["content_store"]
     content_store_collection = content_store_db["content_items"]
 
-    page_path_content_id_mapping, content_id_base_path_mapping = get_base_path_content_id_mappings(content_store_collection)
+    page_path_content_id_mapping, content_id_base_path_mapping = get_path_content_id_mappings(content_store_collection)
+
+    logger.info(f'saving page_path_content_id_mapping to {data_dir}/tmp/page_path_content_id_mapping.json')
+    with open(
+            os.path.join(data_dir, 'tmp', 'page_path_content_id_mapping.json'),
+            'w') as page_path_content_id_file:
+        json.dump(page_path_content_id_mapping, page_path_content_id_file)
 
     logger.info(f'saving content_id_base_path_mapping to {data_dir}/tmp/content_id_base_path_mapping.json')
     with open(
-            os.path.join(data_dir, 'tmp', 'base_path_to_content_id_mapping.json'),
+            os.path.join(data_dir, 'tmp', 'content_id_base_path_mapping.json'),
             'w') as content_id_base_path_file:
         json.dump(content_id_base_path_mapping, content_id_base_path_file)
 

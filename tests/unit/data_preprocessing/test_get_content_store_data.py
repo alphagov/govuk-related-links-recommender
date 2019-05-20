@@ -1446,13 +1446,13 @@ def test_convert_link_list_to_df():
     pd.read_csv('tests/unit/collection_links.csv'))
 
 
-def test_get_base_path_to_content_id_mapping(mongodb):
-    with open('tests/unit/fixtures/base_path_content_id_mapping_test_sample.json', 'r') as infile:
-        base_path_content_id_mapping_test_sample = json.load(infile)
+def test_get_path_content_id_mapping(
+        mongodb, page_path_content_id_mapping_fixture, content_id_base_path_mapping_fixture):
+    page_path_content_id_mapping, content_id_base_path_mapping = get_path_content_id_mappings(mongodb.content_store_data_sample)
 
-    page_path_content_id_mapping, content_id_base_path_mapping = get_base_path_content_id_mappings(mongodb.content_store_data_sample)
+    assert page_path_content_id_mapping == page_path_content_id_mapping_fixture
 
-    assert page_path_content_id_mapping == base_path_content_id_mapping_test_sample
+    assert content_id_base_path_mapping == content_id_base_path_mapping_fixture
 
 
 def test_get_page_text_df(mongodb):
