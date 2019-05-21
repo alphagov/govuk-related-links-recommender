@@ -1354,3 +1354,42 @@ def test_get_structural_edges_df(mongodb, structural_edges_fixture):
             by=['source_content_id', 'destination_content_id']).reset_index(drop=True),
         structural_edges_fixture.sort_values(
             by=['source_content_id', 'destination_content_id']).reset_index(drop=True))
+    
+
+# TODO
+def test_export_eligible_source_content_ids(mongodb):
+    export_eligible_source_content_ids(mongodb.content_store_data_sample,
+                                       'tests/unit/fixtures/check_eligible_source_content_ids.pkl')
+    with open(
+            'tests/unit/fixtures/check_eligible_source_content_ids.pkl',
+            "rb") as input_file:
+        check = pickle.load(input_file)
+    assert check == ['6395a828-671d-4e0c-bc0b-719e3da51ca8', '1b726b4d-f215-4922-a5c5-622bfac8db29',
+                     '84f68c01-c5f3-4d20-9b31-d46fec04498c', '17a26e6f-1f1d-4585-a9f6-433272730101',
+                     '090fa2f4-d596-47d4-8bf7-7dceec4ac4f1']
+
+
+# TODO
+def test_export_excluded_target_content_ids(mongodb):
+    export_excluded_target_content_ids(mongodb.content_store_data_sample,
+                                       'tests/unit/fixtures/check_excluded_target_content_ids.pkl')
+    with open(
+            'tests/unit/fixtures/check_excluded_target_content_ids.pkl',
+            "rb") as input_file:
+        check = pickle.load(input_file)
+    assert check == ['6395a828-671d-4e0c-bc0b-719e3da51ca8', '1b726b4d-f215-4922-a5c5-622bfac8db29',
+                     '84f68c01-c5f3-4d20-9b31-d46fec04498c', '17a26e6f-1f1d-4585-a9f6-433272730101',
+                     '090fa2f4-d596-47d4-8bf7-7dceec4ac4f1']
+
+
+def test_export_content_ids_with_curated_links(mongodb):
+    export_content_ids_with_curated_links(mongodb.content_store_data_sample,
+                                          'tests/unit/fixtures/check_content_ids_with_curated_links.pkl')
+
+    with open(
+            'tests/unit/fixtures/check_content_ids_with_curated_links.pkl',
+            "rb") as input_file:
+        check = pickle.load(input_file)
+    assert check == ['6395a828-671d-4e0c-bc0b-719e3da51ca8', '1b726b4d-f215-4922-a5c5-622bfac8db29',
+                     '84f68c01-c5f3-4d20-9b31-d46fec04498c', '17a26e6f-1f1d-4585-a9f6-433272730101',
+                     '090fa2f4-d596-47d4-8bf7-7dceec4ac4f1']

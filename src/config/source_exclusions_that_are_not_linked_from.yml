@@ -1,0 +1,28 @@
+content_ids:
+ - d490be5f-1998-4f20-ab52-d3dd5db7fa71
+ - 37e27ec1-ef3e-4b3c-a2f6-14dc42c4c162
+ - bcd1365f-8496-40f5-b9cf-06f2493e48c4
+ - 23eee5eb-7e24-4a7f-bf92-112f8c8132bc
+ - 708334c4-2855-4d45-b311-72a26b03529a
+ - eff0d788-3b5e-4090-8b56-aaa0a4bf3f25
+ - 6a131bf3-6d52-4512-98cc-348c243fba8f
+ - 05aaf43f-7555-46b3-99e5-a34e48b0eec9
+ - cd69a882-474a-4dd9-9689-adde2fcd618c
+ - c1873350-0c82-469d-9f59-4658be95fdd2
+ - 04d10810-8620-4edd-a06d-f5ecfc199414
+ - eeeee6fc-5f61-4b8a-bb41-efe12bad9e2c
+ - 92ac7166-6cb3-426e-b72a-c8d12236abdf
+ - bee455d5-5a4f-440a-88be-eb65ae8fde7d
+ - 0d12a2da-7c52-4cd9-82ef-0cca0b51b880
+ - 2ccfd2a9-5220-48c4-8fdc-166c390ccfac
+ - b51139f9-8da7-4e97-ad5d-d91c73d5b5b2
+ - eee83e1d-c3c5-45a7-8717-31394d3e4a1c
+ - 2b3617a4-3230-46bd-b7a9-9dbea78508b4
+document_types:
+ - fatality_notice
+ - step_by_step_nav
+ - simple_smart_answer
+ - consultation_outcome
+ - closed_consultation
+ - open_consultation
+  
