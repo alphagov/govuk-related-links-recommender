@@ -5,27 +5,28 @@ import numpy as np
 from src.models.train_node2vec_model import train_node2_vec_model
 
 # set seed for deterministic tests etc
-random.seed(1)
-np.random.seed(1)
+random.seed(2)
+np.random.seed(2)
 
 
 @pytest.mark.skip(reason="not staying deterministic")
-def test_train_node2_vec_model(structural_network_fixture,
-                               node_id_content_id_mapping_fixture):
-    model = train_node2_vec_model(structural_network_fixture,
-                                  node_id_content_id_mapping_fixture,
+def test_train_node2_vec_model(all_network_fixture):
+    model = train_node2_vec_model(all_network_fixture,
                                   workers=1)
 
     # test we get the same most similar nodes
+    print(model.wv.most_similar(
+        "8ccf089c-a512-452f-b027-dee409feb1f3", topn=10))
     assert model.wv.most_similar(
-        "503", topn=10) == [
-        ('2', 0.9990638494491577), ('505', 0.9989425539970398), ('501', 0.9985865354537964),
-        ('502', 0.9985626935958862), ('500', 0.99852454662323), ('499', 0.9983034133911133),
-        ('504', 0.998264729976654), ('1', 0.9980345368385315), ('0', 0.943044126033783), ('537', 0.6832790374755859)]
+        "8ccf089c-a512-452f-b027-dee409feb1f3", topn=10) == [
+        ('2', 0.9990991353988647), ('501', 0.9988441467285156), ('502', 0.9988089799880981),
+        ('500', 0.9987748265266418), ('505', 0.998684287071228), ('504', 0.9986145496368408),
+        ('499', 0.9983056783676147), ('1', 0.9978947639465332), ('0', 0.9414731860160828), ('380', 0.6794115304946899)]
 
     # test an embedding vector
+    print(model.wv['d6204ab9-99fd-4265-a081-5e4c6fdfe11d'])
     np.testing.assert_array_equal(
-        model.wv['2'],
+        model.wv['d6204ab9-99fd-4265-a081-5e4c6fdfe11d'],
         np.array(
             [-0.88379043, -0.30888686, -0.1813301, -0.067976356, -0.4609355, -0.35824582, -0.08936877, 0.08270162,
              -0.6352391, 0.18851767, -0.14360602, -0.6236442, -0.10684205, 0.16706303, -0.017764626, -0.19982526,

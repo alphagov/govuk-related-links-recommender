@@ -6,6 +6,7 @@ import networkx as nx
 from node2vec import Node2Vec
 import pandas as pd
 
+
 logging.config.fileConfig('src/logging.conf')
 
 
