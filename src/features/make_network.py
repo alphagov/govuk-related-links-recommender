@@ -16,7 +16,8 @@ def make_network_from_structural_and_functional(structural_edges, functional_edg
     """
     all_edges = pd.concat([structural_edges, functional_edges],
                           ignore_index=True, sort=True)
-    network_edges = all_edges[['source_content_id', 'destination_content_id']].drop_duplicates().reset_index(drop=True)
+    network_edges = all_edges[
+        ['source_content_id', 'destination_content_id', 'weight']].drop_duplicates().reset_index(drop=True)
 
     return network_edges
 

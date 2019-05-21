@@ -6,14 +6,14 @@ FROM (
   SELECT
     sessionId,
     hitNumber,
-    source_node,
-    destination_node
+    source_content_id,
+    destination_content_id
   FROM (
     SELECT
       hitNumber,
       CONCAT(fullVisitorId,"-",CAST(visitId AS STRING),"-",CAST(visitNumber AS STRING)) AS sessionId,
-      content_id AS source_node,
-      LEAD(content_id) OVER (PARTITION BY fullVisitorId, visitId, visitStartTime ORDER BY hitNumber) AS destination_node
+      content_id AS source_content_id,
+      LEAD(content_id) OVER (PARTITION BY fullVisitorId, visitId, visitStartTime ORDER BY hitNumber) AS destination_content_id
     FROM (
       SELECT
         fullVisitorId,
@@ -52,15 +52,15 @@ FROM (
       AND content_id NOT IN ( '00000000-0000-0000-0000-000000000000',
         '[object Object]') )
   WHERE
-    destination_node IS NOT NULL
-    AND destination_node != source_node
+    destination_content_id IS NOT NULL
+    AND destination_content_id != source_content_id
   GROUP BY
     sessionId,
     hitNumber,
-    source_node,
-    destination_node)
+    source_content_id,
+    destination_content_id)
 GROUP BY
-  source_node,
-  destination_node
-ORDER BY
-  weight DESC
+  source_content_id,
+  destination_content_id
+HAVING
+  weight > 5

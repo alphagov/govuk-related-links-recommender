@@ -14,7 +14,7 @@ def create_graph(edges_df):
     logger = logging.getLogger('train_node2_vec_model.create_graph')
     logger.info('creating graph from edges_df')
     graph = nx.convert_matrix.from_pandas_edgelist(
-        edges_df, source='source_content_id', target='destination_content_id'
+        edges_df, source='source_content_id', target='destination_content_id', edge_attr='weight'
     )
     return graph
 

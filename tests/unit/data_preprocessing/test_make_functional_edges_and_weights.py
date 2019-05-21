@@ -9,7 +9,7 @@ def test_return_data_frame(functional_edges_fixture):
     instance = EdgeWeightExtractor(get_excluded_document_types(), "20190512", "20190512")
     pd.set_option('display.max_colwidth', -1)
     merged = instance.df.merge(functional_edges_fixture,
-                               on=['source_node', 'destination_node', 'weight'],
+                               on=['source_content_id', 'destination_content_id', 'weight'],
                                indicator=True,
                                how='outer')
 
