@@ -1,11 +1,11 @@
 content_ids:
  - 2ac7166-6cb3-426e-b72a-c8d12236abdf
-  bee455d5-5a4f-440a-88be-eb65ae8fde7d
-  0d12a2da-7c52-4cd9-82ef-0cca0b51b880
-  2ccfd2a9-5220-48c4-8fdc-166c390ccfac
-  b51139f9-8da7-4e97-ad5d-d91c73d5b5b2
-  eee83e1d-c3c5-45a7-8717-31394d3e4a1c
-  2b3617a4-3230-46bd-b7a9-9dbea78508b4
+ - bee455d5-5a4f-440a-88be-eb65ae8fde7d
+ - 0d12a2da-7c52-4cd9-82ef-0cca0b51b880
+ - 2ccfd2a9-5220-48c4-8fdc-166c390ccfac
+ - b51139f9-8da7-4e97-ad5d-d91c73d5b5b2
+ - eee83e1d-c3c5-45a7-8717-31394d3e4a1c
+ - 2b3617a4-3230-46bd-b7a9-9dbea78508b4
 document_types:
  - fatality_notice
  - step_by_step_nav
@@ -13,4 +13,35 @@ document_types:
  - consultation_outcome
  - closed_consultation
  - open_consultation
-  
+ - aaib_report  
+ - utaac_decision  
+ - asylum_support_decision  
+ - placeholder  
+ - cma_case  
+ - medical_safety_alert  
+ - drug_safety_update  
+ - employment_appeal_tribunal_decision  
+ - employment_tribunal_decision  
+ - email_alert_signup  
+ - unpublishing  
+ - fatality_notice  
+ - take_part  
+ - news_story  
+ - press_release  
+ - world_news_story  
+ - terms_of_reference  
+ - recruitment  
+ - welsh_language_scheme  
+ - procurement  
+ - placeholder_policy  
+ - decision  
+ - official  
+ - world_location_news_article  
+ - news_article  
+ - placeholder_worldwide_organisation  
+ - knowledge_alpha  
+ - license_finder  
+ - maib_report  
+ - raib_report  
+ - residential_property_tribunal_decision  
+ - tax_tribunal_decision

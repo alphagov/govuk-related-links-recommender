@@ -20,9 +20,45 @@ content_ids:
  - 2b3617a4-3230-46bd-b7a9-9dbea78508b4
 document_types:
  - fatality_notice
+ - guide
+ - answer
+ - aaib_report
+ - transaction
+ - smart_answer
+ - utaac_decision
+ - licence
+ - local_transaction
  - step_by_step_nav
  - simple_smart_answer
- - consultation_outcome
- - closed_consultation
- - open_consultation
-  
+ - asylum_support_decision
+ - placeholder
+ - calendar
+ - place
+ - business_finance_support_scheme
+ - service_sign_in
+ - calculator
+ - cma_case
+ - countryside_stewardship_grant
+ - medical_safety_alert
+ - drug_safety_update
+ - employment_appeal_tribunal_decision
+ - employment_tribunal_decision
+ - esi_fund
+ - email_alert_signup
+ - unpublishing
+ - fatality_notice
+ - take_part
+ - terms_of_reference
+ - recruitment
+ - welsh_language_scheme
+ - procurement
+ - placeholder_policy
+ - decision
+ - official
+ - placeholder_worldwide_organisation
+ - manual
+ - hmrc_manual
+ - knowledge_alpha
+ - license_finder
+ - maib_report
+ - raib_report
