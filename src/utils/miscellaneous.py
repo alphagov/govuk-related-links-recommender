@@ -5,7 +5,7 @@ import pickle
 def read_query(filepath):
     """(str) -> str
     Opens the file at filepath for reading, removing /n
-    before rejoining seperate lines with " " seperator.
+    before rejoining separate lines with " " separator.
     """
     with open(filepath, 'r') as file:
         lines = " ".join(line.strip("\n") for line in file)
@@ -19,12 +19,12 @@ def read_exclusions_yaml(filename):
             'r') as f:
         return yaml.safe_load(f)
 
-def load_pickled_content_id_list(filename):
+def load_pickled_content_id_list(filepath):
     """
-    Opens a serialised python list and return it as a list
-    :param filename:
-    :return:
+    Opens a serialised python list and returns it as a list
+    :param filepath:
+    :return: python list
     """
-    with open(filename, "rb") as input_file:
+    with open(filepath, "rb") as input_file:
         id_list = pickle.load(input_file)
     return ", ".join(id_list)
