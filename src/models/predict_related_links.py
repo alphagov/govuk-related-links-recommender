@@ -31,19 +31,17 @@ def is_target_content_id_eligible(content_id, excluded_target_links):
     return content_id not in excluded_target_links
 
 
-def exclude_ineligible_target_content_ids(df_target_prop, excluded_target_links, source_content_id):
+def exclude_ineligible_target_content_ids(df_target_prop, excluded_target_links):
     """
     Selects the rows of a pandas DataFrame which contain eligible target_content_ids. Drops rows where target_content_id
     is in the list of excluded target content_ids
     :param df_target_prop: pandas DataFrame which includes column named 'target_content_id'
     :param excluded_target_links: list of content_ids to identify rows where the target_content_id should be excluded.
-    :param source_content_id: string content_id identifying the source that the df_target_prop was generated for
     :return: pandas DataFrame of eligible target_content_ids
     """
-    df = df_target_prop.loc[
+    return df_target_prop.loc[
         df_target_prop['target_content_id'].apply(is_target_content_id_eligible,
                                                   excluded_target_links=excluded_target_links)]
-    return df.loc[df.target_content_id != source_content_id]
 
 
 def get_related_links_for_a_source_content_id(source_content_id, model, excluded_target_content_ids,
