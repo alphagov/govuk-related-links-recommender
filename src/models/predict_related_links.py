@@ -16,7 +16,7 @@ from google.cloud import bigquery
 from src.utils.miscellaneous import get_excluded_document_types, read_query
 from tqdm import tqdm
 
-data_dir = os.getenv("DATA_DIR")
+DATA_DIR = os.getenv("DATA_DIR")
 
 
 # TODO check probability threshold is correct 0.46
@@ -24,7 +24,7 @@ data_dir = os.getenv("DATA_DIR")
 
 
 def load_pickled_content_id_list(filename):
-    with open(os.path.join(data_dir, "tmp", filename),
+    with open(os.path.join(DATA_DIR, "tmp", filename),
               "rb") as input_file:
         id_list = pickle.load(input_file)
     return ", ".join(id_list)
@@ -89,7 +89,7 @@ class RelatedLinksJson:
 
 class RelatedLinksCsv:
     with open(
-            os.path.join(data_dir, 'tmp', 'content_id_base_path_mapping.json'),
+            os.path.join(DATA_DIR, 'tmp', 'content_id_base_path_mapping.json'),
             'r') as content_id_to_base_path_mapping_file:
         content_id_to_base_path_mapper = json.load(
             content_id_to_base_path_mapping_file)
@@ -136,7 +136,7 @@ if __name__ == '__main__':
                                      load_pickled_content_id_list("excluded_target_content_ids.pkl"))
 
     related_links.export_related_links_to_json(
-        os.path.join(data_dir, "predictions", datetime.today().strftime('%Y%m%d') + "suggested_related_links.json"))
+        os.path.join(DATA_DIR, "predictions", datetime.today().strftime('%Y%m%d') + "suggested_related_links.json"))
 
     yesterday = (datetime.today() - timedelta(1)).strftime('%Y%m%d')
     three_weeks_ago = (datetime.today() - timedelta(22)).strftime('%Y%m%d')
@@ -160,7 +160,7 @@ if __name__ == '__main__':
 
     related_links_csv_writer = RelatedLinksCsv(top100_df, related_links.excluded_target_content_ids,
                                                related_links.model)
-    related_links_csv_writer.write_to_csv(os.path.join(data_dir, "predictions",
+    related_links_csv_writer.write_to_csv(os.path.join(DATA_DIR, "predictions",
                                                        datetime.today().strftime(
                                                            '%Y%m%d') + "top100_suggested_related_links.json"))
 

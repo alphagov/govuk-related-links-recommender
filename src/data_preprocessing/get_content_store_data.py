@@ -284,7 +284,7 @@ def export_content_id_list(list_name, mongodb_collection, outfile):
 
 
 if __name__ == "__main__":  # our module is being executed as a program
-    data_dir = os.getenv("DATA_DIR")
+    DATA_DIR = os.getenv("DATA_DIR")
 
     logging.config.fileConfig('src/logging.conf')
     logger = logging.getLogger('get_content_store_data')
@@ -296,30 +296,30 @@ if __name__ == "__main__":  # our module is being executed as a program
 
     page_path_content_id_mapping, content_id_base_path_mapping = get_path_content_id_mappings(content_store_collection)
 
-    logger.info(f'saving page_path_content_id_mapping to {data_dir}/tmp/page_path_content_id_mapping.json')
+    logger.info(f'saving page_path_content_id_mapping to {DATA_DIR}/tmp/page_path_content_id_mapping.json')
     with open(
-            os.path.join(data_dir, 'tmp', 'page_path_content_id_mapping.json'),
+            os.path.join(DATA_DIR, 'tmp', 'page_path_content_id_mapping.json'),
             'w') as page_path_content_id_file:
         json.dump(page_path_content_id_mapping, page_path_content_id_file)
 
-    logger.info(f'saving content_id_base_path_mapping to {data_dir}/tmp/content_id_base_path_mapping.json')
+    logger.info(f'saving content_id_base_path_mapping to {DATA_DIR}/tmp/content_id_base_path_mapping.json')
     with open(
-            os.path.join(data_dir, 'tmp', 'content_id_base_path_mapping.json'),
+            os.path.join(DATA_DIR, 'tmp', 'content_id_base_path_mapping.json'),
             'w') as content_id_base_path_file:
         json.dump(content_id_base_path_mapping, content_id_base_path_file)
 
     output_df = get_structural_edges_df(content_store_collection, page_path_content_id_mapping)
 
-    logger.info(f'saving structural_edges (output_df) to {data_dir}/tmp/structural_edges.json')
-    output_df.to_csv(os.path.join(data_dir, "tmp", "structural_edges.csv"), index=False)
+    logger.info(f'saving structural_edges (output_df) to {DATA_DIR}/tmp/structural_edges.json')
+    output_df.to_csv(os.path.join(DATA_DIR, "tmp", "structural_edges.csv"), index=False)
 
     export_content_id_list("eligible_source",
                            content_store_collection,
-                           os.path.join(data_dir, "tmp", "eligible_source_content_ids.pkl"))
+                           os.path.join(DATA_DIR, "tmp", "eligible_source_content_ids.pkl"))
 
     export_content_id_list("excluded_target",
                            content_store_collection,
-                           os.path.join(data_dir, "tmp",
+                           os.path.join(DATA_DIR, "tmp",
                                         "excluded_target_content_ids.pkl"))
 
 
