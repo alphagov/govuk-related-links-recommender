@@ -14,6 +14,7 @@ import json
 import google.auth
 from google.cloud import bigquery
 from src.utils.miscellaneous import get_excluded_document_types, read_query
+from tqdm import tqdm
 
 data_dir = os.getenv("DATA_DIR")
 
@@ -71,12 +72,14 @@ class RelatedLinksJson:
                  model=Word2Vec.load("models/n2v.model")):
         self.model = model
         self.excluded_target_content_ids = excluded_target_content_ids
-        self.eligible_source_content_ids = eligible_source_content_ids
+        self.eligible_source_content_ids = [
+            content_id for content_id in tqdm(eligible_source_content_ids, desc="eligible_content_ids") if content_id in
+                                                                        self.model.wv.vocab.keys()]
         self.related_links = [
             get_related_links_for_a_source_content_id_in_list(content_id, self.model, self.excluded_target_content_ids)
             for
             content_id in
-            self.eligible_source_content_ids]
+            tqdm(self.eligible_source_content_ids, desc="getting related links")]
 
     def export_related_links_to_json(self, file_path):
         with open(file_path, 'w') as f:
@@ -92,6 +95,7 @@ class RelatedLinksCsv:
             content_id_to_base_path_mapping_file)
 
     def __init__(self, top100, excluded_target_content_ids, model):
+        self.top100 = top100[top100['content_id'].isin(model.wv.vocab.keys())]
         self.top100_related_links_series = self.__get_related_links_for_df(top100,
                                                                            model,
                                                                            excluded_target_content_ids)
@@ -129,7 +133,7 @@ class RelatedLinksCsv:
 if __name__ == '__main__':
     eligible_source_content_ids = load_pickled_content_id_list("eligible_source_content_ids.pkl")
     related_links = RelatedLinksJson(eligible_source_content_ids,
-                                     load_pickled_content_id_list("eligible_source_content_ids.pkl"))
+                                     load_pickled_content_id_list("excluded_target_content_ids.pkl"))
 
     related_links.export_related_links_to_json(
         os.path.join(data_dir, "predictions", datetime.today().strftime('%Y%m%d') + "suggested_related_links.json"))
