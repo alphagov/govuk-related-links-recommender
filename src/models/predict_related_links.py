@@ -117,9 +117,9 @@ class RelatedLinksCsv:
         content_id_to_base_path_mapper = json.load(
             content_id_to_base_path_mapping_file)
 
-    def __init__(self, top100, excluded_target_content_ids, model):
-        self.top100 = top100[top100['content_id'].isin(model.wv.vocab.keys())]
-        self.top100_related_links_series = self._get_related_links_for_df(top100,
+    def __init__(self, top100_content_ids, excluded_target_content_ids, model):
+        self.top100 = top100_content_ids[top100_content_ids['content_id'].isin(model.wv.vocab.keys())]
+        self.top100_related_links_series = self._get_related_links_for_df(top100_content_ids,
                                                                           model,
                                                                           excluded_target_content_ids)
 
