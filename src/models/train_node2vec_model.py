@@ -11,16 +11,24 @@ logging.config.fileConfig('src/logging.conf')
 
 
 def create_graph(edges_df):
+    
     logger = logging.getLogger('train_node2_vec_model.create_graph')
     logger.info('creating graph from edges_df')
+    
+    logger.info("add nid")
+    cids = set(list(edges_df.source_content_id) + list(edges_df.destination_content_id))
+    cid_dict = dict(zip(list(cids), list(range(0,len(cids)))))
+    edges_df['source_content_nid'] = edges_df['source_content_id'].map(cid_dict)
+    edges_df['destination_content_nid'] = edges_df['destination_content_id'].map(cid_dict)
+    
     graph = nx.convert_matrix.from_pandas_edgelist(
-        edges_df, source='source_content_id', target='destination_content_id', edge_attr='weight'
+        edges_df, source='source_content_nid', target='destination_content_nid', edge_attr='weight'
     )
     return graph
 
 
 def train_node2_vec_model(edges_df,
-                          workers=None):
+                          workers=4):
     """
     Train a node2vec model using a DataFrame of edges (source and target node_ids)
     and a mapping of the node_ids (used in the DataFrame) to GOV.UK content_ids
