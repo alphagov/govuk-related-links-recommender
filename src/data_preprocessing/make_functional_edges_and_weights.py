@@ -1,6 +1,6 @@
 import os
 from datetime import datetime, timedelta
-from src.utils.miscellaneous import get_excluded_document_types, read_query
+from src.utils.miscellaneous import read_exclusions_yaml, read_query
 import google.auth
 from google.cloud import bigquery
 
@@ -39,7 +39,8 @@ class EdgeWeightExtractor:
 
 if __name__ == "__main__":
     DATA_DIR = os.getenv("DATA_DIR")
-    blacklisted_document_types = get_excluded_document_types()
+    blacklisted_document_types = read_exclusions_yaml(
+    "document_types_excluded_from_the_topic_taxonomy.yml")['document_types']
     yesterday = (datetime.today() - timedelta(1)).strftime('%Y%m%d')
     three_weeks_ago = (datetime.today() - timedelta(22)).strftime('%Y%m%d')
 

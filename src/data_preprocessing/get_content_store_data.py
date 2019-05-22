@@ -11,7 +11,7 @@ import pickle
 
 from src.utils import text_preprocessing as tp
 
-from src.utils.miscellaneous import get_excluded_document_types, read_exclusions_yaml
+from src.utils.miscellaneous import read_exclusions_yaml
 
 warnings.filterwarnings('ignore', category=UserWarning, module='bs4')
 
@@ -23,7 +23,8 @@ KEYS_FOR_LINK_TYPES = {
     "collection": "documents"
 }
 
-BLACKLIST_DOCUMENT_TYPES = get_excluded_document_types()
+BLACKLIST_DOCUMENT_TYPES = read_exclusions_yaml(
+    "document_types_excluded_from_the_topic_taxonomy.yml")['document_types']
 EXCLUDED_SOURCE_CONTENT = read_exclusions_yaml("source_exclusions_that_are_not_linked_from.yml")
 EXCLUDED_TARGET_CONTENT = read_exclusions_yaml("target_exclusions_that_are_not_linked_to.yml")
 

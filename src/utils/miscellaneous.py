@@ -1,6 +1,6 @@
 import yaml
 import os
-
+import pickle
 
 def read_query(filepath):
     """(str) -> str
@@ -12,18 +12,19 @@ def read_query(filepath):
     return lines
 
 
-def get_excluded_document_types():
-    with open(
-            os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                         '..', 'config', 'document_types_excluded_from_the_topic_taxonomy.yml'
-                         ),
-            'r') as f:
-        return yaml.safe_load(f)['document_types']
-
-
 def read_exclusions_yaml(filename):
     with open(
             os.path.join(os.path.abspath(os.path.dirname(__file__)),
                          '..', 'config', filename),
             'r') as f:
         return yaml.safe_load(f)
+
+def load_pickled_content_id_list(filename):
+    """
+    Opens a serialised python list and return it as a list
+    :param filename:
+    :return:
+    """
+    with open(filename, "rb") as input_file:
+        id_list = pickle.load(input_file)
+    return ", ".join(id_list)

@@ -13,22 +13,11 @@ import json
 
 import google.auth
 from google.cloud import bigquery
-from src.utils.miscellaneous import get_excluded_document_types, read_query
+from src.utils.miscellaneous import read_query, load_pickled_content_id_list
 from tqdm import tqdm
-
-DATA_DIR = os.getenv("DATA_DIR")
-
 
 # TODO check probability threshold is correct 0.46
 # TODO check maximum 5 related links is correct
-
-
-def load_pickled_content_id_list(filename):
-    with open(os.path.join(DATA_DIR, "tmp", filename),
-              "rb") as input_file:
-        id_list = pickle.load(input_file)
-    return ", ".join(id_list)
-
 
 def is_target_content_id_eligible(content_id, excluded_target_links):
     return content_id not in excluded_target_links
@@ -131,9 +120,13 @@ class RelatedLinksCsv:
 
 
 if __name__ == '__main__':
-    eligible_source_content_ids = load_pickled_content_id_list("eligible_source_content_ids.pkl")
+    DATA_DIR = os.getenv("DATA_DIR")
+    
+    eligible_source_content_ids = load_pickled_content_id_list(os.path.join(DATA_DIR, "tmp",
+                                                                            "eligible_source_content_ids.pkl"))
     related_links = RelatedLinksJson(eligible_source_content_ids,
-                                     load_pickled_content_id_list("excluded_target_content_ids.pkl"))
+                                     load_pickled_content_id_list(os.path.join(DATA_DIR, "tmp",
+                                                                               "excluded_target_content_ids.pkl")))
 
     related_links.export_related_links_to_json(
         os.path.join(DATA_DIR, "predictions", datetime.today().strftime('%Y%m%d') + "suggested_related_links.json"))
