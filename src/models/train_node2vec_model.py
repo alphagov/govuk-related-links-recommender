@@ -27,7 +27,7 @@ def create_graph(edges_df):
 
 
 def train_node2_vec_model(edges_df,
-                          workers=4):
+                          workers=1):
     """
     Train a node2vec model using a DataFrame of edges (source and target node_ids)
     and a mapping of the node_ids (used in the DataFrame) to GOV.UK content_ids
