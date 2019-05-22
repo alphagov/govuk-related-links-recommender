@@ -22,8 +22,7 @@ def create_graph(edges_df):
     edges_df['destination_content_nid'] = edges_df['destination_content_id'].map(cid_dict)
     
     graph = nx.convert_matrix.from_pandas_edgelist(
-        edges_df, source='source_content_nid', target='destination_content_nid', edge_attr='weight'
-    )
+        edges_df, source='source_content_nid', target='destination_content_nid')
     return graph
 
 
