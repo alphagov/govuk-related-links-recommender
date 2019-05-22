@@ -20,9 +20,12 @@ def create_graph(edges_df):
     cid_dict = dict(zip(list(cids), list(range(0,len(cids)))))
     edges_df['source_content_nid'] = edges_df['source_content_id'].map(cid_dict)
     edges_df['destination_content_nid'] = edges_df['destination_content_id'].map(cid_dict)
-    
-    graph = nx.convert_matrix.from_pandas_edgelist(
-        edges_df, source='source_content_nid', target='destination_content_nid')
+
+    graph = nx.DiGraph()
+    for src, dest in zip(edges_df.source_content_nid, edges_df.destination_content_nid):
+        graph.add_edge(src, dest)
+
+    print(type(graph))
     return graph
 
 
