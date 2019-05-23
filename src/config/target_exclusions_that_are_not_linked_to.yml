@@ -7,6 +7,7 @@ content_ids:
  - eee83e1d-c3c5-45a7-8717-31394d3e4a1c
  - 2b3617a4-3230-46bd-b7a9-9dbea78508b4
 document_types:
+ - smart_answer
  - fatality_notice
  - step_by_step_nav
  - simple_smart_answer
