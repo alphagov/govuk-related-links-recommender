@@ -39,11 +39,7 @@ def exclude_ineligible_target_content_ids(df_target_prop, excluded_target_links)
     :param excluded_target_links: list of content_ids to identify rows where the target_content_id should be excluded.
     :return: pandas DataFrame of eligible target_content_ids
     """
-    # TODO implement this with df.query but following not working:
-    #  return df_target_prop.query('target_content_id not in @excluded_target_links', inplace=True)
-    return df_target_prop.loc[
-        df_target_prop['target_content_id'].apply(is_target_content_id_eligible,
-                                                  excluded_target_links=excluded_target_links)]
+    return df_target_prop.query('target_content_id not in @excluded_target_links')
 
 
 def get_related_links_for_a_source_content_id(source_content_id, model, excluded_target_content_ids,
