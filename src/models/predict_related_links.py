@@ -8,13 +8,15 @@ from gensim.models import Word2Vec
 from datetime import datetime, timedelta
 import pandas as pd
 import os
-import pickle
 import json
 
 import google.auth
 from google.cloud import bigquery
 from src.utils.miscellaneous import read_query, load_pickled_content_id_list
 from tqdm import tqdm
+
+import logging.config
+logging.config.fileConfig('src/logging.conf')
 
 DATA_DIR = os.getenv("DATA_DIR")
 
@@ -43,7 +45,7 @@ def exclude_ineligible_target_content_ids(df_target_prop, excluded_target_links)
 
 
 def get_related_links_for_a_source_content_id(source_content_id, model, excluded_target_content_ids,
-                                                    probability_threshold=0.46, output_type="list"):
+                                              probability_threshold=0.46, output_type="list"):
     """
     Gets the top-5 most-probable eligible target_content_ids for a single source_content_id.
     Target_content_ids are dropped if:
@@ -85,11 +87,13 @@ class RelatedLinksJson:
                  model):
         self.model = model
         self.excluded_target_content_ids = excluded_target_content_ids
+        logging.info("Getting eligible source content_ids")
         self.eligible_source_content_ids = [
             content_id for content_id in tqdm(
                 eligible_source_content_ids, desc="eligible_content_ids"
             ) if content_id in self.model.wv.vocab.keys()
         ]
+        logging.info("retrieving and processing target_content_ids for each source_content_id")
         self.related_links = [
             get_related_links_for_a_source_content_id(content_id, self.model, self.excluded_target_content_ids)
             for
@@ -116,13 +120,15 @@ class RelatedLinksCsv:
             content_id_to_base_path_mapping_file)
 
     def __init__(self, top100_content_ids, excluded_target_content_ids, model):
+
         self.top100 = top100_content_ids[top100_content_ids['content_id'].isin(model.wv.vocab.keys())]
+        logging.info("extracting related links using apply on the source_content_id column ")
         self.top100_related_links_series = self._get_related_links_for_df(top100_content_ids,
                                                                           model,
                                                                           excluded_target_content_ids)
-
+        logging.info("combining series of dfs into single df")
         self.top100_related_links_df = self._series_to_df(self.top100_related_links_series)
-
+        logging.info("adding base_path columns using dict mapping from content_ids to base_path")
         self.top100_related_links_df = self._get_base_paths(self.top100_related_links_df)
 
     @staticmethod
@@ -176,14 +182,24 @@ class RelatedLinksCsv:
 
 
 if __name__ == '__main__':
+    module_logger = logging.getLogger('predict_related_links')
+
+    module_logger.info(
+        f'loading model from "models/n2v.model"')
     trained_model = Word2Vec.load("models/n2v.model")
+
+    module_logger.info(
+        f'loading eligible_source_content_ids from {DATA_DIR}/tmp/eligible_source_content_ids.pkl')
     eligible_source_content_ids = load_pickled_content_id_list(os.path.join(DATA_DIR, "tmp",
                                                                             "eligible_source_content_ids.pkl"))
+
+    module_logger.info('creating RelatedLinksJson')
     related_links = RelatedLinksJson(eligible_source_content_ids,
                                      load_pickled_content_id_list(os.path.join(DATA_DIR, "tmp",
                                                                                "excluded_target_content_ids.pkl")),
                                      trained_model)
 
+    module_logger.info('Exporting related links')
     related_links.export_related_links_to_json(
         os.path.join(DATA_DIR, "predictions", datetime.today().strftime('%Y%m%d') + "suggested_related_links.json"))
 
@@ -205,10 +221,14 @@ if __name__ == '__main__':
     )
 
     query_top_100 = read_query("query_top_100_eligible_source_content_ids.sql")
+    module_logger.info('Querying BigQuery for top 100 content_ids')
     top100_df = client.query(query_top_100, job_config=query_config).to_dataframe()
 
+    module_logger.info('creating RelatedLinksCsv')
     related_links_csv_writer = RelatedLinksCsv(top100_df, related_links.excluded_target_content_ids,
                                                related_links.model)
+
+    module_logger.info('Writing out related links for top 100 content_ids to csv')
     related_links_csv_writer.write_to_csv(os.path.join(DATA_DIR, "predictions",
                                                        datetime.today().strftime(
                                                            '%Y%m%d') + "top100_suggested_related_links.json"))
