@@ -58,17 +58,33 @@ def test_exclude_ineligible_target_content_ids(mock_excluded_list):
                                        }).reset_index(drop=True))
 
 
-#
-#
-# def test_get_related_links_for_a_source_content_id_in_df():
-#     get_related_links_for_a_source_content_id_in_df(source_content_id, model, excluded_target_links,
-#                                                     probability_threshold=0.46)
-#
-#
-# def test_get_related_links_for_a_source_content_id_in_list():
-#     get_related_links_for_a_source_content_id_in_list(source_content_id, model, excluded_target_links,
-#                                                       probability_threshold=0.46)
+def test_get_related_links_for_a_source_content_id(mock_excluded_list):
+    fixture_model = Word2Vec.load("tests/unit/fixtures/test_model_fixture.model")
+    assert get_related_links_for_a_source_content_id('03680a95-4cd4-46e6-b6d9-ec7aa5fb988e', fixture_model,
+                                                     mock_excluded_list) == ['d9293a00-0e80-4039-b5cd-298b5153b2a3',
+                                                                             'eec5b7ac-2248-4ffc-a061-b95d9de988b3',
+                                                                             '79679bb8-396b-4a18-9087-64591f0ae070',
+                                                                             'a7932a94-039c-48e6-9217-42821f2b91db',
+                                                                             '7184be1a-977b-4008-aa79-2dfaadadec73']
 
+    pd_testing.assert_frame_equal(
+        get_related_links_for_a_source_content_id('03680a95-4cd4-46e6-b6d9-ec7aa5fb988e', fixture_model,
+                                                  mock_excluded_list, output_type="df"),
+        pd.DataFrame({"target_content_id": ['d9293a00-0e80-4039-b5cd-298b5153b2a3',
+                                            'eec5b7ac-2248-4ffc-a061-b95d9de988b3',
+                                            '79679bb8-396b-4a18-9087-64591f0ae070',
+                                            'a7932a94-039c-48e6-9217-42821f2b91db',
+                                            '7184be1a-977b-4008-aa79-2dfaadadec73'],
+                      "probability": [0.9817172288894653,
+                                      0.9733582139015198,
+                                      0.9728978872299194,
+                                      0.9707686305046082,
+                                      0.9695242643356323],
+                      "source_content_id": ['03680a95-4cd4-46e6-b6d9-ec7aa5fb988e',
+                                            '03680a95-4cd4-46e6-b6d9-ec7aa5fb988e',
+                                            '03680a95-4cd4-46e6-b6d9-ec7aa5fb988e',
+                                            '03680a95-4cd4-46e6-b6d9-ec7aa5fb988e',
+                                            '03680a95-4cd4-46e6-b6d9-ec7aa5fb988e']}))
 
 #
 def test_export_related_links_to_json(mock_included_list, mock_excluded_list):
