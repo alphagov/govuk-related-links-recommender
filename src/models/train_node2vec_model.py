@@ -24,8 +24,12 @@ def create_graph(edges_df):
     graph = nx.DiGraph()
     for src, dest in zip(edges_df.source_content_nid, edges_df.destination_content_nid):
         graph.add_edge(src, dest)
+        
+#     graph = nx.from_pandas_dataframe(edges_df,source='source_content_nid',
+#                                    target='destination_content_nid',
+#                                    create_using=nx.DiGraph())
 
-    print(type(graph))
+#     print(type(graph))
     return graph
 
 
