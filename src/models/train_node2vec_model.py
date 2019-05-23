@@ -6,30 +6,16 @@ import networkx as nx
 from node2vec import Node2Vec
 import pandas as pd
 
-
 logging.config.fileConfig('src/logging.conf')
 
 
 def create_graph(edges_df):
-    
     logger = logging.getLogger('train_node2_vec_model.create_graph')
     logger.info('creating graph from edges_df')
-    
-    logger.info("add nid")
-    cids = set(list(edges_df.source_content_id) + list(edges_df.destination_content_id))
-    cid_dict = dict(zip(list(cids), list(range(0,len(cids)))))
-    edges_df['source_content_nid'] = edges_df['source_content_id'].map(cid_dict)
-    edges_df['destination_content_nid'] = edges_df['destination_content_id'].map(cid_dict)
 
-    graph = nx.DiGraph()
-    for src, dest in zip(edges_df.source_content_nid, edges_df.destination_content_nid):
-        graph.add_edge(src, dest)
-        
-#     graph = nx.from_pandas_dataframe(edges_df,source='source_content_nid',
-#                                    target='destination_content_nid',
-#                                    create_using=nx.DiGraph())
-
-#     print(type(graph))
+    graph = nx.from_pandas_edgelist(edges_df, source='source_content_id',
+                                    target='destination_content_id',
+                                    create_using=nx.DiGraph())
     return graph
 
 
