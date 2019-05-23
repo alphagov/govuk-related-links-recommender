@@ -44,21 +44,18 @@ def test_is_target_content_id_eligible(mock_excluded_list):
 def test_exclude_ineligible_target_content_ids(mock_excluded_list):
     df = pd.DataFrame({"target_content_id": ['23eee5eb-7e24-4a7f-bf92-112f8c8132bc',  # excluded_list
                                              '708334c4-2855-4d45-b311-72a26b03529a',  # excluded_list
-                                             '2b3617a4-3230-46bd-b7a9-9dbea78508b4',  # source_id
                                              '76698ffe-70ab-4fda-be0d-755234f6d340',  # eligible
                                              'f9015c31-61c2-4504-8eb0-242cd75aee19'],  # eligible
-                       "probability": [0.5, 0.6, 0.6, 0.6, 0.6]})
+                       "probability": [0.5, 0.6, 0.6, 0.6]})
 
     pd_testing.assert_frame_equal(exclude_ineligible_target_content_ids(df,
-                                                                        mock_excluded_list,
-                                                                        '2b3617a4-3230-46bd-b7a9-9dbea78508b4'
-                                                                        ).reset_index(drop=True),
-        pd.DataFrame(
-            {"target_content_id": ['76698ffe-70ab-4fda-be0d-755234f6d340',
-                                   'f9015c31-61c2-4504-8eb0-242cd75aee19'
-                                   ],
-             "probability": [0.6, 0.6]
-             }).reset_index(drop=True))
+                                                                        mock_excluded_list).reset_index(drop=True),
+                                  pd.DataFrame(
+                                      {"target_content_id": ['76698ffe-70ab-4fda-be0d-755234f6d340',
+                                                             'f9015c31-61c2-4504-8eb0-242cd75aee19'
+                                                             ],
+                                       "probability": [0.6, 0.6]
+                                       }).reset_index(drop=True))
 
 
 #
@@ -75,13 +72,14 @@ def test_exclude_ineligible_target_content_ids(mock_excluded_list):
 
 #
 def test_export_related_links_to_json(mock_included_list, mock_excluded_list):
+    fixture_model = Word2Vec.load("tests/unit/fixtures/test_model_fixture.model")
     instance = RelatedLinksJson(mock_included_list,
                                 mock_excluded_list,
-                                Word2Vec.load("tests/unit/fixtures/test_model_fixture.model")
+                                fixture_model
                                 )
-    instance.export_related_links_to_json("tests/unit/fixtures/check_related_links.json")
+    instance.export_related_links_to_json("tests/unit/tmp/check_related_links.json")
     with open(
-            "tests/unit/fixtures/check_related_links.json") as f:
+            "tests/unit/tmp/check_related_links.json") as f:
         check = json.load(f)
 
     with open(
@@ -95,7 +93,7 @@ def test_write_to_csv(mock_excluded_list):
                                mock_excluded_list,
                                Word2Vec.load("tests/unit/fixtures/test_model_fixture.model"))
     print(instance.top100_related_links_df)
-    instance.write_to_csv("tests/unit/fixtures/check_top100_links.csv")
+    instance.write_to_csv("tests/unit/tmp/check_top100_links.csv")
 
-    pd_testing.assert_frame_equal(pd.read_csv("tests/unit/fixtures/check_top100_links.csv"),
+    pd_testing.assert_frame_equal(pd.read_csv("tests/unit/tmp/check_top100_links.csv"),
                                   pd.read_csv("tests/unit/fixtures/expected_top100_links.csv"))
