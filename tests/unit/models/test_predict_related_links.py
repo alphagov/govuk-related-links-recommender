@@ -85,6 +85,7 @@ def test_get_related_links_for_a_source_content_id(mock_excluded_list):
                                             '03680a95-4cd4-46e6-b6d9-ec7aa5fb988e',
                                             '03680a95-4cd4-46e6-b6d9-ec7aa5fb988e',
                                             '03680a95-4cd4-46e6-b6d9-ec7aa5fb988e']}))
+    # TODO add a few more examples of source content ids without 5 rls and with low probability in the top 5
 
 #
 def test_export_related_links_to_json(mock_included_list, mock_excluded_list):
