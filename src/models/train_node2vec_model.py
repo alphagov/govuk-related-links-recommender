@@ -6,21 +6,21 @@ import networkx as nx
 from node2vec import Node2Vec
 import pandas as pd
 
-
 logging.config.fileConfig('src/logging.conf')
 
 
 def create_graph(edges_df):
     logger = logging.getLogger('train_node2_vec_model.create_graph')
     logger.info('creating graph from edges_df')
-    graph = nx.convert_matrix.from_pandas_edgelist(
-        edges_df, source='source_content_id', target='destination_content_id', edge_attr='weight'
-    )
+
+    graph = nx.from_pandas_edgelist(edges_df, source='source_content_id',
+                                    target='destination_content_id',
+                                    create_using=nx.DiGraph())
     return graph
 
 
 def train_node2_vec_model(edges_df,
-                          workers=None):
+                          workers=1):
     """
     Train a node2vec model using a DataFrame of edges (source and target node_ids)
     and a mapping of the node_ids (used in the DataFrame) to GOV.UK content_ids
