@@ -66,7 +66,7 @@ if __name__ == "__main__":  # our module is being executed as a program
                'destination_content_id': object}
     )
 
-    worker_count = cpu_count() / 4
+    worker_count = int(cpu_count() / 4)
     node2vec_model = train_node2_vec_model(edges, worker_count)
 
     # TODO:think about a function that gets the filepath for the thing and does that saving.
