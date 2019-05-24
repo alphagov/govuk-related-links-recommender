@@ -11,10 +11,16 @@ logging.config.fileConfig('src/logging.conf')
 
 def create_graph(edges_df):
     logger = logging.getLogger('train_node2_vec_model.create_graph')
-    logger.info('creating graph from edges_df')
 
-    graph = nx.from_pandas_edgelist(edges_df, source='source_content_id',
-                                    target='destination_content_id',
+    logger.info("Computing node_ids...")
+    cids = set(list(edges_df.source_content_id) + list(edges_df.destination_content_id))
+    cid_dict = dict(zip(list(cids), list(range(0, len(cids)))))
+    edges_df['source_content_nid'] = edges_df['source_content_id'].map(cid_dict)
+    edges_df['destination_content_nid'] = edges_df['destination_content_id'].map(cid_dict)
+
+    logger.info('creating graph from edges_df')
+    graph = nx.from_pandas_edgelist(edges_df, source='source_content_nid',
+                                    target='destination_content_nid',
                                     create_using=nx.DiGraph())
     return graph
 
@@ -52,6 +58,9 @@ def train_node2_vec_model(edges_df,
     # TODO: search this parameter space systematically and change node2vec parameters
     model = node2vec.fit(window=10, min_count=1, batch_words=4, seed=1,
                          workers=1)
+
+    logger.info('Completed fitting model.')
+
     return model
 
 
