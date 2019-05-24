@@ -31,6 +31,7 @@ def train_node2_vec_model(edges_df,
     :return: a node2vec model
     """
     logger = logging.getLogger('train_node2_vec_model.train_node2_vec_model')
+    logging.getLogger().setLevel(logging.DEBUG)
 
     if workers is None:
         workers = cpu_count()
@@ -50,7 +51,7 @@ def train_node2_vec_model(edges_df,
     # https://radimrehurek.com/gensim/models/word2vec.html#gensim.models.word2vec.Word2Vec
     # TODO: search this parameter space systematically and change node2vec parameters
     model = node2vec.fit(window=10, min_count=1, batch_words=4, seed=1,
-                         workers=workers)
+                         workers=1)
     return model
 
 
