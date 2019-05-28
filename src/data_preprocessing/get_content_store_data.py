@@ -7,10 +7,11 @@ import pandas as pd
 from pandas.io.json import json_normalize
 import pymongo
 from tqdm import tqdm
+import pickle
 
 from src.utils import text_preprocessing as tp
 
-from src.utils.miscellaneous import get_excluded_document_types
+from src.utils.miscellaneous import read_exclusions_yaml
 
 warnings.filterwarnings('ignore', category=UserWarning, module='bs4')
 
@@ -22,7 +23,10 @@ KEYS_FOR_LINK_TYPES = {
     "collection": "documents"
 }
 
-BLACKLIST_DOCUMENT_TYPES = get_excluded_document_types()
+BLACKLIST_DOCUMENT_TYPES = read_exclusions_yaml(
+    "document_types_excluded_from_the_topic_taxonomy.yml")['document_types']
+EXCLUDED_SOURCE_CONTENT = read_exclusions_yaml("source_exclusions_that_are_not_linked_from.yml")
+EXCLUDED_TARGET_CONTENT = read_exclusions_yaml("target_exclusions_that_are_not_linked_to.yml")
 
 RELATED_LINKS_PROJECTION = {
     "expanded_links.ordered_related_items.base_path": 1,
@@ -239,8 +243,53 @@ def get_structural_edges_df(mongodb_collection, page_path_content_id_mapping):
     return structural_edges_df
 
 
+def export_content_id_list(list_name, mongodb_collection, outfile):
+    """
+    Queries the MongoDB collection to return a list of content_ids that meet the criteria set out in the YAML
+    config files: either excluding content items as source pages or excluding them as target pages
+    :param list_name: string either "eligible_source" or "excluded_target"
+    :param mongodb_collection:
+    :param outfile: file path for the saved pickled list of content ids
+    :return: list of content_ids, either representing those eligible as source pages or
+    those to be excluded as target pages
+    """
+
+    # TODO: We can tidy this up later on as the two ifs are very similar, so a candidate we could extract to a method
+    #  (in addition to ensuring that only eligible_source and excluded_target are the only two valid list names (if
+    #  something else is passed in, throw an exception)).
+    if list_name == 'eligible_source':
+        specific_excluded_source_content_ids = EXCLUDED_SOURCE_CONTENT['content_ids']
+        excluded_source_document_types = EXCLUDED_SOURCE_CONTENT['document_types']
+
+        mongodb_filter = {"$and": [{"expanded_links.ordered_related_items": {"$exists": False}},
+                                                      {"document_type": {"$nin": BLACKLIST_DOCUMENT_TYPES}},
+                                                      {"document_type": {"$nin": excluded_source_document_types}},
+                                                      {"content_id": {"$nin": specific_excluded_source_content_ids}},
+                                                      {"phase": "live"}]}
+    if list_name == 'excluded_target':
+        specific_excluded_target_content_ids = EXCLUDED_TARGET_CONTENT['content_ids']
+        excluded_target_document_types = EXCLUDED_TARGET_CONTENT['document_types']
+
+        mongodb_filter = {"$or": [{"expanded_links.ordered_related_items": {"$exists": True}},
+                                                     {"document_type": {"$in": BLACKLIST_DOCUMENT_TYPES}},
+                                                     {"document_type": {"$in": excluded_target_document_types}},
+                                                     {"content_id": {"$in": specific_excluded_target_content_ids}}]}
+
+    # TODO simplify this. Loop through cursor instead?
+    content_ids_list_of_dicts = list(
+        mongodb_collection.find(mongodb_filter, {"content_id": 1, '_id': 0}))
+    content_ids_nested_list = [list(content_id.values()) for content_id in content_ids_list_of_dicts]
+    content_ids_list = [item for sublist in content_ids_nested_list for item in sublist]
+
+    with open(outfile, 'wb') as fp:
+        pickle.dump(content_ids_list, fp)
+
+    return content_ids_list
+
+
+
 if __name__ == "__main__":  # our module is being executed as a program
-    data_dir = os.getenv("DATA_DIR")
+    DATA_DIR = os.getenv("DATA_DIR")
 
     logging.config.fileConfig('src/logging.conf')
     logger = logging.getLogger('get_content_store_data')
@@ -252,22 +301,31 @@ if __name__ == "__main__":  # our module is being executed as a program
 
     page_path_content_id_mapping, content_id_base_path_mapping = get_path_content_id_mappings(content_store_collection)
 
-    logger.info(f'saving page_path_content_id_mapping to {data_dir}/tmp/page_path_content_id_mapping.json')
+    logger.info(f'saving page_path_content_id_mapping to {DATA_DIR}/tmp/page_path_content_id_mapping.json')
     with open(
-            os.path.join(data_dir, 'tmp', 'page_path_content_id_mapping.json'),
+            os.path.join(DATA_DIR, 'tmp', 'page_path_content_id_mapping.json'),
             'w') as page_path_content_id_file:
         json.dump(page_path_content_id_mapping, page_path_content_id_file)
 
-    logger.info(f'saving content_id_base_path_mapping to {data_dir}/tmp/content_id_base_path_mapping.json')
+    logger.info(f'saving content_id_base_path_mapping to {DATA_DIR}/tmp/content_id_base_path_mapping.json')
     with open(
-            os.path.join(data_dir, 'tmp', 'content_id_base_path_mapping.json'),
+            os.path.join(DATA_DIR, 'tmp', 'content_id_base_path_mapping.json'),
             'w') as content_id_base_path_file:
         json.dump(content_id_base_path_mapping, content_id_base_path_file)
 
     output_df = get_structural_edges_df(content_store_collection, page_path_content_id_mapping)
 
-    logger.info(f'saving structural_edges (output_df) to {data_dir}/tmp/structural_edges.json')
-    output_df.to_csv(os.path.join(data_dir, "tmp", "structural_edges.csv"), index=False)
+    logger.info(f'saving structural_edges (output_df) to {DATA_DIR}/tmp/structural_edges.json')
+    output_df.to_csv(os.path.join(DATA_DIR, "tmp", "structural_edges.csv"), index=False)
+
+    export_content_id_list("eligible_source",
+                           content_store_collection,
+                           os.path.join(DATA_DIR, "tmp", "eligible_source_content_ids.pkl"))
+
+    export_content_id_list("excluded_target",
+                           content_store_collection,
+                           os.path.join(DATA_DIR, "tmp",
+                                        "excluded_target_content_ids.pkl"))
 
 
 # This is code from a colleague's blog, with an alternative way of doing this, that we need to compare efficiency with.
