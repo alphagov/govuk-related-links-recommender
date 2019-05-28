@@ -27,4 +27,4 @@ def load_pickled_content_id_list(filepath):
     """
     with open(filepath, "rb") as input_file:
         id_list = pickle.load(input_file)
-    return ", ".join(id_list)
+    return id_list

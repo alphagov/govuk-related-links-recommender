@@ -193,7 +193,7 @@ if __name__ == '__main__':
     eligible_source_content_ids = load_pickled_content_id_list(os.path.join(DATA_DIR, "tmp",
                                                                             "eligible_source_content_ids.pkl"))
 
-    module_logger.info('creating RelatedLinksJson')
+    module_logger.info(f'creating RelatedLinksJson for {len(eligible_source_content_ids)} eligible_source_content_ids')
     related_links = RelatedLinksJson(eligible_source_content_ids,
                                      load_pickled_content_id_list(os.path.join(DATA_DIR, "tmp",
                                                                                "excluded_target_content_ids.pkl")),
@@ -215,12 +215,12 @@ if __name__ == '__main__':
     query_config = bigquery.QueryJobConfig(
         query_parameters=[
             bigquery.ScalarQueryParameter("three_weeks_ago", "STRING", three_weeks_ago),
-            bigquery.ScalarQueryParameter("yesterday", "STRING", yesterday),
-            bigquery.ArrayQueryParameter("eligible_source_content_ids", "STRING", eligible_source_content_ids)
+            bigquery.ScalarQueryParameter("yesterday", "STRING", yesterday)
+            # , bigquery.ArrayQueryParameter("eligible_source_content_ids", "STRING", eligible_source_content_ids)
         ]
     )
 
-    query_top_100 = read_query("query_top_100_eligible_source_content_ids.sql")
+    query_top_100 = read_query("src/models/query_top_100_eligible_source_content_ids.sql")
     module_logger.info('Querying BigQuery for top 100 content_ids')
     top100_df = client.query(query_top_100, job_config=query_config).to_dataframe()
 

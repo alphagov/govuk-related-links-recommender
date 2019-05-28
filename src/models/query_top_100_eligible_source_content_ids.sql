@@ -38,7 +38,6 @@ FROM
     AND @yesterday)
 WHERE
   page_path != '/'
-  AND content_id IN UNNEST(@eligible_source_content_ids)
   AND content_id NOT IN ('00000000-0000-0000-0000-000000000000',
     '[object Object]')
 GROUP BY
