@@ -23,6 +23,7 @@ DATA_DIR = os.getenv("DATA_DIR")
 # TODO check probability threshold is correct 0.46
 # TODO check maximum 5 related links is correct
 
+
 def is_target_content_id_eligible(content_id, excluded_target_links):
     """
     Boolean: checks presence of the content_id in the known excluded_target_links
@@ -72,7 +73,7 @@ def get_related_links_for_a_source_content_id(source_content_id, model, excluded
         output = potential_related_links[potential_related_links['probability'] > probability_threshold].head(5)
     if output_type == "list":
         output = potential_related_links[potential_related_links['probability'] > probability_threshold].head(5)[
-        'target_content_id'].values.tolist()
+            'target_content_id'].values.tolist()
 
     return output
 
