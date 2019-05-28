@@ -1296,10 +1296,10 @@ def test_get_structural_edges_df(mongodb, structural_edges_fixture):
 def test_export_content_id_list(mongodb):
     export_content_id_list("eligible_source",
                            mongodb.content_store_data_sample,
-                           'tests/tmp/check_eligible_source_content_ids.pkl')
+                           'tests/unit/tmp/check_eligible_source_content_ids.pkl')
 
     with open(
-            'tests/tmp/check_eligible_source_content_ids.pkl',
+            'tests/unit/tmp/check_eligible_source_content_ids.pkl',
             "rb") as input_file:
         check = pickle.load(input_file)
 
@@ -1311,10 +1311,10 @@ def test_export_content_id_list(mongodb):
 
     export_content_id_list("excluded_target",
                            mongodb.content_store_data_sample,
-                           'tests/tmp/check_excluded_target_content_ids.pkl')
+                           'tests/unit/tmp/check_excluded_target_content_ids.pkl')
 
     with open(
-            'tests/tmp/check_excluded_target_content_ids.pkl',
+            'tests/unit/tmp/check_excluded_target_content_ids.pkl',
             "rb") as input_file:
         check = pickle.load(input_file)
 
