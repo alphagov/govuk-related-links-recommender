@@ -253,6 +253,10 @@ def export_content_id_list(list_name, mongodb_collection, outfile):
     :return: list of content_ids, either representing those eligible as source pages or
     those to be excluded as target pages
     """
+
+    # TODO: We can tidy this up later on as the two ifs are very similar, so a candidate we could extract to a method
+    #  (in addition to ensuring that only eligible_source and excluded_target are the only two valid list names (if
+    #  something else is passed in, throw an exception)).
     if list_name == 'eligible_source':
         specific_excluded_source_content_ids = EXCLUDED_SOURCE_CONTENT['content_ids']
         excluded_source_document_types = EXCLUDED_SOURCE_CONTENT['document_types']

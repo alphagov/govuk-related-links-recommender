@@ -233,6 +233,10 @@ if __name__ == '__main__':
                                                        datetime.today().strftime(
                                                            '%Y%m%d') + "top100_suggested_related_links.json"))
 
+
+# Code for how links were generated for the A/B test below, saved for the future,
+# it was easier/quicker to write it in a more DataFrame-y method for now but we could revisit this later
+
 # def compute_top_n(base_path_pandas_series, n):
 #     pages_links = []
 #     missing = []
