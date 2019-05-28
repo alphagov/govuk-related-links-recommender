@@ -121,9 +121,9 @@ class RelatedLinksCsv:
 
     def __init__(self, top100_content_ids, excluded_target_content_ids, model):
 
-        self.top100 = top100_content_ids[top100_content_ids['content_id'].isin(model.wv.vocab.keys())]
+        self.top100 = top100_content_ids[top100_content_ids['source_content_id'].isin(model.wv.vocab.keys())]
         logging.info("extracting related links using apply on the source_content_id column ")
-        self.top100_related_links_series = self._get_related_links_for_df(top100_content_ids,
+        self.top100_related_links_series = self._get_related_links_for_df(self.top100,
                                                                           model,
                                                                           excluded_target_content_ids)
         logging.info("combining series of dfs into single df")
@@ -141,7 +141,7 @@ class RelatedLinksCsv:
         :param excluded_target_content_ids: list of excluded target_content_ids
         :return: pandas Series where each element is a pandas DataFrame
         """
-        return df['content_id'].apply(
+        return df['source_content_id'].apply(
             get_related_links_for_a_source_content_id,
             model=model,
             excluded_target_content_ids=excluded_target_content_ids,
@@ -223,13 +223,20 @@ if __name__ == '__main__':
     module_logger.info('Querying BigQuery for content_ids')
     all_df = client.query(query_top_100, job_config=query_config).to_dataframe()
 
-    module_logger.info('Filtering to eligible source content_ids')
-    all_df.query('content_id in @eligible_source_content_ids', inplace=True)
+    module_logger.info('Filtering to content_ids in the vocabulary')
+    all_df.query('content_id in @related_links.model.wv.vocab.keys()', inplace=True)
     module_logger.info('Sorting by page_hits descending')
     all_df.sort_values(
         by=['page_hits'], inplace=True, ascending=False)
+
+    all_df.rename(
+        columns={
+            'content_id': 'source_content_id'},
+        inplace=True)
+
     module_logger.info('Getting top 100 content_ids')
     top100_df = all_df.head(100)
+
 
     module_logger.info('creating RelatedLinksCsv')
     related_links_csv_writer = RelatedLinksCsv(top100_df, related_links.excluded_target_content_ids,
