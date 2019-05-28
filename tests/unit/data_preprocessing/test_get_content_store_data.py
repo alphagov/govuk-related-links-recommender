@@ -1309,18 +1309,18 @@ def test_export_content_id_list(mongodb):
         expected = pickle.load(input_file)
     assert check == expected
 
-    export_content_id_list("excluded_target",
+    export_content_id_list("eligible_target",
                            mongodb.content_store_data_sample,
-                           'tests/unit/tmp/check_excluded_target_content_ids.pkl')
+                           'tests/unit/tmp/check_eligible_target_content_ids.pkl')
 
     with open(
-            'tests/unit/tmp/check_excluded_target_content_ids.pkl',
+            'tests/unit/tmp/check_eligible_target_content_ids.pkl',
             "rb") as input_file:
         check = pickle.load(input_file)
 
     with open(
-            'tests/unit/fixtures/expected_excluded_target_content_ids.pkl',
+            'tests/unit/fixtures/expected_eligible_target_content_ids.pkl',
             "rb") as input_file:
         expected = pickle.load(input_file)
 
-    assert check == expected
+    assert set(check) == set(expected)

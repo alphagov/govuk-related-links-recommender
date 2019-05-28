@@ -278,8 +278,8 @@ def export_content_id_list(list_name, mongodb_collection, outfile):
     # TODO simplify this. Loop through cursor instead?
     content_ids_list_of_dicts = list(
         mongodb_collection.find(mongodb_filter, {"content_id": 1, '_id': 0}))
-    content_ids_nested_list = [list(content_id.values()) for content_id in content_ids_list_of_dicts]
-    content_ids_list = [item for sublist in content_ids_nested_list for item in sublist]
+    content_ids_and_nones_list = [content_id.get('content_id') for content_id in content_ids_list_of_dicts]
+    content_ids_list = list(filter(None, content_ids_and_nones_list))
 
     with open(outfile, 'wb') as fp:
         pickle.dump(content_ids_list, fp)
