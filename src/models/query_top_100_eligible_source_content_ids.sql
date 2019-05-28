@@ -49,6 +49,6 @@ content_id
 GROUP BY
   content_id,
   page_path
+HAVING page_hits > 5
 ORDER BY
   page_hits DESC
-LIMIT 100

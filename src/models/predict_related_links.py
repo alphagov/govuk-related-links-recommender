@@ -216,13 +216,20 @@ if __name__ == '__main__':
         query_parameters=[
             bigquery.ScalarQueryParameter("three_weeks_ago", "STRING", three_weeks_ago),
             bigquery.ScalarQueryParameter("yesterday", "STRING", yesterday)
-            # , bigquery.ArrayQueryParameter("eligible_source_content_ids", "STRING", eligible_source_content_ids)
         ]
     )
 
     query_top_100 = read_query("src/models/query_top_100_eligible_source_content_ids.sql")
-    module_logger.info('Querying BigQuery for top 100 content_ids')
-    top100_df = client.query(query_top_100, job_config=query_config).to_dataframe()
+    module_logger.info('Querying BigQuery for content_ids')
+    all_df = client.query(query_top_100, job_config=query_config).to_dataframe()
+
+    module_logger.info('Filtering to eligible source content_ids')
+    all_df.query('content_id in @eligible_source_content_ids', inplace=True)
+    module_logger.info('Sorting by page_hits descending')
+    all_df.sort_values(
+        by=['page_hits'], inplace=True, ascending=False)
+    module_logger.info('Getting top 100 content_ids')
+    top100_df = all_df.head(100)
 
     module_logger.info('creating RelatedLinksCsv')
     related_links_csv_writer = RelatedLinksCsv(top100_df, related_links.excluded_target_content_ids,
