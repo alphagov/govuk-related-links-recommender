@@ -1,20 +1,18 @@
 SELECT
   content_id,
-  page_path,
   COUNT(*) AS page_hits
 FROM
 (
 SELECT
 visit_id,
 hit_number,
-page_path,
 content_id
 FROM
 (
   SELECT
     visitId AS visit_id,
     hits.hitNumber AS hit_number,
-    hits.page.pagePath AS page_path,
+    hits.page.pagePath as page_path,
     (
     SELECT
       value
@@ -43,12 +41,10 @@ WHERE
 GROUP BY
 visit_id,
 hit_number,
-page_path,
 content_id
  )
 GROUP BY
-  content_id,
-  page_path
+  content_id
 HAVING page_hits > 5
 ORDER BY
   page_hits DESC
