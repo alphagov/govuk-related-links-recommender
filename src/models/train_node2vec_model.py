@@ -11,8 +11,8 @@ logging.config.fileConfig('src/logging.conf')
 
 def create_graph(edges_df):
     logger = logging.getLogger('train_node2_vec_model.create_graph')
-    logger.info('creating graph from edges_df')
 
+    logger.info('creating graph from edges_df')
     graph = nx.from_pandas_edgelist(edges_df, source='source_content_id',
                                     target='destination_content_id',
                                     create_using=nx.DiGraph())
@@ -20,7 +20,7 @@ def create_graph(edges_df):
 
 
 def train_node2_vec_model(edges_df,
-                          workers=1):
+                          workers=None):
     """
     Train a node2vec model using a DataFrame of edges (source and target node_ids)
     and a mapping of the node_ids (used in the DataFrame) to GOV.UK content_ids
@@ -31,6 +31,7 @@ def train_node2_vec_model(edges_df,
     :return: a node2vec model
     """
     logger = logging.getLogger('train_node2_vec_model.train_node2_vec_model')
+    logging.getLogger().setLevel(logging.DEBUG)
 
     if workers is None:
         workers = cpu_count()
@@ -50,7 +51,10 @@ def train_node2_vec_model(edges_df,
     # https://radimrehurek.com/gensim/models/word2vec.html#gensim.models.word2vec.Word2Vec
     # TODO: search this parameter space systematically and change node2vec parameters
     model = node2vec.fit(window=10, min_count=1, batch_words=4, seed=1,
-                         workers=workers)
+                         workers=1)
+
+    logger.info('Completed fitting model.')
+
     return model
 
 
