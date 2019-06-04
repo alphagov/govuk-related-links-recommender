@@ -121,9 +121,9 @@ class RelatedLinksCsv:
 
     def __init__(self, top100_content_ids, excluded_target_content_ids, model):
 
-        self.top100 = top100_content_ids[top100_content_ids['source_content_id'].isin(model.wv.vocab.keys())]
+        self.top100_content_ids_df = top100_content_ids[top100_content_ids['source_content_id'].isin(model.wv.vocab.keys())]
         logging.info("extracting related links using apply on the source_content_id column ")
-        self.top100_related_links_series = self._get_related_links_for_df(self.top100,
+        self.top100_related_links_series = self._get_related_links_for_df(self.top100_content_ids_df,
                                                                           model,
                                                                           excluded_target_content_ids)
         logging.info("combining series of dfs into single df")
