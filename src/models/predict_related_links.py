@@ -121,9 +121,9 @@ class RelatedLinksCsv:
 
     def __init__(self, top100_content_ids, excluded_target_content_ids, model):
 
-        self.top100 = top100_content_ids[top100_content_ids['content_id'].isin(model.wv.vocab.keys())]
+        self.top100_content_ids_df = top100_content_ids[top100_content_ids['source_content_id'].isin(model.wv.vocab.keys())]
         logging.info("extracting related links using apply on the source_content_id column ")
-        self.top100_related_links_series = self._get_related_links_for_df(top100_content_ids,
+        self.top100_related_links_series = self._get_related_links_for_df(self.top100_content_ids_df,
                                                                           model,
                                                                           excluded_target_content_ids)
         logging.info("combining series of dfs into single df")
@@ -141,7 +141,7 @@ class RelatedLinksCsv:
         :param excluded_target_content_ids: list of excluded target_content_ids
         :return: pandas Series where each element is a pandas DataFrame
         """
-        return df['content_id'].apply(
+        return df['source_content_id'].apply(
             get_related_links_for_a_source_content_id,
             model=model,
             excluded_target_content_ids=excluded_target_content_ids,
@@ -193,10 +193,12 @@ if __name__ == '__main__':
     eligible_source_content_ids = load_pickled_content_id_list(os.path.join(DATA_DIR, "tmp",
                                                                             "eligible_source_content_ids.pkl"))
 
-    module_logger.info('creating RelatedLinksJson')
+    excluded_target_content_ids = load_pickled_content_id_list(os.path.join(DATA_DIR, "tmp",
+                                                                               "excluded_target_content_ids.pkl"))
+
+    module_logger.info(f'creating RelatedLinksJson for {len(eligible_source_content_ids)} eligible_source_content_ids')
     related_links = RelatedLinksJson(eligible_source_content_ids,
-                                     load_pickled_content_id_list(os.path.join(DATA_DIR, "tmp",
-                                                                               "excluded_target_content_ids.pkl")),
+                                     excluded_target_content_ids,
                                      trained_model)
 
     module_logger.info('Exporting related links')
@@ -215,23 +217,41 @@ if __name__ == '__main__':
     query_config = bigquery.QueryJobConfig(
         query_parameters=[
             bigquery.ScalarQueryParameter("three_weeks_ago", "STRING", three_weeks_ago),
-            bigquery.ScalarQueryParameter("yesterday", "STRING", yesterday),
-            bigquery.ArrayQueryParameter("eligible_source_content_ids", "STRING", eligible_source_content_ids)
+            bigquery.ScalarQueryParameter("yesterday", "STRING", yesterday)
         ]
     )
 
-    query_top_100 = read_query("query_top_100_eligible_source_content_ids.sql")
-    module_logger.info('Querying BigQuery for top 100 content_ids')
-    top100_df = client.query(query_top_100, job_config=query_config).to_dataframe()
+    query_top_100 = read_query("src/models/query_top_100_eligible_source_content_ids.sql")
+    module_logger.info('Querying BigQuery for content_ids')
+    all_df = client.query(query_top_100, job_config=query_config).to_dataframe()
+
+    all_df.to_csv(os.path.join(DATA_DIR, 'tmp', 'all_df.csv'), index=False)
+
+    module_logger.info('Filtering to content_ids in the vocabulary')
+    all_df.query('content_id in @trained_model.wv.vocab.keys() and content_id in @eligible_source_content_ids',
+                 inplace=True)
+    module_logger.info('Sorting by page_hits descending')
+    all_df.sort_values(
+        by=['page_hits'], inplace=True, ascending=False)
+
+    all_df.rename(
+        columns={
+            'content_id': 'source_content_id'},
+        inplace=True)
+
+    module_logger.info('Getting top 100 content_ids')
+    top100_df = all_df.head(100)
+
+    top100_df.to_csv(os.path.join(DATA_DIR, 'tmp', 'top100.csv'), index=False)
 
     module_logger.info('creating RelatedLinksCsv')
-    related_links_csv_writer = RelatedLinksCsv(top100_df, related_links.excluded_target_content_ids,
-                                               related_links.model)
+    related_links_csv_writer = RelatedLinksCsv(top100_df, excluded_target_content_ids,
+                                               trained_model)
 
     module_logger.info('Writing out related links for top 100 content_ids to csv')
     related_links_csv_writer.write_to_csv(os.path.join(DATA_DIR, "predictions",
                                                        datetime.today().strftime(
-                                                           '%Y%m%d') + "top100_suggested_related_links.json"))
+                                                           '%Y%m%d') + "top100_suggested_related_links.csv"))
 
 
 # Code for how links were generated for the A/B test below, saved for the future,
