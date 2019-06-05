@@ -246,7 +246,7 @@ def get_structural_edges_df(mongodb_collection, page_path_content_id_mapping):
 def export_content_id_list(list_name, mongodb_collection, outfile):
     """
     Queries the MongoDB collection to return a list of content_ids that meet the criteria set out in the YAML
-    config files: either excluding content items as source pages or excluding them as target pages
+    config files: either including content items as source pages or including them as target pages
     :param list_name: string either "eligible_source" or "included_target"
     :param mongodb_collection:
     :param outfile: file path for the saved pickled list of content ids
