@@ -23,25 +23,26 @@ DATA_DIR = os.getenv("DATA_DIR")
 # TODO check probability threshold is correct 0.46
 # TODO check maximum 5 related links is correct
 
-def is_target_content_id_eligible(content_id, excluded_target_links):
+
+def is_target_content_id_eligible(content_id, eligible_target_links):
     """
-    Boolean: checks presence of the content_id in the known excluded_target_links
+    Boolean: checks presence of the content_id in the known eligible_target_links
     :param content_id: string content_id
-    :param excluded_target_links: list of content_ids
+    :param eligible_target_links: list of content_ids
     :return: boolean True id content_id should be included
     """
-    return content_id not in excluded_target_links
+    return content_id in eligible_target_links
 
 
-def exclude_ineligible_target_content_ids(df_target_prop, excluded_target_links):
+def only_include_eligible_target_content_ids(df_target_prop, eligible_target_links):
     """
     Selects the rows of a pandas DataFrame which contain eligible target_content_ids. Drops rows where target_content_id
-    is in the list of excluded target content_ids
+    is not in the list of eligible target content_ids
     :param df_target_prop: pandas DataFrame which includes column named 'target_content_id'
-    :param excluded_target_links: list of content_ids to identify rows where the target_content_id should be excluded.
+    :param eligible_target_links: list of eligible content_ids to identify rows where the target_content_id should be included.
     :return: pandas DataFrame of eligible target_content_ids
     """
-    return df_target_prop.query('target_content_id not in @excluded_target_links')
+    return df_target_prop.query('target_content_id in @eligible_target_links')
 
 
 def get_related_links_for_a_source_content_id(source_content_id, model, excluded_target_content_ids,
@@ -64,7 +65,7 @@ def get_related_links_for_a_source_content_id(source_content_id, model, excluded
     potential_related_links = pd.DataFrame(model.wv.most_similar(source_content_id, topn=1000))
     potential_related_links.columns = ['target_content_id', 'probability']
     potential_related_links.sort_values('probability', inplace=True, ascending=False)
-    potential_related_links = exclude_ineligible_target_content_ids(potential_related_links, excluded_target_content_ids,
+    potential_related_links = only_include_eligible_target_content_ids(potential_related_links, excluded_target_content_ids,
                                                                     )
     potential_related_links['source_content_id'] = source_content_id
 
@@ -72,7 +73,7 @@ def get_related_links_for_a_source_content_id(source_content_id, model, excluded
         output = potential_related_links[potential_related_links['probability'] > probability_threshold].head(5)
     if output_type == "list":
         output = potential_related_links[potential_related_links['probability'] > probability_threshold].head(5)[
-        'target_content_id'].values.tolist()
+            'target_content_id'].values.tolist()
 
     return output
 
@@ -83,10 +84,10 @@ class RelatedLinksJson:
     """
     def __init__(self,
                  eligible_source_content_ids,
-                 excluded_target_content_ids,
+                 eligible_target_content_ids,
                  model):
         self.model = model
-        self.excluded_target_content_ids = excluded_target_content_ids
+        self.eligible_target_content_ids = eligible_target_content_ids
         logging.info("Getting eligible source content_ids")
         self.eligible_source_content_ids = [
             content_id for content_id in tqdm(
@@ -95,7 +96,7 @@ class RelatedLinksJson:
         ]
         logging.info("retrieving and processing target_content_ids for each source_content_id")
         self.related_links = [
-            get_related_links_for_a_source_content_id(content_id, self.model, self.excluded_target_content_ids)
+            get_related_links_for_a_source_content_id(content_id, self.model, self.eligible_target_content_ids)
             for
             content_id in
             tqdm(self.eligible_source_content_ids, desc="getting related links")]
@@ -193,12 +194,12 @@ if __name__ == '__main__':
     eligible_source_content_ids = load_pickled_content_id_list(os.path.join(DATA_DIR, "tmp",
                                                                             "eligible_source_content_ids.pkl"))
 
-    excluded_target_content_ids = load_pickled_content_id_list(os.path.join(DATA_DIR, "tmp",
-                                                                               "excluded_target_content_ids.pkl"))
+    eligible_target_content_ids = load_pickled_content_id_list(os.path.join(DATA_DIR, "tmp",
+                                                                               "eligible_target_content_ids.pkl"))
 
     module_logger.info(f'creating RelatedLinksJson for {len(eligible_source_content_ids)} eligible_source_content_ids')
     related_links = RelatedLinksJson(eligible_source_content_ids,
-                                     excluded_target_content_ids,
+                                     eligible_target_content_ids,
                                      trained_model)
 
     module_logger.info('Exporting related links')

@@ -246,12 +246,12 @@ def get_structural_edges_df(mongodb_collection, page_path_content_id_mapping):
 def export_content_id_list(list_name, mongodb_collection, outfile):
     """
     Queries the MongoDB collection to return a list of content_ids that meet the criteria set out in the YAML
-    config files: either excluding content items as source pages or excluding them as target pages
-    :param list_name: string either "eligible_source" or "excluded_target"
+    config files: either including content items as source pages or including them as target pages
+    :param list_name: string either "eligible_source" or "included_target"
     :param mongodb_collection:
     :param outfile: file path for the saved pickled list of content ids
     :return: list of content_ids, either representing those eligible as source pages or
-    those to be excluded as target pages
+    those eligible as target pages
     """
 
     # TODO: We can tidy this up later on as the two ifs are very similar, so a candidate we could extract to a method
@@ -266,11 +266,11 @@ def export_content_id_list(list_name, mongodb_collection, outfile):
                                                       {"document_type": {"$nin": excluded_source_document_types}},
                                                       {"content_id": {"$nin": specific_excluded_source_content_ids}},
                                                       {"phase": "live"}]}
-    if list_name == 'excluded_target':
+    if list_name == 'eligible_target':
         specific_excluded_target_content_ids = EXCLUDED_TARGET_CONTENT['content_ids']
         excluded_target_document_types = EXCLUDED_TARGET_CONTENT['document_types']
 
-        mongodb_filter = {"$or": [{"expanded_links.ordered_related_items": {"$exists": True}},
+        mongodb_filter = {"$nor": [{"expanded_links.ordered_related_items": {"$exists": True}},
                                                      {"document_type": {"$in": BLACKLIST_DOCUMENT_TYPES}},
                                                      {"document_type": {"$in": excluded_target_document_types}},
                                                      {"content_id": {"$in": specific_excluded_target_content_ids}}]}
@@ -278,14 +278,13 @@ def export_content_id_list(list_name, mongodb_collection, outfile):
     # TODO simplify this. Loop through cursor instead?
     content_ids_list_of_dicts = list(
         mongodb_collection.find(mongodb_filter, {"content_id": 1, '_id': 0}))
-    content_ids_nested_list = [list(content_id.values()) for content_id in content_ids_list_of_dicts]
-    content_ids_list = [item for sublist in content_ids_nested_list for item in sublist]
+    content_ids_and_nones_list = [content_id.get('content_id') for content_id in content_ids_list_of_dicts]
+    content_ids_list = list(filter(None, content_ids_and_nones_list))
 
     with open(outfile, 'wb') as fp:
         pickle.dump(content_ids_list, fp)
 
     return content_ids_list
-
 
 
 if __name__ == "__main__":  # our module is being executed as a program
@@ -322,10 +321,10 @@ if __name__ == "__main__":  # our module is being executed as a program
                            content_store_collection,
                            os.path.join(DATA_DIR, "tmp", "eligible_source_content_ids.pkl"))
 
-    export_content_id_list("excluded_target",
+    export_content_id_list("eligible_target",
                            content_store_collection,
                            os.path.join(DATA_DIR, "tmp",
-                                        "excluded_target_content_ids.pkl"))
+                                        "eligible_target_content_ids.pkl"))
 
 
 # This is code from a colleague's blog, with an alternative way of doing this, that we need to compare efficiency with.
