@@ -1,0 +1,22 @@
+#!/bin/bash
+
+set -ueo pipefail
+
+# Temporary
+sudo apt-get update -y
+sudo apt-get install -y awscli
+sudo apt-get install -y jq
+
+echo "Printing content store bucket..."
+echo "$CONTENT_STORE_BUCKET"
+
+echo "Finding latest content backup..."
+
+# Find and download the latest content store backup from S3
+LATEST_CONTENT_BACKUP_PATH=$(aws s3api list-objects-v2 --bucket $CONTENT_STORE_BUCKET --query "Contents[?contains(Key, '-content_store_production.gz')]" | jq  -c "max_by(.LastModified)|.Key" | xargs)
+echo "${LATEST_CONTENT_BACKUP_PATH}"
+# aws s3 cp s3://$${CONTENT_STORE_BUCKET}/$${LATEST_CONTENT_BACKUP_PATH} /var/data/latest_content_store_backup.gz
+
+# Store Big Query credentials
+# echo '$BIG_QUERY_CREDENTIALS' > /var/tmp/bigquery.json
+# chmod 400 /var/tmp/bigquery.json
