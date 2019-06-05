@@ -16,5 +16,6 @@ google-cloud-bigquery
 
 
 # test requirements
+flake8
 pytest
 pytest-mongodb
