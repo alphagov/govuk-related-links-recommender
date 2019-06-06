@@ -47,7 +47,7 @@ class EdgeWeightExtractor:
 
 if __name__ == "__main__":
     module_logger = logging.getLogger('make_functional_edges_and_weights')
-    DATA_DIR = os.getenv("DATA_DIR")
+    data_dir = os.getenv("DATA_DIR")
     blacklisted_document_types = read_exclusions_yaml(
     "document_types_excluded_from_the_topic_taxonomy.yml")['document_types']
     yesterday = (datetime.today() - timedelta(1)).strftime('%Y%m%d')
@@ -57,4 +57,4 @@ if __name__ == "__main__":
     edge_weights = EdgeWeightExtractor(blacklisted_document_types, three_weeks_ago, yesterday)
 
     module_logger.info(f'saving edges and weights to {os.path.join(data_dir, "tmp", "functional_edges.csv")}')
-    edge_weights.extract_df_to_csv(os.path.join(DATA_DIR, "tmp", "functional_edges.csv"))
+    edge_weights.extract_df_to_csv(os.path.join(data_dir, "tmp", "functional_edges.csv"))

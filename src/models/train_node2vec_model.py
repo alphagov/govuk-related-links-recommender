@@ -60,13 +60,13 @@ def train_node2_vec_model(edges_df,
 
 
 if __name__ == "__main__":  # our module is being executed as a program
-    DATA_DIR = os.getenv("DATA_DIR")
-    MODEL_DIR = os.getenv("MODEL_DIR")
+    data_dir = os.getenv("DATA_DIR")
+    model_dir = os.getenv("MODEL_DIR")
     module_logger = logging.getLogger('train_node2_vec_model')
 
     module_logger.info(f'reading in all_edges.csv and node_id_content_id_mapping.json')
     edges = pd.read_csv(
-        os.path.join(DATA_DIR, 'tmp', 'network.csv'),
+        os.path.join(data_dir, 'tmp', 'network.csv'),
         dtype={'source_content_id': object,
                'destination_content_id': object}
     )
@@ -75,12 +75,12 @@ if __name__ == "__main__":  # our module is being executed as a program
 
     # TODO:think about a function that gets the filepath for the thing and does that saving.
     #  Depends how often we do that whether it's needed. Not for MVP
-    node_embeddings_file_path = os.path.join(MODEL_DIR,
+    node_embeddings_file_path = os.path.join(model_dir,
                                              "n2v_node_embeddings")
     module_logger.info(f'saving node embeddings to {node_embeddings_file_path}')
     node2vec_model.wv.save_word2vec_format(node_embeddings_file_path)
 
-    node2vec_model_file_path = os.path.join(MODEL_DIR, "n2v.model")
+    node2vec_model_file_path = os.path.join(model_dir, "n2v.model")
     module_logger.info(f'saving model to {node2vec_model_file_path}')
     node2vec_model.save(node2vec_model_file_path)
     # should we test saving and loading models and embeddings?
