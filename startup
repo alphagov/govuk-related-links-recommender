@@ -1,0 +1,28 @@
+echo "Connected!"
+
+# Setup data directory
+sudo mkdir /var/data
+sudo chown ubuntu /var/data
+
+# Setup Github directory
+mkdir /var/data/github
+cd /var/data/github
+
+# Clone related links repository
+git clone https://github.com/alphagov/govuk-related-links-recommender.git
+cd govuk-related-links-recommender
+git checkout add-automation
+
+# Set execute permission on scripts
+chmod +x ./provision_machine
+chmod +x ./run_link_generation
+
+# Make bucket names accessible to scripts
+export CONTENT_STORE_BUCKET="$CONTENT_STORE_BUCKET"
+export RELATED_LINKS_BUCKET="$RELATED_LINKS_BUCKET"
+
+echo "Provisioning machine..."
+./provision_machine
+
+echo "Running link generation..."
+./run_link_generation
