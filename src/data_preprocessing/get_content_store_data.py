@@ -314,16 +314,16 @@ if __name__ == "__main__":  # our module is being executed as a program
 
     output_df = get_structural_edges_df(content_store_collection, page_path_content_id_mapping)
 
-    module_logger.info(f'saving structural_edges (output_df) to {DATA_DIR}/tmp/structural_edges.json')
-    output_df.to_csv(os.path.join(DATA_DIR, "tmp", "structural_edges.csv"), index=False)
+    module_logger.info(f'saving structural_edges (output_df) to {data_dir}/tmp/structural_edges.json')
+    output_df.to_csv(os.path.join(data_dir, "tmp", "structural_edges.csv"), index=False)
 
     export_content_id_list("eligible_source",
                            content_store_collection,
-                           os.path.join(DATA_DIR, "tmp", "eligible_source_content_ids.pkl"))
+                           os.path.join(data_dir, "tmp", "eligible_source_content_ids.pkl"))
 
     export_content_id_list("eligible_target",
                            content_store_collection,
-                           os.path.join(DATA_DIR, "tmp",
+                           os.path.join(data_dir, "tmp",
                                         "eligible_target_content_ids.pkl"))
 
 

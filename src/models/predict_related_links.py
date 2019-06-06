@@ -45,18 +45,18 @@ def only_include_eligible_target_content_ids(df_target_prop, eligible_target_lin
     return df_target_prop.query('target_content_id in @eligible_target_links')
 
 
-def get_related_links_for_a_source_content_id(source_content_id, model, excluded_target_content_ids,
+def get_related_links_for_a_source_content_id(source_content_id, model, eligible_target_content_ids,
                                               probability_threshold=0.46, output_type="list"):
     """
     Gets the top-5 most-probable eligible target_content_ids for a single source_content_id.
     Target_content_ids are dropped if:
         - The predicted probability between source and target is below the probability threshold
-        - The target_content_id is listed in the exclusion list
+        - The target_content_id is not listed in the inclusion list
         - The source and target are the same item
         - The link is not in the top 5 (highest probabilities) for that source_id
     :param source_content_id: string content_id
     :param model: node2vec model where model.wv.vocab.keys() are content_ids
-    :param excluded_target_content_ids: list of content_id not to be linked to
+    :param eligible_target_content_ids: list of content_ids we can link to
     :param probability_threshold: the models predicted probability of a link between source_content_id and
     target_content_id
     :return: pandas DataFrame with a maximum of 5 rows where each row contains a 'source_content_id',
@@ -65,7 +65,8 @@ def get_related_links_for_a_source_content_id(source_content_id, model, excluded
     potential_related_links = pd.DataFrame(model.wv.most_similar(source_content_id, topn=1000))
     potential_related_links.columns = ['target_content_id', 'probability']
     potential_related_links.sort_values('probability', inplace=True, ascending=False)
-    potential_related_links = only_include_eligible_target_content_ids(potential_related_links, excluded_target_content_ids,
+    potential_related_links = only_include_eligible_target_content_ids(potential_related_links,
+                                                                       eligible_target_content_ids,
                                                                     )
     potential_related_links['source_content_id'] = source_content_id
 
@@ -120,32 +121,32 @@ class RelatedLinksCsv:
         content_id_to_base_path_mapper = json.load(
             content_id_to_base_path_mapping_file)
 
-    def __init__(self, top100_content_ids, excluded_target_content_ids, model):
+    def __init__(self, top100_content_ids, eligible_target_content_ids, model):
 
         self.top100_content_ids_df = top100_content_ids[top100_content_ids['source_content_id'].isin(model.wv.vocab.keys())]
         logging.info("extracting related links using apply on the source_content_id column ")
         self.top100_related_links_series = self._get_related_links_for_df(self.top100_content_ids_df,
                                                                           model,
-                                                                          excluded_target_content_ids)
+                                                                          eligible_target_content_ids)
         logging.info("combining series of dfs into single df")
         self.top100_related_links_df = self._series_to_df(self.top100_related_links_series)
         logging.info("adding base_path columns using dict mapping from content_ids to base_path")
         self.top100_related_links_df = self._get_base_paths(self.top100_related_links_df)
 
     @staticmethod
-    def _get_related_links_for_df(df, model, excluded_target_content_ids):
+    def _get_related_links_for_df(df, model, eligible_target_content_ids):
         """
         most probable (5 max) and eligible target_content_ids are extracted for each source_content_id
         in the input df's column called 'content_id'
         :param df: pandas DataFrame with a column named 'content_id'
         :param model: node2vec model where mode.wv.vocab.keys() are content_ids
-        :param excluded_target_content_ids: list of excluded target_content_ids
+        :param eligible_target_content_ids: list of eligible target_content_ids
         :return: pandas Series where each element is a pandas DataFrame
         """
         return df['source_content_id'].apply(
             get_related_links_for_a_source_content_id,
             model=model,
-            excluded_target_content_ids=excluded_target_content_ids,
+            eligible_target_content_ids=eligible_target_content_ids,
             output_type="df")
 
     @staticmethod
@@ -246,7 +247,7 @@ if __name__ == '__main__':
     top100_df.to_csv(os.path.join(DATA_DIR, 'tmp', 'top100.csv'), index=False)
 
     module_logger.info('creating RelatedLinksCsv')
-    related_links_csv_writer = RelatedLinksCsv(top100_df, excluded_target_content_ids,
+    related_links_csv_writer = RelatedLinksCsv(top100_df, eligible_target_content_ids,
                                                trained_model)
 
     module_logger.info('Writing out related links for top 100 content_ids to csv')
