@@ -1,0 +1,195 @@
+groups:
+  - name: link-generation
+    jobs: 
+      - run-generation-integration
+  - name: link-ingestion
+    jobs:
+      - run-ingestion-integration
+
+jobs:
+  - name: run-generation-integration
+    serial_groups: 
+      - link-generation
+    plan:
+      - task: create-instance
+        config:
+          params:
+            DESIRED_CAPACITY: 1
+            ASG_NAME: related_links_generation_asg
+            ROLE_ARN: ((concourse_role_arn))
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: govsvc/task-toolbox
+              tag: 1.1.0
+          run: &update-asg
+            path: bash
+            args:
+              - -c
+              - |
+                set -ueo pipefail
+                eval $(aws-assume-role $ROLE_ARN)
+                echo Assumed role successfully
+                aws autoscaling set-desired-capacity \
+                  --auto-scaling-group-name $ASG_NAME \
+                  --desired-capacity $DESIRED_CAPACITY \
+                  --region eu-west-1
+                echo Set desired-capacity
+      - task: wait-for-instance
+        config:
+          params:
+            ROLE_ARN: ((concourse_role_arn))
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: govsvc/task-toolbox
+              tag: 1.1.0
+          run:
+            path: bash
+            args:
+              - -c
+              - |
+                set -ueo pipefail
+
+                eval $(aws-assume-role $ROLE_ARN)
+                echo Assumed role successfully
+
+                echo "Sleeping for 30s to give AWS chance to start EC2..."
+                sleep 30
+
+                instance_ip=$(aws ec2 describe-instances --region eu-west-1 --query "Reservations[*].Instances[*].InstanceId" --filters Name=instance-state-name,Values=running,pending  Name=tag:Name,Values=related-links-generation --output=text)
+
+                aws_version=$(aws --version)
+                echo "AWS CLI version: $aws_version"
+                echo "Instance ID: ${instance_ip}"
+                echo "aws ec2 wait instance-status-ok --region eu-west-1 --instance-ids ${instance_ip}"
+
+                echo "Waiting on instance..."
+                aws ec2 wait instance-status-ok \
+                  --region eu-west-1 \
+                  --instance-ids ${instance_ip}
+                
+                echo "Instance available and ready"
+      - task: provision-instance
+        config:
+          params:
+            CONCOURSE_PRIVATE_KEY: ((concourse_private_key))
+            BIG_QUERY_CREDENTIALS: ((big_query_credentials))
+            ROLE_ARN: ((concourse_role_arn))
+            CONTENT_STORE_BUCKET: ((content_store_bucket))
+            RELATED_LINKS_BUCKET: ((related_links_bucket))
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: govsvc/task-toolbox
+              tag: 1.1.0
+          run:
+            path: bash
+            args:
+              - -c
+              - |
+                set -ueo pipefail
+
+                eval $(aws-assume-role $ROLE_ARN)
+                echo Assumed role successfully
+
+                echo "$CONCOURSE_PRIVATE_KEY" > /tmp/concourse_ssh_key
+                chmod 400 /tmp/concourse_ssh_key
+
+                echo "Starting SSH agent..."
+                eval "$(ssh-agent -s)"
+
+                echo "Adding key to SSH agent..."
+                ssh-add /tmp/concourse_ssh_key
+
+                instance_ip=$(aws ec2 describe-instances --region eu-west-1 --query "Reservations[*].Instances[*].PublicIpAddress" --filter Name=tag:Name,Values=related-links-generation --output=text)
+                
+                echo "Connecting to instance..."
+                ssh -o StrictHostKeyChecking=no ubuntu@${instance_ip} << EOF
+                  tmux new -d -s ubuntu
+
+                  echo "Connected!"
+
+                  # Setup data directory
+                  sudo mkdir /var/data
+                  sudo chown ubuntu /var/data
+
+                  # Setup Github directory
+                  mkdir /var/data/github
+                  cd /var/data/github
+
+                  # Clone related links repository
+                  git clone https://github.com/alphagov/govuk-related-links-recommender.git
+                  cd govuk-related-links-recommender
+                  git checkout add-automation
+
+                  # Set execute permission on scripts
+                  chmod +x ./provision_machine
+                  chmod +x ./run_link_generation
+
+                  # Make bucket names accessible to scripts
+                  export CONTENT_STORE_BUCKET="$CONTENT_STORE_BUCKET"
+                  export RELATED_LINKS_BUCKET="$RELATED_LINKS_BUCKET"
+                  export BIG_QUERY_CREDENTIALS='$BIG_QUERY_CREDENTIALS'
+
+                  echo "Provisioning machine..."
+                  ./provision_machine
+
+                  echo "Running link generation..."
+                  ./run_link_generation
+
+                  echo "Finished task"
+                  exit
+                EOF
+
+                # tmux capture-pane -pt 0
+
+                echo "Finished pipeline"
+      # - task: destroy-instance
+      #   config:
+      #     params:
+      #       DESIRED_CAPACITY: 0
+      #       ASG_NAME: related_links_generation_asg
+      #       ROLE_ARN: ((concourse_role_arn))
+      #     platform: linux
+      #     image_resource:
+      #       type: docker-image
+      #       source:
+      #         repository: govsvc/task-toolbox
+      #         tag: 1.1.0
+      #     run: *update-asg
+
+  - name: run-ingestion-integration
+    serial_groups: 
+      - link-ingestion
+    plan:
+      - task: create-instance
+        config:
+          params:
+            DESIRED_CAPACITY: 1
+            ASG_NAME: related_links_ingestion_asg
+            ROLE_ARN: ((concourse_role_arn))
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: govsvc/task-toolbox
+              tag: 1.1.0
+          run: *update-asg
+      - task: destroy-instance
+        config:
+          params:
+            DESIRED_CAPACITY: 0
+            ASG_NAME: related_links_ingestion_asg
+            ROLE_ARN: ((concourse_role_arn))
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: govsvc/task-toolbox
+              tag: 1.1.0
+          run: *update-asg
+
