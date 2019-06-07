@@ -20,6 +20,7 @@ chmod +x ./run_link_generation
 # Make bucket names accessible to scripts
 export CONTENT_STORE_BUCKET="$CONTENT_STORE_BUCKET"
 export RELATED_LINKS_BUCKET="$RELATED_LINKS_BUCKET"
+export BIG_QUERY_CREDENTIALS='$BIG_QUERY_CREDENTIALS'
 
 echo "Provisioning machine..."
 ./provision_machine

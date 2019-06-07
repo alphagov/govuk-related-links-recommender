@@ -2,6 +2,9 @@
 
 set -ueo pipefail
 
+sleep 60
+echo "Starting run_link_generation script..."
+
 export DATA_DIR=$PWD/data
 export MODEL_DIR=$PWD/models
 export GOOGLE_APPLICATION_CREDENTIALS=/var/tmp/bigquery.json
