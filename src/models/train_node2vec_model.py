@@ -4,10 +4,26 @@ from multiprocessing import cpu_count
 
 import networkx as nx
 from node2vec import Node2Vec
+from gensim.models.callbacks import CallbackAny2Vec
 import pandas as pd
 
 
 logging.config.fileConfig('src/logging.conf')
+
+
+class EpochLogger(CallbackAny2Vec):
+    """Callback to log information about training'"""
+
+    def __init__(self):
+        self.logger = logging.getLogger('train_node2_vec_model.epoch_logger')
+        self.epoch = 0
+
+    def on_epoch_begin(self, model):
+        self.logger.info(f'Model training epoch #{self.epoch} begun')
+
+    def on_epoch_end(self, model):
+        self.logger.info(f'Model training epoch #{self.epoch} ended')
+        self.epoch += 1
 
 
 def create_graph(edges_df):
@@ -51,8 +67,9 @@ def train_node2_vec_model(edges_df,
     # automatically passed (from the Node2Vec constructor)
     # https://radimrehurek.com/gensim/models/word2vec.html#gensim.models.word2vec.Word2Vec
     # TODO: search this parameter space systematically and change node2vec parameters
+    epoch_logger = EpochLogger()
     model = node2vec.fit(window=10, min_count=1, batch_words=4, seed=1,
-                         workers=1)
+                         workers=1, callbacks=[epoch_logger])
 
     logger.info('Completed fitting model.')
 
