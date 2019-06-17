@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -eo pipefail
+
+# Install updates and required packages
+sudo apt-get update -y
+sudo apt-get install -y awscli
+sudo apt-get install -y jq
+sudo apt-get install -y gnupg2
+
+# Install RVM dependencies
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -yq curl g++ gcc autoconf automake bison libc6-dev libffi-dev libgdbm-dev libncurses5-dev libsqlite3-dev libtool libyaml-dev make pkg-config sqlite3 zlib1g-dev libgmp-dev libreadline-dev libssl-dev
+
+# Install RVM and Ruby 2.6.3
+curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
+curl -sSL https://rvm.io/pkuczynski.asc | gpg2 --import -
+curl -sSL https://get.rvm.io | bash -s stable
+
+source /home/ubuntu/.rvm/scripts/rvm
+rvm install 2.6.3

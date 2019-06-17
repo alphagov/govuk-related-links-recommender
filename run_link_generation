@@ -1,0 +1,53 @@
+#!/bin/bash
+
+set -ueo pipefail
+
+echo "Starting run_link_generation script..."
+sleep 60
+
+export DATA_DIR=$PWD/data
+export MODEL_DIR=$PWD/models
+export GOOGLE_APPLICATION_CREDENTIALS=/var/tmp/bigquery.json
+
+# Store Big Query credentials
+echo $BIG_QUERY_CREDENTIALS > /var/tmp/bigquery.json
+chmod 400 /var/tmp/bigquery.json
+
+# Find and download the latest content store backup from S3
+echo "Finding latest content backup..."
+LATEST_CONTENT_BACKUP_PATH=$(aws s3api list-objects-v2 --bucket $CONTENT_STORE_BUCKET --query "Contents[?contains(Key, '-content_store_production.gz')]" | jq  -c "max_by(.LastModified)|.Key" | xargs)
+
+echo "Downloading latest content store backup..."
+aws s3 cp s3://$CONTENT_STORE_BUCKET/$LATEST_CONTENT_BACKUP_PATH /var/data/latest_content_store_backup.gz
+
+# Extract content store backup
+cd /var/data
+tar -xvf latest_content_store_backup.gz
+ls -lat content_store_production
+
+# Restore content store data to MongoDb
+mongorestore -d content_store -c content_items /var/data/content_store_production/content_items.bson
+
+# Install requirements
+cd /var/data/github/govuk-related-links-recommender
+pip3 install -r requirements.txt
+
+# Start related links generation process
+python3.6 src/run_all.py
+
+cd /var/data/github/govuk-related-links-recommender/data/predictions
+
+SUGGESTED_LINKS_JSON="$(ls -t | grep suggested_related_links.json | head -1)"
+SUGGESTED_LINKS_CSV="$(ls -t | grep suggested_related_links.csv | head -1)"
+
+# Copy outputs to S3
+aws s3 cp $DATA_DIR/predictions/$SUGGESTED_LINKS_JSON s3://$RELATED_LINKS_BUCKET/related_links.json
+aws s3 cp $DATA_DIR/predictions/$SUGGESTED_LINKS_CSV s3://$RELATED_LINKS_BUCKET/related_links.csv
+
+aws s3 cp $DATA_DIR/tmp/structural_edges.csv s3://$RELATED_LINKS_BUCKET/structural_edges.csv
+aws s3 cp $DATA_DIR/tmp/functional_edges.csv s3://$RELATED_LINKS_BUCKET/functional_edges.csv
+aws s3 cp $DATA_DIR/tmp/network.csv s3://$RELATED_LINKS_BUCKET/network.csv
+aws s3 cp $MODEL_DIR/n2v.model s3://$RELATED_LINKS_BUCKET/n2v.model
+
+aws s3 cp /tmp/govuk-related-links-recommender.log s3://$RELATED_LINKS_BUCKET/govuk-related-links-recommender.log
+aws s3 cp /var/tmp/related_links_process.log s3://$RELATED_LINKS_BUCKET/related_links_generation.log

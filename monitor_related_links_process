@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -eo pipefail
+
+LINK_PROCESS_PID="$(ps aux | grep run_link_ | grep -v grep | awk '{print $2}')"
+echo "PID of the link generation / ingestion process is $LINK_PROCESS_PID"
+
+tail -f --pid=$LINK_PROCESS_PID /var/tmp/related_links_process.log
