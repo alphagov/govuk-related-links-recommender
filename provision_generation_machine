@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set -ueo pipefail
+
+# Install updates and required packages
+sudo apt-get update -y
+sudo apt-get install -y awscli
+sudo apt-get install -y jq
+
+# Install Mongo
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
+
+echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+sudo apt-get update
+sudo apt-get install -y mongodb-org
+sudo service mongod start
+
+# Install Python 3 and Pip
+sudo apt-get install python3.6
+sudo apt install -y python3-pip
+
+# Allow others access to instance
+echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDDAZQOvxUVgi4IWwfEqYQkqU2b9RGpEHfCB48CmwdRP3WY8Cfre/GH6gw+wLvNvIDuUGLr2hwBhvqoWxsC0EeDMTvgYQE6//zb3ZCw6owMdSmkzHfSkcVvM4JGvuNWIOFYIcMtF9DkGddM5jQD9Inzb+TtPaQjrp8u4hZqr0agjSxwQGxa6hl0TfI4zXNg5Q4TXdEDuhauGomUN+6hK4wRfJW2cdXZBadAbDHAsMNrbEPBcaD8z+SJ23qT5mE5N4aGxbscKqNfq0hTdHUUzDY3Y5bw/Odt5Z9JZNE3/amBwMDRBF0oIEs1+jztRgjPZq2o2jl9EFpu7XToZU+1LGs8m4JDAAyf4BgwX5kdIrkO/MOEsGTY/dqnpwzNNBzfE4pxW4P4frqS1xPP4X5DbDiVD2lu4adffaMOmPU8cy9YyMMxEK62yCCMry1TU7SYr/o1gRcIPRk2m3ZifODZEp9AStRwAeWQfn2fgv2naL8wVd24pdl2/LKuxe1txQTwc6KFKOAylUCEHUJ2NDG5x2XSAGmE/oecUgexxIgHR2nhG3YRt30T8qimEPrY7Tarb3Dei/kHTBJkg3wOLRMGG81L0cE9wvTt6em5jtKXU/tvB16lvi5cgNO++Lmy7GlcZYfbdYZi/CELCBEZye5m9vZT7Jzm26JK75HA3sgtqajMKw== suganya.sivaskantharajah@digital.cabinet-office.gov.uk" >> /home/ubuntu/.ssh/authorized_keys
+echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCo6AI0U+VFs2dkrwNDMKcU7j5lhSPFDuboQrsGyC1tv8aUBlCSfVDaPRPT20lYANN7tFgQD9mKXaMlUd9bCJJFs7L3CbE+/kSQCE85rfPFDaTMb3/WzYzwMjDD05pRtvdBwmkS6o8IFA4Yyd29qahYhnrO3jexBIZnNdM4nWZCac+nX/8bWckPOGWIR7fTNWoS8C8tioiUDqa/ZflzGqA0NKv7M0I1kwKqHt25FHaqZxnGmnKEC9QIUGbS4cC1cJQ2AO3NqJGPWhb39QrZwvv+Juh9rU3vuohDfx7Xm1Lh8NMVf3+c1vNTcK+DvaGGLZJ20JUBXlRRFFviLo9eaaf5fHIn5bM9aKFwxoPZtlj73FQpv04bUJf/LlbnGgLeW+B6Pl2w2qFp3u5p5NtvPEnLLPm4ljiPsJwl6vdmZy/xLc8/Ze0xyOeMaENm9MFK8BykgBqXqmEsSntvryP2fp1LgwDOt9ufLpF+yLq6hXl/JKYDJZiCTUjpwSbO/GRbsf2PCjzcwLxKIru3QtR9IZmiopeYRbDvH6Zofs/4M4mQVlBv15CKthVSTwwvcb9vOQyRa2uRW6FkY//g04+2yXpU742Cuh0CgNUd1fJ/vO3kCO0Fup/m3M0B7Vsr4NE5/0XdZSXOd5sF9oB4uVh9vE7apD0+hGbeQHzXz5cRNn52KQ== karl.alec.baker@gmail.com" >> /home/ubuntu/.ssh/authorized_keys

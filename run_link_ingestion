@@ -1,0 +1,26 @@
+#!/bin/bash
+
+set -eo pipefail
+
+echo "Starting run_link_ingestion script..."
+sleep 60
+
+# Find and download the latest related links JSON from S3
+LATEST_RELATED_LINKS_PATH=$(aws s3api list-objects-v2 --bucket $RELATED_LINKS_BUCKET --query "Contents[?contains(Key, '_related_links.json')]" | jq  -c "max_by(.LastModified)|.Key" | xargs)
+aws s3 cp s3://$RELATED_LINKS_BUCKET/${LATEST_RELATED_LINKS_PATH} /var/data/latest_related_links.json
+
+# Install Bundler and gems
+source /home/ubuntu/.rvm/scripts/rvm
+
+# Switch to required Ruby version
+rvm use ruby-2.6.3
+
+# Install dependencies
+gem install bundler
+bundle
+
+# Run publishing
+bundle exec rake content:update_related_links_from_json['/var/data/latest_related_links.json'] 
+
+# Copy log to S3
+aws s3 cp /var/tmp/related_links_process.log s3://$RELATED_LINKS_BUCKET/related_links_ingestion.log
