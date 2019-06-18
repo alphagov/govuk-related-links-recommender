@@ -2,9 +2,13 @@ groups:
   - name: link-generation
     jobs: 
       - run-generation-integration
+      - run-generation-staging
+      - run-generation-production
   - name: link-ingestion
     jobs:
       - run-ingestion-integration
+      - run-ingestion-staging
+      - run-ingestion-production
 
 jobs:
   - name: run-generation-integration
@@ -17,7 +21,7 @@ jobs:
           params:
             DESIRED_CAPACITY: 1
             ASG_NAME: related-links-generation
-            ROLE_ARN: ((concourse_role_arn))
+            ROLE_ARN: ((concourse_role_arn_integration))
           platform: linux
           image_resource:
             type: docker-image
@@ -40,14 +44,14 @@ jobs:
       - task: wait-for-instance
         config:
           params:
-            ROLE_ARN: ((concourse_role_arn))
+            ROLE_ARN: ((concourse_role_arn_integration))
           platform: linux
           image_resource:
             type: docker-image
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
-          run:
+          run: &wait-for-instance
             path: bash
             args:
               - -c
@@ -74,7 +78,7 @@ jobs:
           params:
             CONCOURSE_PRIVATE_KEY: ((concourse_private_key))
             BIG_QUERY_CREDENTIALS: ((big_query_credentials))
-            ROLE_ARN: ((concourse_role_arn))
+            ROLE_ARN: ((concourse_role_arn_integration))
             CONTENT_STORE_BUCKET: ((content_store_bucket_integration))
             RELATED_LINKS_BUCKET: ((related_links_bucket_integration))
           platform: linux
@@ -83,7 +87,7 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
-          run:
+          run: &provision-generation-instance
             path: bash
             args:
               - -c
@@ -137,14 +141,14 @@ jobs:
         config:
           params:
             CONCOURSE_PRIVATE_KEY: ((concourse_private_key))
-            ROLE_ARN: ((concourse_role_arn))
+            ROLE_ARN: ((concourse_role_arn_integration))
           platform: linux
           image_resource:
             type: docker-image
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
-          run:
+          run: &watch-instance
             path: bash
             args:
               - -c
@@ -178,7 +182,147 @@ jobs:
           params:
             DESIRED_CAPACITY: 0
             ASG_NAME: related-links-generation
-            ROLE_ARN: ((concourse_role_arn))
+            ROLE_ARN: ((concourse_role_arn_integration))
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: govsvc/task-toolbox
+              tag: 1.1.0
+          run: *update-asg
+
+  - name: run-generation-staging
+    serial_groups: 
+      - link-generation
+    on_failure: *destroy-generation-instance
+    plan:
+      - task: create-generation-instance
+        config:
+          params:
+            DESIRED_CAPACITY: 1
+            ASG_NAME: related-links-generation
+            ROLE_ARN: ((concourse_role_arn_staging))
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: govsvc/task-toolbox
+              tag: 1.1.0
+          run: *update-asg
+      - task: wait-for-instance
+        config:
+          params:
+            ROLE_ARN: ((concourse_role_arn_staging))
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: govsvc/task-toolbox
+              tag: 1.1.0
+          run: *wait-for-instance
+      - task: provision-instance
+        config:
+          params:
+            CONCOURSE_PRIVATE_KEY: ((concourse_private_key))
+            BIG_QUERY_CREDENTIALS: ((big_query_credentials))
+            ROLE_ARN: ((concourse_role_arn_staging))
+            CONTENT_STORE_BUCKET: ((content_store_bucket_staging))
+            RELATED_LINKS_BUCKET: ((related_links_bucket_staging))
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: govsvc/task-toolbox
+              tag: 1.1.0
+          run: *provision-generation-instance
+      - task: watch-instance
+        config:
+          params:
+            CONCOURSE_PRIVATE_KEY: ((concourse_private_key))
+            ROLE_ARN: ((concourse_role_arn_staging))
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: govsvc/task-toolbox
+              tag: 1.1.0
+          run: *watch-instance
+      - task: destroy-generation-instance
+        config:
+          params:
+            DESIRED_CAPACITY: 0
+            ASG_NAME: related-links-generation
+            ROLE_ARN: ((concourse_role_arn_staging))
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: govsvc/task-toolbox
+              tag: 1.1.0
+          run: *update-asg
+
+  - name: run-generation-production
+    serial_groups: 
+      - link-generation
+    on_failure: *destroy-generation-instance
+    plan:
+      - task: create-generation-instance
+        config:
+          params:
+            DESIRED_CAPACITY: 1
+            ASG_NAME: related-links-generation
+            ROLE_ARN: ((concourse_role_arn_production))
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: govsvc/task-toolbox
+              tag: 1.1.0
+          run: *update-asg
+      - task: wait-for-instance
+        config:
+          params:
+            ROLE_ARN: ((concourse_role_arn_production))
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: govsvc/task-toolbox
+              tag: 1.1.0
+          run: *wait-for-instance
+      - task: provision-instance
+        config:
+          params:
+            CONCOURSE_PRIVATE_KEY: ((concourse_private_key))
+            BIG_QUERY_CREDENTIALS: ((big_query_credentials))
+            ROLE_ARN: ((concourse_role_arn_production))
+            CONTENT_STORE_BUCKET: ((content_store_bucket_production))
+            RELATED_LINKS_BUCKET: ((related_links_bucket_production))
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: govsvc/task-toolbox
+              tag: 1.1.0
+          run: *provision-generation-instance
+      - task: watch-instance
+        config:
+          params:
+            CONCOURSE_PRIVATE_KEY: ((concourse_private_key))
+            ROLE_ARN: ((concourse_role_arn_production))
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: govsvc/task-toolbox
+              tag: 1.1.0
+          run: *watch-instance
+      - task: destroy-generation-instance
+        config:
+          params:
+            DESIRED_CAPACITY: 0
+            ASG_NAME: related-links-generation
+            ROLE_ARN: ((concourse_role_arn_production))
           platform: linux
           image_resource:
             type: docker-image
@@ -197,7 +341,7 @@ jobs:
           params:
             DESIRED_CAPACITY: 1
             ASG_NAME: related-links-ingestion
-            ROLE_ARN: ((concourse_role_arn))
+            ROLE_ARN: ((concourse_role_arn_integration))
           platform: linux
           image_resource:
             type: docker-image
@@ -208,14 +352,14 @@ jobs:
       - task: wait-for-instance
         config:
           params:
-            ROLE_ARN: ((concourse_role_arn))
+            ROLE_ARN: ((concourse_role_arn_integration))
           platform: linux
           image_resource:
             type: docker-image
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
-          run:
+          run: &wait-for-ingestion-instance
             path: bash
             args:
               - -c
@@ -241,7 +385,7 @@ jobs:
         config:
           params:
             CONCOURSE_PRIVATE_KEY: ((concourse_private_key))
-            ROLE_ARN: ((concourse_role_arn))
+            ROLE_ARN: ((concourse_role_arn_integration))
             PUBLISHING_API_URI: ((publishing_api_uri_integration))
             PUBLISHING_API_BEARER_TOKEN: ((publishing_api_bearer_token_integration))
             RELATED_LINKS_BUCKET: ((related_links_bucket_integration))
@@ -251,7 +395,7 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
-          run:
+          run: &provision-ingestion-instance
             path: bash
             args:
               - -c
@@ -305,14 +449,14 @@ jobs:
         config:
           params:
             CONCOURSE_PRIVATE_KEY: ((concourse_private_key))
-            ROLE_ARN: ((concourse_role_arn))
+            ROLE_ARN: ((concourse_role_arn_integration))
           platform: linux
           image_resource:
             type: docker-image
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
-          run:
+          run: &watch-ingestion-instance
             path: bash
             args:
               - -c
@@ -346,7 +490,147 @@ jobs:
           params:
             DESIRED_CAPACITY: 0
             ASG_NAME: related-links-ingestion
-            ROLE_ARN: ((concourse_role_arn))
+            ROLE_ARN: ((concourse_role_arn_integration))
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: govsvc/task-toolbox
+              tag: 1.1.0
+          run: *update-asg
+
+  - name: run-ingestion-staging
+    serial_groups: 
+      - link-ingestion
+    on_failure: *destroy-ingestion-instance
+    plan:
+      - task: create-ingestion-instance
+        config:
+          params:
+            DESIRED_CAPACITY: 1
+            ASG_NAME: related-links-ingestion
+            ROLE_ARN: ((concourse_role_arn_staging))
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: govsvc/task-toolbox
+              tag: 1.1.0
+          run: *update-asg
+      - task: wait-for-instance
+        config:
+          params:
+            ROLE_ARN: ((concourse_role_arn_staging))
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: govsvc/task-toolbox
+              tag: 1.1.0
+          run: *wait-for-ingestion-instance
+      - task: provision-ingestion-instance
+        config:
+          params:
+            CONCOURSE_PRIVATE_KEY: ((concourse_private_key))
+            ROLE_ARN: ((concourse_role_arn_staging))
+            PUBLISHING_API_URI: ((publishing_api_uri_staging))
+            PUBLISHING_API_BEARER_TOKEN: ((publishing_api_bearer_token_staging))
+            RELATED_LINKS_BUCKET: ((related_links_bucket_staging))
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: govsvc/task-toolbox
+              tag: 1.1.0
+          run: *provision-ingestion-instance
+      - task: watch-ingestion-instance
+        config:
+          params:
+            CONCOURSE_PRIVATE_KEY: ((concourse_private_key))
+            ROLE_ARN: ((concourse_role_arn_staging))
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: govsvc/task-toolbox
+              tag: 1.1.0
+          run: *watch-ingestion-instance
+      - task: destroy-ingestion-instance
+        config:
+          params:
+            DESIRED_CAPACITY: 0
+            ASG_NAME: related-links-ingestion
+            ROLE_ARN: ((concourse_role_arn_staging))
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: govsvc/task-toolbox
+              tag: 1.1.0
+          run: *update-asg
+
+  - name: run-ingestion-production
+    serial_groups: 
+      - link-ingestion
+    on_failure: *destroy-ingestion-instance
+    plan:
+      - task: create-ingestion-instance
+        config:
+          params:
+            DESIRED_CAPACITY: 1
+            ASG_NAME: related-links-ingestion
+            ROLE_ARN: ((concourse_role_arn_production))
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: govsvc/task-toolbox
+              tag: 1.1.0
+          run: *update-asg
+      - task: wait-for-instance
+        config:
+          params:
+            ROLE_ARN: ((concourse_role_arn_production))
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: govsvc/task-toolbox
+              tag: 1.1.0
+          run: *wait-for-ingestion-instance
+      - task: provision-ingestion-instance
+        config:
+          params:
+            CONCOURSE_PRIVATE_KEY: ((concourse_private_key))
+            ROLE_ARN: ((concourse_role_arn_production))
+            PUBLISHING_API_URI: ((publishing_api_uri_production))
+            PUBLISHING_API_BEARER_TOKEN: ((publishing_api_bearer_token_production))
+            RELATED_LINKS_BUCKET: ((related_links_bucket_production))
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: govsvc/task-toolbox
+              tag: 1.1.0
+          run: *provision-ingestion-instance
+      - task: watch-ingestion-instance
+        config:
+          params:
+            CONCOURSE_PRIVATE_KEY: ((concourse_private_key))
+            ROLE_ARN: ((concourse_role_arn_production))
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: govsvc/task-toolbox
+              tag: 1.1.0
+          run: *watch-ingestion-instance
+      - task: destroy-ingestion-instance
+        config:
+          params:
+            DESIRED_CAPACITY: 0
+            ASG_NAME: related-links-ingestion
+            ROLE_ARN: ((concourse_role_arn_production))
           platform: linux
           image_resource:
             type: docker-image
