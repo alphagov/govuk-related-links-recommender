@@ -15,7 +15,7 @@ chmod 400 /var/tmp/bigquery.json
 
 # Find and download the latest content store backup from S3
 echo "Finding latest content backup..."
-LATEST_CONTENT_BACKUP_PATH=$(aws s3api list-objects-v2 --bucket $CONTENT_STORE_BUCKET --query "Contents[?contains(Key, '-content_store_production.gz')]" | jq  -c "max_by(.LastModified)|.Key" | xargs)
+LATEST_CONTENT_BACKUP_PATH=$(aws s3api list-objects-v2 --bucket $CONTENT_STORE_BUCKET --prefix mongo-api --query "Contents[?contains(Key, '-content_store_production.gz')]" | jq  -c "max_by(.LastModified)|.Key" | xargs)
 
 echo "Downloading latest content store backup..."
 aws s3 cp s3://$CONTENT_STORE_BUCKET/$LATEST_CONTENT_BACKUP_PATH /var/data/latest_content_store_backup.gz
