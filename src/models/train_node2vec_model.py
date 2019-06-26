@@ -4,26 +4,11 @@ from multiprocessing import cpu_count
 
 import networkx as nx
 from node2vec import Node2Vec
-from gensim.models.callbacks import CallbackAny2Vec
+
+from src.utils.epoch_logger import EpochLogger
 import pandas as pd
 
-
 logging.config.fileConfig('src/logging.conf')
-
-
-class EpochLogger(CallbackAny2Vec):
-    """Callback to log information about training'"""
-
-    def __init__(self):
-        self.logger = logging.getLogger('train_node2_vec_model.epoch_logger')
-        self.epoch = 0
-
-    def on_epoch_begin(self, model):
-        self.logger.info(f'Model training epoch #{self.epoch} begun')
-
-    def on_epoch_end(self, model):
-        self.logger.info(f'Model training epoch #{self.epoch} ended')
-        self.epoch += 1
 
 
 def create_graph(edges_df):
