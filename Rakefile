@@ -3,13 +3,14 @@ require 'gds-api-adapters'
 namespace :content do
   desc 'Updates suggested related links for content from a JSON file'
   task :update_related_links_from_json, [:json_path] do |_, args|
-    puts 'Reading and parsing data...'
+    UPDATES_PER_BATCH = 20000
 
     @publishing_api = GdsApi::PublishingApiV2.new(
      ENV['PUBLISHING_API_URI'],
      bearer_token: ENV['PUBLISHING_API_BEARER_TOKEN']
     )
 
+    puts 'Reading and parsing JSON'
     url = URI.parse(args[:json_path]) rescue false
     file =
       if url.is_a?(URI::HTTP) || url.is_a?(URI::HTTPS)
@@ -18,15 +19,26 @@ namespace :content do
         File.read(args[:json_path])
       end
 
-    json = JSON.parse(file)
-
     @failed_content_ids = []
+
+    json = JSON.parse(file)
+    source_content_id_groups = json.keys.each_slice(UPDATES_PER_BATCH)
 
     start_time = Time.now
     puts "Start updating content items, at #{start_time}"
+    puts "Updating #{UPDATES_PER_BATCH} per batch"
 
-    json.each_pair do |source_content_id, related_content_ids|
-      update_content(source_content_id, related_content_ids)
+    source_content_id_groups.each do |group|
+      group.each do |source_content_id|
+        update_content(source_content_id, json[source_content_id])
+      end
+
+      if group.length == UPDATES_PER_BATCH
+        puts "Waiting for 30 minutes before starting next batch..."
+        sleep 1800
+
+        puts "Resuming ingestion of next batch at #{Time.now}"
+      end
     end
 
     end_time = Time.now
