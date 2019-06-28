@@ -41,8 +41,8 @@ SUGGESTED_LINKS_JSON="$(ls -t | grep suggested_related_links.json | head -1)"
 SUGGESTED_LINKS_CSV="$(ls -t | grep suggested_related_links.csv | head -1)"
 
 # Copy outputs to S3
-aws s3 cp $DATA_DIR/predictions/$SUGGESTED_LINKS_JSON s3://$RELATED_LINKS_BUCKET/related_links.json
-aws s3 cp $DATA_DIR/predictions/$SUGGESTED_LINKS_CSV s3://$RELATED_LINKS_BUCKET/related_links.csv
+aws s3 cp $DATA_DIR/predictions/$SUGGESTED_LINKS_JSON s3://$RELATED_LINKS_BUCKET/$SUGGESTED_LINKS_JSON
+aws s3 cp $DATA_DIR/predictions/$SUGGESTED_LINKS_CSV s3://$RELATED_LINKS_BUCKET/$SUGGESTED_LINKS_CSV
 
 aws s3 cp $DATA_DIR/tmp/structural_edges.csv s3://$RELATED_LINKS_BUCKET/structural_edges.csv
 aws s3 cp $DATA_DIR/tmp/functional_edges.csv s3://$RELATED_LINKS_BUCKET/functional_edges.csv
