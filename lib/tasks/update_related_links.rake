@@ -1,0 +1,19 @@
+require 'gds-api-adapters'
+
+namespace :content do
+  desc 'Updates suggested related links for content from a JSON file'
+  task :update_related_links_from_json, [:json_path] do |_, args|
+    UPDATES_PER_BATCH = 20000
+
+    publishing_api = GdsApi::PublishingApiV2.new(
+      ENV['PUBLISHING_API_URI'],
+      bearer_token: ENV['PUBLISHING_API_BEARER_TOKEN']
+    )
+
+    puts 'Reading and parsing JSON'
+    json_file_extractor = JsonFileExtractor.new(args[:json_path])
+
+    links_updater = RelatedLinksUpdater.new(publishing_api, json_file_extractor, UPDATES_PER_BATCH)
+    links_updater.update_related_links
+  end
+end
