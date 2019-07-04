@@ -1,37 +1,38 @@
 require 'progressbar'
 
 class RelatedLinksUpdater
+  attr_reader :failed_content_ids
+
   def initialize(publishing_api, json_file_extractor, updates_per_batch, between_batch_wait_time_seconds = 1200)
     @publishing_api = publishing_api
     @json_file_extractor = json_file_extractor
     @updates_per_batch = updates_per_batch
     @between_batch_wait_time_seconds = between_batch_wait_time_seconds
+    @failed_content_ids = []
   end
 
   def update_related_links
-    @failed_content_ids = []
-
     puts "Wait time between batches: #{between_batch_wait_time_seconds}s"
     puts "Updates per batch: #{updates_per_batch}"
 
     start_time = Time.now
     puts "Start updating content items, at #{start_time}"
-    puts "Updating #{UPDATES_PER_BATCH} per batch"
+    puts "Updating #{updates_per_batch} per batch"
 
-    source_content_id_groups = json_file_extractor.get_batched_keys(UPDATES_PER_BATCH)
+    source_content_id_groups = json_file_extractor.get_batched_keys(updates_per_batch)
     source_content_id_groups.each_with_index do |group, batch_index|
       puts "Starting batch ##{batch_index}"
 
       progress_bar = ProgressBar.create(:throttle_rate => 0.1, :format => "Processed %c of %C %B", :total => group.length)
 
-      group.each_with_index do |source_content_id, item_index|
-        update_content(source_content_id, json_file_extractor.extracted_json[source_content_id], item_index)
+      group.each do |source_content_id|
+        update_content(source_content_id, json_file_extractor.extracted_json[source_content_id])
         progress_bar.increment
       end
 
       puts "Finished batch ##{batch_index}"
 
-      if group.length == UPDATES_PER_BATCH
+      if group.length == updates_per_batch
         puts "Waiting for 20 minutes before starting next batch..."
         sleep between_batch_wait_time_seconds
 
@@ -49,10 +50,10 @@ class RelatedLinksUpdater
 
   end
 
-  private
-  attr_reader :json_file_extractor, :updates_per_batch, :between_batch_wait_time_seconds, :publishing_api, :failed_content_ids
+private
+  attr_reader :json_file_extractor, :updates_per_batch, :between_batch_wait_time_seconds, :publishing_api
 
-  def update_content(source_content_id, related_content_ids, item_index)
+  def update_content(source_content_id, related_content_ids)
     response = publishing_api.patch_links(
       source_content_id,
       links: {
