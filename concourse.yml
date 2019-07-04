@@ -10,6 +10,12 @@ groups:
       - run-ingestion-staging
       - run-ingestion-production
 
+resources:
+ - name: every-three-weeks
+   type: time
+   source:
+     interval: 504h
+
 jobs:
   - name: run-generation-integration
     serial_groups: 
@@ -266,6 +272,8 @@ jobs:
       - link-generation
     on_failure: *destroy-generation-instance
     plan:
+      - get: every-three-weeks
+        trigger: true
       - task: create-generation-instance
         config:
           params:
