@@ -2,7 +2,7 @@ import yaml
 import os
 import pickle
 
-def read_query(filepath):
+def read_file_as_string(filepath):
     """(str) -> str
     Opens the file at filepath for reading, removing /n
     before rejoining separate lines with " " separator.

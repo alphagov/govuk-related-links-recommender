@@ -1,0 +1,5 @@
+source_base_path,target_base_path,probability,source_content_id,target_content_id,source_page_views,target_page_views
+/,/about-government,0.51,03680a95-4cd4-46e6-b6d9-ec7aa5fb988e,036e63af-49ee-42e0-b2dd-65cd5acf4152,418,83
+/,/how-government-works,0.49,03680a95-4cd4-46e6-b6d9-ec7aa5fb988e,036ebf91-3da7-442d-ac03-b8efbce90a8d,418,19
+/,/the-government-departments,0.48,03680a95-4cd4-46e6-b6d9-ec7aa5fb988e,0374ee58-fd10-4e16-840e-cdaf6bbd2955,418,126
+/people-in-government,/the-role-of-government,0.83,b43584db-0b4b-4d49-9a65-4d4ec42c9394,eb771368-c26d-4519-a964-0769762b3700,420,34

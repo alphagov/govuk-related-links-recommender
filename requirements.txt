@@ -10,6 +10,7 @@ numpy
 pymongo
 tqdm # for progressbar for progress_apply
 node2vec
+gensim
 networkx
 google-auth
 google-cloud-bigquery
