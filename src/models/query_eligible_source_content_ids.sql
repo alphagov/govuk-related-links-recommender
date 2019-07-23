@@ -32,8 +32,8 @@ FROM
   CROSS JOIN
     UNNEST(sessions.hits) AS hits
   WHERE
-    _TABLE_SUFFIX BETWEEN @three_weeks_ago
-    AND @yesterday)
+    _TABLE_SUFFIX BETWEEN @start_date
+    AND @end_date)
 WHERE
   page_path != '/'
   AND content_id NOT IN ('00000000-0000-0000-0000-000000000000',

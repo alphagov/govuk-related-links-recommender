@@ -44,10 +44,10 @@ SUGGESTED_LINKS_CSV="$(ls -t | grep suggested_related_links.csv | head -1)"
 aws s3 cp $DATA_DIR/predictions/$SUGGESTED_LINKS_JSON s3://$RELATED_LINKS_BUCKET/$SUGGESTED_LINKS_JSON
 aws s3 cp $DATA_DIR/predictions/$SUGGESTED_LINKS_CSV s3://$RELATED_LINKS_BUCKET/$SUGGESTED_LINKS_CSV
 
-aws s3 cp $DATA_DIR/tmp/structural_edges.csv s3://$RELATED_LINKS_BUCKET/structural_edges.csv
-aws s3 cp $DATA_DIR/tmp/functional_edges.csv s3://$RELATED_LINKS_BUCKET/functional_edges.csv
-aws s3 cp $DATA_DIR/tmp/network.csv s3://$RELATED_LINKS_BUCKET/network.csv
-aws s3 cp $MODEL_DIR/n2v.model s3://$RELATED_LINKS_BUCKET/n2v.model
-
 aws s3 cp /tmp/govuk-related-links-recommender.log s3://$RELATED_LINKS_BUCKET/govuk-related-links-recommender.log
 aws s3 cp /var/tmp/related_links_process.log s3://$RELATED_LINKS_BUCKET/related_links_generation.log
+
+aws s3 cp $MODEL_DIR/n2v.model s3://$RELATED_LINKS_BUCKET/n2v.model
+aws s3 cp $DATA_DIR/tmp/network.csv s3://$RELATED_LINKS_BUCKET/network.csv
+aws s3 cp $DATA_DIR/tmp/structural_edges.csv s3://$RELATED_LINKS_BUCKET/structural_edges.csv
+aws s3 cp $DATA_DIR/tmp/functional_edges.csv s3://$RELATED_LINKS_BUCKET/functional_edges.csv

@@ -2,7 +2,7 @@ import os
 from datetime import datetime, timedelta
 import logging.config
 
-from src.utils.miscellaneous import read_exclusions_yaml, read_query
+from src.utils.miscellaneous import read_exclusions_yaml, read_file_as_string
 import google.auth
 from google.cloud import bigquery
 
@@ -23,7 +23,7 @@ class EdgeWeightExtractor:
         project=project_id
     )
     logger.info('reading query from  src/data_preprocessing/query_content_id_edge_weights.sql')
-    query_edge_list = read_query("src/data_preprocessing/query_content_id_edge_weights.sql")
+    query_edge_list = read_file_as_string("src/data_preprocessing/query_content_id_edge_weights.sql")
 
     def __init__(self, blacklisted_document_types, date_from, date_until):
         self.blacklisted_document_types = blacklisted_document_types
