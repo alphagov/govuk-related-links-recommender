@@ -2,21 +2,21 @@
 -e .
 
 # external requirements
-pyyaml
-html5lib
-beautifulsoup4
-pandas
-numpy
-pymongo
-tqdm # for progressbar for progress_apply
-node2vec
-gensim
-networkx
-google-auth
-google-cloud-bigquery
+pyyaml==5.1.1
+html5lib==1.0.1
+beautifulsoup4==4.7.1
+pandas==0.24.2
+numpy==1.16.4
+pymongo==3.8.0
+tqdm==4.32.2 # for progressbar for progress_apply
+node2vec==0.3.0
+gensim==3.8.0
+networkx==2.3
+google-auth==1.6.3
+google-cloud-bigquery==1.17.0
 
 
 # test requirements
-flake8
-pytest
-pytest-mongodb
+flake8==3.7.8
+pytest==5.0.1
+pytest-mongodb==2.1.2
