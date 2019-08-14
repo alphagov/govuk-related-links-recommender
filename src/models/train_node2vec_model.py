@@ -44,7 +44,7 @@ def train_node2_vec_model(edges_df,
 
     logger.info('Precomputing probabilities and generating walks')
     # TODO: search this parameter space systematically and change node2vec parameters
-    node2vec = Node2Vec(graph, dimensions=64, walk_length=30, num_walks=300,
+    node2vec = Node2Vec(graph, dimensions=64, walk_length=10, num_walks=300,
                         workers=workers)
 
     logger.info('Fit node2vec model (create embeddings for nodes)')
