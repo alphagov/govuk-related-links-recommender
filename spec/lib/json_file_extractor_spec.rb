@@ -26,6 +26,9 @@ describe JsonFileExtractor do
           "12238203-3a7d-400b-90fa-5ae873c43ecf",
           "5e393e14-7631-11e4-a3cb-005056011aef",
           "5e3940ed-7631-11e4-a3cb-005056011aef"
+        ],
+        "5f4d997d-7631-11e4-a3cb-005056011aef": [
+          "5f4da0ff-7631-11e4-a3cb-005056011aef"
         ]
       }'
 
@@ -37,7 +40,11 @@ describe JsonFileExtractor do
 
   describe 'get batched keys' do
     it 'should return keys without batching when number of keys is less than or equal to batch_size' do
-      expected_batched_keys = ['f593677f-a41f-4ca4-a169-5513a1250125', 'b43584db-0b4b-4d49-9a65-4d4ec42c9394']
+      expected_batched_keys = [
+        'f593677f-a41f-4ca4-a169-5513a1250125', 
+        'b43584db-0b4b-4d49-9a65-4d4ec42c9394', 
+        '5f4d997d-7631-11e4-a3cb-005056011aef'
+      ]
 
       file_extractor = JsonFileExtractor.new('./spec/fixtures/sample_extracted_links.json')
 
@@ -53,9 +60,10 @@ describe JsonFileExtractor do
 
       batched_keys_enumerator = file_extractor.get_batched_keys(1)
 
-      expect(batched_keys_enumerator.size).to eq(2)
+      expect(batched_keys_enumerator.size).to eq(3)
       expect(batched_keys_enumerator.next).to eq(['f593677f-a41f-4ca4-a169-5513a1250125'])
       expect(batched_keys_enumerator.next).to eq(['b43584db-0b4b-4d49-9a65-4d4ec42c9394'])
+      expect(batched_keys_enumerator.next).to eq(['5f4d997d-7631-11e4-a3cb-005056011aef'])
     end
   end
 end
