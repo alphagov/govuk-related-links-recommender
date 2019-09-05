@@ -13,6 +13,7 @@ from src.utils.miscellaneous import load_pickled_content_id_list
 from src.utils.related_links_csv_exporter import *
 from src.utils.related_links_json_exporter import *
 from src.utils.related_links_predictor import *
+from src.utils.related_links_confidence_filter import *
 from src.utils.date_helper import *
 
 
@@ -51,21 +52,27 @@ if __name__ == '__main__':
     eligible_target_content_ids = load_pickled_content_id_list(os.path.join(DATA_DIR, "tmp",
                                                                             "eligible_target_content_ids.pkl"))
 
+    logger.info('Querying Big Query for content ids and views')
+    yesterday = DateHelper.get_datetime_for_yesterday()
+    three_weeks_ago = DateHelper.get_datetime_for_days_ago(22)
+
+    bq_client = BigQueryClient()
+    all_content_ids_and_views_df = bq_client.query_page_views(three_weeks_ago, yesterday)
+
+    pageview_confidence_config = {
+        100: 0.90,
+        500: 0.65,
+    }
+    related_links_filter = RelatedLinksConfidenceFilter(get_content_ids_to_page_views_mapper(all_content_ids_and_views_df), pageview_confidence_config)
+
     logger.info(f'predicting related links')
     related_links_predictor = RelatedLinksPredictor(eligible_source_content_ids, eligible_target_content_ids,
-                                                    trained_model)
+                                                    trained_model, related_links_filter)
     related_links = related_links_predictor.predict_all_related_links()
 
     logger.info('Exporting related links as JSON')
     json_exporter = RelatedLinksJsonExporter(related_links)
     json_exporter.export(f'{related_links_path}.json')
-
-    yesterday = DateHelper.get_datetime_for_yesterday()
-    three_weeks_ago = DateHelper.get_datetime_for_days_ago(22)
-
-    logger.info('Querying Big Query for content ids and views')
-    bq_client = BigQueryClient()
-    all_content_ids_and_views_df = bq_client.query_page_views(three_weeks_ago, yesterday)
 
     logger.info('Filtering to content_ids in the vocabulary')
     all_content_ids_and_views_df.query(

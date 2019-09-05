@@ -25,13 +25,14 @@ class RelatedLinksPredictor:
    :param num_links: maximum number of links to recommend (optional)
     """
 
-    def __init__(self, source_content_ids, target_content_ids, model, probability_threshold=0.46, num_links=5):
+    def __init__(self, source_content_ids, target_content_ids, model, related_links_filter, probability_threshold=0.46, num_links=5):
         self.model = model
         self.logger = logging.getLogger('related_links_predictor')
         self.eligible_source_content_ids = self._get_eligible_content_ids(source_content_ids)
         self.eligible_target_content_ids = target_content_ids
         self.probability_threshold = probability_threshold
         self.num_links = num_links
+        self.related_links_filter = related_links_filter
 
     def predict_all_related_links(self, num_workers=cpu_count()):
         params = list(map(
@@ -53,7 +54,7 @@ class RelatedLinksPredictor:
 
     def _get_eligible_content_ids(self, source_content_ids):
         """
-        Filter eligible content_ids to only the ones included in the trained model's vocabulary.
+        Filter eligible content_ids to only the ones included in the trained model's vocabulary
         :param source_content_ids:
         :return:
         """
@@ -74,9 +75,8 @@ class RelatedLinksPredictor:
         """
         return np.array_split(content_ids, chunks)
 
-
 def _predict_related_links_for_content_ids(source_content_ids, eligible_target_content_ids, model,
-                                           probability_threshold, num_links):
+                                           probability_threshold, num_links, related_links_filter):
     """
     Gets the top-5 most-probable eligible target_content_ids for a single source_content_id.
     Target_content_ids are dropped if:
@@ -89,6 +89,8 @@ def _predict_related_links_for_content_ids(source_content_ids, eligible_target_c
     related_links = {}
 
     print(f"Computing related links for {len(source_content_ids)} content_ids, worker id: {os.getpid()}")
+
+    total_links_removed = 0
 
     for content_id in tqdm(source_content_ids, desc="getting related links"):
         # stick to this approach because actually interacting with the most_similar generator is
@@ -106,6 +108,13 @@ def _predict_related_links_for_content_ids(source_content_ids, eligible_target_c
                                                                             eligible_target_content_ids))]. \
             head(num_links)[['target_content_id', 'probability']].values.tolist()
 
-        related_links[content_id] = target_content_ids_with_probabilities
+        filtered_target_content_ids_with_probabilities = related_links_filter.apply(
+            content_id, target_content_ids_with_probabilities)
+
+        total_links_removed += len(target_content_ids_with_probabilities) - len(filtered_target_content_ids_with_probabilities)
+
+        related_links[content_id] = filtered_target_content_ids_with_probabilities
+
+    print(f"Total related links not meeting confidence: {total_links_removed}")
 
     return related_links
