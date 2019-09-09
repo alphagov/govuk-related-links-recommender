@@ -1,4 +1,5 @@
 from src.utils.related_links_predictor import RelatedLinksPredictor
+from src.utils.related_links_confidence_filter import RelatedLinksConfidenceFilter
 from gensim.models import Word2Vec
 import pickle
 
@@ -8,7 +9,8 @@ def test_predict_all_related_links_creates_expected_related_links():
 
     model = Word2Vec.load("tests/unit/fixtures/test_model_fixture.model")
 
-    predictor = RelatedLinksPredictor(['03680a95-4cd4-46e6-b6d9-ec7aa5fb988e'], target_cids, model)
+    confidence_filter = RelatedLinksConfidenceFilter({})
+    predictor = RelatedLinksPredictor(['03680a95-4cd4-46e6-b6d9-ec7aa5fb988e'], target_cids, model, confidence_filter)
     related_links = predictor.predict_all_related_links()
 
     expected_related_links = {'03680a95-4cd4-46e6-b6d9-ec7aa5fb988e': [

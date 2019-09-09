@@ -1,5 +1,28 @@
 from src.utils.related_links_confidence_filter import RelatedLinksConfidenceFilter
 
+def test_apply_returns_empty_array_when_no_related_links_are_passed_in():
+    content_id_to_pageview_mapper = {
+        'eb771368-c26d-4519-a964-0769762b3700': 93,
+        'b43584db-0b4b-4d49-9a65-4d4ec42c9394': 740,
+        '03680a95-4cd4-46e6-b6d9-ec7aa5fb988e': 231
+    }
+
+    related_links_filter = RelatedLinksConfidenceFilter(content_id_to_pageview_mapper)
+
+    related_links = []
+    actual_related_links = related_links_filter.apply('eb771368-c26d-4519-a964-0769762b3700', related_links)
+
+    assert related_links == actual_related_links
+
+def test_apply_returns_related_links_when_no_pageview_to_confidence_mapper_is_set():
+    related_links_filter = RelatedLinksConfidenceFilter({})
+
+    related_links = [['0374ee58-fd10-4e16-840e-cdaf6bbd2955', 0.54], ['f958056e-401c-4a14-9017-c3d7640f1d67', 0.92]]
+
+    actual_related_links = related_links_filter.apply('0374ee58-fd10-4e16-840e-cdaf6bbd2955', related_links)
+
+    assert related_links == actual_related_links
+
 def test_apply_returns_related_links_when_no_thresholds_are_set():
     content_id_to_pageview_mapper = {
         'eb771368-c26d-4519-a964-0769762b3700': 93,
