@@ -11,10 +11,11 @@ groups:
       - run-ingestion-production
 
 resources:
- - name: every-three-weeks
-   type: time
+ - name: every-two-weeks
+   type: cron-resource
    source:
-     interval: 504h
+    expression: "0 8 9,23 * * *"
+    location: "Europe/London"
 
 jobs:
   - name: run-generation-integration
