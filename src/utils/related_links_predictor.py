@@ -38,7 +38,7 @@ class RelatedLinksPredictor:
         params = list(map(
             lambda source_content_id: (
                 source_content_id, self.eligible_target_content_ids, self.model, self.probability_threshold,
-                self.num_links),
+                self.num_links, self.related_links_filter),
             self._split_content_ids(self.eligible_source_content_ids, num_workers)))
         self.logger.info(f'I\'ve got {num_workers} workers and {len(params)} chunks...')
 
