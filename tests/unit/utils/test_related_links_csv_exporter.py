@@ -41,6 +41,27 @@ def test_related_links_exporter_exports_csv_with_base_paths_when_relatd_links_ex
     assert expected_related_links_csv == exported_csv
 
 
+def test_related_links_exporter_exports_tsv_with_base_paths_when_relatd_links_exist():
+    related_links_with_probabilities = {"03680a95-4cd4-46e6-b6d9-ec7aa5fb988e": [
+        ("036e63af-49ee-42e0-b2dd-65cd5acf4152", 0.51),
+        ("036ebf91-3da7-442d-ac03-b8efbce90a8d", 0.49),
+        ("0374ee58-fd10-4e16-840e-cdaf6bbd2955", 0.48)],
+        "b43584db-0b4b-4d49-9a65-4d4ec42c9394": [
+            ("eb771368-c26d-4519-a964-0769762b3700", 0.83)
+        ]}
+
+    expected_related_links_csv = read_file_as_string("tests/unit/fixtures/related_links_populated.tsv")
+
+    csv_exporter = RelatedLinksCsvExporter(related_links_with_probabilities, _content_id_to_base_path_mapper(),
+                                            _content_id_to_page_view_mapper())
+
+    csv_exporter.export('tests/unit/tmp/related_links_export_test_populated.tsv')
+
+    exported_csv = read_file_as_string("tests/unit/tmp/related_links_export_test_populated.tsv")
+
+    assert expected_related_links_csv == exported_csv
+
+
 def _content_id_to_base_path_mapper():
     return json.loads(json.dumps({
         "03680a95-4cd4-46e6-b6d9-ec7aa5fb988e": "/",
