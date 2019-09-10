@@ -83,7 +83,7 @@ if __name__ == '__main__':
     csv_exporter = RelatedLinksCsvExporter(related_links,
                                            get_content_id_to_base_path_mapper(content_id_base_mapping_path),
                                            get_content_ids_to_page_views_mapper(all_content_ids_and_views_df))
-    csv_exporter.export(f'{related_links_path}.csv')
+    csv_exporter.export(f'{related_links_path}.tsv')
 
 # Code for how links were generated for the A/B test below, saved for the future,
 # it was easier/quicker to write it in a more DataFrame-y method for now but we could revisit this later
