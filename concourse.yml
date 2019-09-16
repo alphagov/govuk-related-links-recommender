@@ -275,7 +275,7 @@ jobs:
       - link-generation
     
     plan:
-      - get: every-three-weeks
+      - get: every-two-weeks
         trigger: true
       - task: create-generation-instance
         config:
