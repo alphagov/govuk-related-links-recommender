@@ -21,7 +21,6 @@ jobs:
   - name: run-generation-integration
     serial_groups: 
       - link-generation
-    on_failure: *destroy-generation-instance
     plan:
       - task: create-generation-instance
         config:
@@ -183,7 +182,7 @@ jobs:
 
                   ./monitor_related_links_process
                 EOF
-      - &destroy-generation-instance
+      - &destroy-generation-instance-integration
         task: destroy-generation-instance
         config:
           params:
@@ -197,11 +196,12 @@ jobs:
               repository: govsvc/task-toolbox
               tag: 1.1.0
           run: *update-asg
+    on_failure: *destroy-generation-instance-integration
 
   - name: run-generation-staging
     serial_groups: 
       - link-generation
-    on_failure: *destroy-generation-instance
+    
     plan:
       - task: create-generation-instance
         config:
@@ -254,7 +254,8 @@ jobs:
               repository: govsvc/task-toolbox
               tag: 1.1.0
           run: *watch-instance
-      - task: destroy-generation-instance
+      - &destroy-generation-instance-staging
+        task: destroy-generation-instance
         config:
           params:
             DESIRED_CAPACITY: 0
@@ -267,13 +268,14 @@ jobs:
               repository: govsvc/task-toolbox
               tag: 1.1.0
           run: *update-asg
+    on_failure: *destroy-generation-instance-staging
 
   - name: run-generation-production
     serial_groups: 
       - link-generation
-    on_failure: *destroy-generation-instance
+    
     plan:
-      - get: every-three-weeks
+      - get: every-two-weeks
         trigger: true
       - task: create-generation-instance
         config:
@@ -326,7 +328,8 @@ jobs:
               repository: govsvc/task-toolbox
               tag: 1.1.0
           run: *watch-instance
-      - task: destroy-generation-instance
+      - &destroy-generation-instance-production
+        task: destroy-generation-instance
         config:
           params:
             DESIRED_CAPACITY: 0
@@ -339,11 +342,11 @@ jobs:
               repository: govsvc/task-toolbox
               tag: 1.1.0
           run: *update-asg
+    on_failure: *destroy-generation-instance-production
 
   - name: run-ingestion-integration
     serial_groups: 
       - link-ingestion
-    on_failure: *destroy-ingestion-instance
     plan:
       - task: create-ingestion-instance
         config:
@@ -493,7 +496,7 @@ jobs:
 
                   ./monitor_related_links_process
                 EOF
-      - &destroy-ingestion-instance
+      - &destroy-ingestion-instance-integration
         task: destroy-ingestion-instance
         config:
           params:
@@ -507,11 +510,11 @@ jobs:
               repository: govsvc/task-toolbox
               tag: 1.1.0
           run: *update-asg
+    on_failure: *destroy-ingestion-instance-integration
 
   - name: run-ingestion-staging
     serial_groups: 
       - link-ingestion
-    on_failure: *destroy-ingestion-instance
     plan:
       - task: create-ingestion-instance
         config:
@@ -564,7 +567,8 @@ jobs:
               repository: govsvc/task-toolbox
               tag: 1.1.0
           run: *watch-ingestion-instance
-      - task: destroy-ingestion-instance
+      - &destroy-ingestion-instance-staging
+        task: destroy-ingestion-instance
         config:
           params:
             DESIRED_CAPACITY: 0
@@ -577,11 +581,11 @@ jobs:
               repository: govsvc/task-toolbox
               tag: 1.1.0
           run: *update-asg
+    on_failure: *destroy-ingestion-instance-staging
 
   - name: run-ingestion-production
     serial_groups: 
       - link-ingestion
-    on_failure: *destroy-ingestion-instance
     plan:
       - task: create-ingestion-instance
         config:
@@ -634,7 +638,8 @@ jobs:
               repository: govsvc/task-toolbox
               tag: 1.1.0
           run: *watch-ingestion-instance
-      - task: destroy-ingestion-instance
+      - &destroy-ingestion-instance-production
+        task: destroy-ingestion-instance
         config:
           params:
             DESIRED_CAPACITY: 0
@@ -647,4 +652,4 @@ jobs:
               repository: govsvc/task-toolbox
               tag: 1.1.0
           run: *update-asg
-
+    on_failure: *destroy-ingestion-instance-production
