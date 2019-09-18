@@ -10,12 +10,19 @@ groups:
       - run-ingestion-staging
       - run-ingestion-production
 
+resource_types:
+  - name: cron-resource
+    type: docker-image
+    source:
+      repository: cftoolsmiths/cron-resource
+      tag: latest
+
 resources:
- - name: every-two-weeks
-   type: cron-resource
-   source:
-    expression: "0 8 9,23 * * *"
-    location: "Europe/London"
+  - name: every-two-weeks
+    type: cron-resource
+    source:
+      expression: "0 8 9,23 * * *"
+      location: "Europe/London"
 
 jobs:
   - name: run-generation-integration
