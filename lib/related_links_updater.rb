@@ -34,7 +34,7 @@ class RelatedLinksUpdater
 
       if group.length == updates_per_batch
         puts "Waiting for 20 minutes before starting next batch..."
-        sleep between_batch_wait_time_seconds
+        wait between_batch_wait_time_seconds
 
         puts "Resuming ingestion of next batch at #{Time.now}"
       else
@@ -66,5 +66,9 @@ private
       failed_content_ids << source_content_id
       STDERR.puts "Failed to update content id #{source_content_id} - response status #{response.code}"
     end
+  end
+
+  def wait(seconds)
+    sleep seconds
   end
 end
