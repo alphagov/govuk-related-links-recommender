@@ -20,6 +20,7 @@ class RelatedLinksUpdater
     puts "Updating #{updates_per_batch} per batch"
 
     source_content_id_groups = json_file_extractor.get_batched_keys(updates_per_batch)
+    last_group_index = source_content_id_groups.count - 1
     source_content_id_groups.each_with_index do |group, batch_index|
       puts "Starting batch ##{batch_index}"
 
@@ -32,7 +33,7 @@ class RelatedLinksUpdater
 
       puts "Finished batch ##{batch_index}"
 
-      if group.length == updates_per_batch
+      if batch_index < last_group_index
         puts "Waiting for 20 minutes before starting next batch..."
         wait between_batch_wait_time_seconds
 

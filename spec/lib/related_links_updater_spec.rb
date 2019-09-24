@@ -31,9 +31,19 @@ describe RelatedLinksUpdater do
           ]
         }')
 
-      allow(json_file_extractor).to receive(:get_batched_keys).and_return([['f593677f-a41f-4ca4-a169-5513a1250125'], ['b43584db-0b4b-4d49-9a65-4d4ec42c9394']])
+      allow(json_file_extractor).to receive(:get_batched_keys).with(1).and_return([['f593677f-a41f-4ca4-a169-5513a1250125'], ['b43584db-0b4b-4d49-9a65-4d4ec42c9394'], ['eb771368-c26d-4519-a964-0769762b3700']])
+      allow(json_file_extractor).to receive(:get_batched_keys).with(10).and_return([['f593677f-a41f-4ca4-a169-5513a1250125', 'b43584db-0b4b-4d49-9a65-4d4ec42c9394', 'eb771368-c26d-4519-a964-0769762b3700']])
       allow(json_file_extractor).to receive(:extracted_json).and_return(extracted_json)
       allow(publishing_api).to receive(:patch_links).and_return(publishing_api_response)
+    end
+
+    it 'should not update related links when there are no related links to update' do
+      json_file_extractor = double(:extracted_json => '{}', :get_batched_keys => [])
+
+      related_links_updater = RelatedLinksUpdater.new(publishing_api, json_file_extractor, 10)
+      expect(related_links_updater).to_not receive(:update_content)
+
+      related_links_updater.update_related_links
     end
 
     it 'should call publishing API to update related links and receive success responses' do
@@ -51,13 +61,9 @@ describe RelatedLinksUpdater do
       related_links_updater = RelatedLinksUpdater.new(publishing_api, json_file_extractor, 10)
       related_links_updater.update_related_links
 
-      expect(related_links_updater.failed_content_ids).to eq(['f593677f-a41f-4ca4-a169-5513a1250125', 'b43584db-0b4b-4d49-9a65-4d4ec42c9394'])
+      expect(related_links_updater.failed_content_ids).to eq(['f593677f-a41f-4ca4-a169-5513a1250125', 'b43584db-0b4b-4d49-9a65-4d4ec42c9394', 'eb771368-c26d-4519-a964-0769762b3700'])
     end
 
-    # TODO: This test exhibits the behaviour where the last batch has exactly the number of updates allowed per batch.
-    # In this case currently, we will still sleep for between_batch_wait_time_seconds (1200s by default), which is
-    # wasteful given that as soon as the process wakes up again, it will complete immediately. We should fix this by
-    # completing immediately instead.
     it 'should sleep when ingesting links where multiple batches exist' do
       allow(publishing_api_response).to receive(:code).and_return(200)
 
