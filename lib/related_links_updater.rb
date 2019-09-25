@@ -34,7 +34,8 @@ class RelatedLinksUpdater
       puts "Finished batch ##{batch_index}"
 
       if batch_index < last_group_index
-        puts "Waiting for 20 minutes before starting next batch..."
+        wait_time = "#{(between_batch_wait_time_seconds / 60).ceil} minutes #{between_batch_wait_time_seconds % 60} seconds"
+        puts "Waiting for #{wait_time} before starting next batch..."
         wait between_batch_wait_time_seconds
 
         puts "Resuming ingestion of next batch at #{Time.now}"

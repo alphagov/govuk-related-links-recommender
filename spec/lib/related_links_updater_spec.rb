@@ -67,8 +67,8 @@ describe RelatedLinksUpdater do
     it 'should sleep when ingesting links where multiple batches exist' do
       allow(publishing_api_response).to receive(:code).and_return(200)
 
-      related_links_updater = RelatedLinksUpdater.new(publishing_api, json_file_extractor, 1, 5)
-      expect(related_links_updater).to receive(:wait).with(5).twice
+      related_links_updater = RelatedLinksUpdater.new(publishing_api, json_file_extractor, 1, 600)
+      expect(related_links_updater).to receive(:wait).with(600).twice
 
       related_links_updater.update_related_links
 
