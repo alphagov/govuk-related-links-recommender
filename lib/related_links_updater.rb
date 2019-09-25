@@ -20,6 +20,7 @@ class RelatedLinksUpdater
     puts "Updating #{updates_per_batch} per batch"
 
     source_content_id_groups = json_file_extractor.get_batched_keys(updates_per_batch)
+    last_group_index = source_content_id_groups.count - 1
     source_content_id_groups.each_with_index do |group, batch_index|
       puts "Starting batch ##{batch_index}"
 
@@ -32,9 +33,10 @@ class RelatedLinksUpdater
 
       puts "Finished batch ##{batch_index}"
 
-      if group.length == updates_per_batch
-        puts "Waiting for 20 minutes before starting next batch..."
-        sleep between_batch_wait_time_seconds
+      if batch_index < last_group_index
+        wait_time = "#{(between_batch_wait_time_seconds / 60).ceil} minutes #{between_batch_wait_time_seconds % 60} seconds"
+        puts "Waiting for #{wait_time} before starting next batch..."
+        wait between_batch_wait_time_seconds
 
         puts "Resuming ingestion of next batch at #{Time.now}"
       else
@@ -54,17 +56,31 @@ private
   attr_reader :json_file_extractor, :updates_per_batch, :between_batch_wait_time_seconds, :publishing_api
 
   def update_content(source_content_id, related_content_ids)
-    response = publishing_api.patch_links(
-      source_content_id,
-      links: {
-        suggested_ordered_related_items: related_content_ids
-      },
-      bulk_publishing: true
-    )
+    begin
+      response = publishing_api.patch_links(
+        source_content_id,
+        links: {
+          suggested_ordered_related_items: related_content_ids
+        },
+        bulk_publishing: true
+      )
 
-    if response.code != 200
-      failed_content_ids << source_content_id
-      STDERR.puts "Failed to update content id #{source_content_id} - response status #{response.code}"
+      if response.code != 200
+        add_to_failed_updates(source_content_id, "Failed with status #{response.code}")
+      end
+
+    rescue GdsApi::HTTPBadGateway, GdsApi::HTTPUnavailable, GdsApi::HTTPGatewayTimeout, GdsApi::TimedOutException => e
+      add_to_failed_updates(source_content_id, e)
     end
+
+  end
+
+  def wait(seconds)
+    sleep seconds
+  end
+
+  def add_to_failed_updates(source_content_id, e)
+    failed_content_ids << source_content_id
+    STDERR.puts "Failed to update content id #{source_content_id} - exception #{e}"
   end
 end

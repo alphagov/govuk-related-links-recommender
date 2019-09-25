@@ -39,6 +39,15 @@ describe JsonFileExtractor do
   end
 
   describe 'get batched keys' do
+    it 'should return empty array when no keys exist' do
+      file_extractor = JsonFileExtractor.new('./spec/fixtures/empty_extracted_links.json')
+
+      batched_keys_enumerator = file_extractor.get_batched_keys(5)
+
+      expect(batched_keys_enumerator.size).to eq(0)
+      expect{batched_keys_enumerator.next}.to raise_error(StopIteration)
+    end
+
     it 'should return keys without batching when number of keys is less than or equal to batch_size' do
       expected_batched_keys = [
         'f593677f-a41f-4ca4-a169-5513a1250125', 
