@@ -3,11 +3,12 @@ require 'progressbar'
 class RelatedLinksUpdater
   attr_reader :failed_content_ids
 
-  def initialize(publishing_api, json_file_extractor, updates_per_batch, between_batch_wait_time_seconds = 1200)
+  def initialize(publishing_api, json_file_extractor, updates_per_batch, between_batch_wait_time_seconds = 1200, retry_failed = true)
     @publishing_api = publishing_api
     @json_file_extractor = json_file_extractor
     @updates_per_batch = updates_per_batch
     @between_batch_wait_time_seconds = between_batch_wait_time_seconds
+    @retry_failed = retry_failed
     @failed_content_ids = []
   end
 
@@ -24,12 +25,7 @@ class RelatedLinksUpdater
     source_content_id_groups.each_with_index do |group, batch_index|
       puts "Starting batch ##{batch_index}"
 
-      progress_bar = ProgressBar.create(:throttle_rate => 0.1, :format => "Processed %c of %C %B", :total => group.length)
-
-      group.each do |source_content_id|
-        update_content(source_content_id, json_file_extractor.extracted_json[source_content_id])
-        progress_bar.increment
-      end
+      process_group(group)
 
       puts "Finished batch ##{batch_index}"
 
@@ -44,6 +40,10 @@ class RelatedLinksUpdater
       end
     end
 
+    if has_failed_updates? && @retry_failed
+      retry_failed_content_updates
+    end
+
     end_time = Time.now
     elapsed_time = end_time - start_time
 
@@ -52,8 +52,32 @@ class RelatedLinksUpdater
 
   end
 
+  def has_failed_updates?
+    @failed_content_ids.any?
+  end
+
+  def retry_failed_content_updates
+    puts "Retrying failed content ids: #{@failed_content_ids}"
+
+    previous_failed_content_ids = @failed_content_ids.dup
+    @failed_content_ids = []
+
+    process_group(previous_failed_content_ids)
+
+    puts 'Finished failed batch'
+  end
+
 private
   attr_reader :json_file_extractor, :updates_per_batch, :between_batch_wait_time_seconds, :publishing_api
+
+  def process_group(group)
+    progress_bar = ProgressBar.create(:throttle_rate => 0.1, :format => "Processed %c of %C %B", :total => group.length)
+
+    group.each do |source_content_id|
+      update_content(source_content_id, json_file_extractor.extracted_json[source_content_id])
+      progress_bar.increment
+    end
+  end
 
   def update_content(source_content_id, related_content_ids)
     begin
@@ -80,7 +104,7 @@ private
   end
 
   def add_to_failed_updates(source_content_id, e)
-    failed_content_ids << source_content_id
+    @failed_content_ids << source_content_id
     STDERR.puts "Failed to update content id #{source_content_id} - exception #{e}"
   end
 end
