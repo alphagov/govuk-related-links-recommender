@@ -121,7 +121,7 @@ jobs:
 
                   # Setup data directory
                   sudo mkdir /var/data
-                  sudo chown ubuntu /var/data
+                  sudo chown -R ubuntu:ubuntu /var/data
 
                   # Setup Github directory
                   mkdir /var/data/github
@@ -435,7 +435,7 @@ jobs:
 
                   # Setup data directory
                   sudo mkdir /var/data
-                  sudo chown ubuntu /var/data
+                  sudo chown -R ubuntu:ubuntu /var/data
 
                   # Setup Github directory
                   mkdir /var/data/github
