@@ -15,20 +15,20 @@ logging.config.fileConfig('src/logging.conf')
 
 
 class EdgeWeightExtractor:
-    logger = logging.getLogger('make_functional_edges_and_weights.EdgeWeightExtractor')
-    credentials, project_id = google.auth.default()
-    logger.info(f'creating bigqquery client for project {project_id}')
-    client = bigquery.Client(
-        credentials=credentials,
-        project=project_id
-    )
-    logger.info('reading query from  src/data_preprocessing/query_content_id_edge_weights.sql')
-    query_edge_list = read_file_as_string("src/data_preprocessing/query_content_id_edge_weights.sql")
-
     def __init__(self, blacklisted_document_types, date_from, date_until):
         self.blacklisted_document_types = blacklisted_document_types
         self.date_from = date_from
         self.date_until = date_until
+
+        logger = logging.getLogger('make_functional_edges_and_weights.EdgeWeightExtractor')
+        credentials, project_id = google.auth.default()
+        logger.info(f'creating bigqquery client for project {project_id}')
+        self.client = bigquery.Client(
+            credentials=credentials,
+            project=project_id
+        )
+        logger.info('reading query from  src/data_preprocessing/query_content_id_edge_weights.sql')
+        self.query_edge_list = read_file_as_string("src/data_preprocessing/query_content_id_edge_weights.sql")
 
         self.query_config = bigquery.QueryJobConfig(
             query_parameters=[
