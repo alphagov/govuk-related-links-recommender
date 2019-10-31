@@ -10,7 +10,7 @@ numpy==1.16.4
 pymongo==3.8.0
 tqdm==4.32.2 # for progressbar for progress_apply
 node2vec==0.3.0
-gensim==3.8.0
+gensim==3.8.1
 networkx==2.3
 google-auth==1.6.3
 google-cloud-bigquery==1.17.0
