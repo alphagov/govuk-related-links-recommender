@@ -9,6 +9,9 @@ groups:
       - run-ingestion-integration
       - run-ingestion-staging
       - run-ingestion-production
+  - name: ci
+    jobs:
+      - pr
 
 resource_types:
   - name: cron-resource
@@ -16,6 +19,10 @@ resource_types:
     source:
       repository: cftoolsmiths/cron-resource
       tag: latest
+  - name: pull-request
+    type: docker-image
+    source:
+      repository: teliaoss/github-pr-resource
 
 resources:
   - name: every-two-weeks
@@ -23,8 +30,75 @@ resources:
     source:
       expression: "0 8 9,23 * * *"
       location: "Europe/London"
+  - name: related-links-pr
+    type: pull-request
+    source:
+      access_token: ((concourse_ci_access_token))
+      repository: alphagov/govuk-related-links-recommender
+      disable_forks: true
+    check_every: 1m
 
 jobs:
+  - name: pr
+    plan:
+      - get: related-links-pr
+        trigger: true
+        version: every
+      - put: related-links-pr
+        params:
+          path: related-links-pr
+          status: pending
+      - task: run-python-tests
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: python
+              tag: 3.6
+          inputs:
+            - name: related-links-pr
+          run:
+            path: bash
+            args:
+              - -c
+              - |
+                set -e pipefail
+
+                pip install -r requirements.txt
+                pytest tests/unit
+            dir: related-links-pr
+      - task: run-ruby-tests
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: ruby
+              tag: 2.6
+          inputs:
+            - name: related-links-pr
+          run:
+            path: bash
+            args:
+              - -c
+              - |
+                set -e pipefail
+
+                gem install bundler
+                bundle
+                rspec spec
+            dir: related-links-pr
+      - put: related-links-pr
+        params:
+          path: related-links-pr
+          status: success
+    on_failure:
+      put: related-links-pr
+      params:
+        path: related-links-pr
+        status: failure
+
   - name: run-generation-integration
     serial_groups: 
       - link-generation
