@@ -8,7 +8,7 @@ beautifulsoup4==4.7.1
 pandas==0.24.2
 numpy==1.16.4
 pymongo==3.8.0
-tqdm==4.32.2 # for progressbar for progress_apply
+tqdm==4.38.0 # for progressbar for progress_apply
 node2vec==0.3.0
 gensim==3.8.0
 networkx==2.3
