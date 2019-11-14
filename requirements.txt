@@ -13,7 +13,7 @@ node2vec==0.3.0
 gensim==3.8.0
 networkx==2.3
 google-auth==1.6.3
-google-cloud-bigquery==1.17.0
+google-cloud-bigquery==1.22.0
 
 
 # test requirements
