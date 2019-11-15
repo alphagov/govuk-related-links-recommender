@@ -18,5 +18,5 @@ google-cloud-bigquery==1.17.0
 
 # test requirements
 flake8==3.7.8
-pytest==5.0.1
+pytest==5.2.3
 pytest-mongodb==2.1.2
