@@ -25,10 +25,15 @@ resource_types:
       repository: teliaoss/github-pr-resource
 
 resources:
-  - name: every-two-weeks
+  - name: every-two-weeks-generation
     type: cron-resource
     source:
       expression: "0 8 9,23 * * *"
+      location: "Europe/London"
+  - name: every-two-weeks-ingestion
+    type: cron-resource
+    source:
+      expression: "0 8 11,25 * * *"
       location: "Europe/London"
   - name: related-links-pr
     type: pull-request
@@ -356,7 +361,7 @@ jobs:
       - link-generation
     
     plan:
-      - get: every-two-weeks
+      - get: every-two-weeks-generation
         trigger: true
       - task: create-generation-instance
         config:
@@ -668,6 +673,8 @@ jobs:
     serial_groups: 
       - link-ingestion
     plan:
+      - get: every-two-weeks-ingestion
+        trigger: true
       - task: create-ingestion-instance
         config:
           params:
