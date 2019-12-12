@@ -25,7 +25,8 @@ class RelatedLinksPredictor:
    :param num_links: maximum number of links to recommend (optional)
     """
 
-    def __init__(self, source_content_ids, target_content_ids, model, related_links_filter, probability_threshold=0.46, num_links=5):
+    def __init__(self, source_content_ids, target_content_ids, model,
+                 related_links_filter, probability_threshold=0.46, num_links=5):
         self.model = model
         self.logger = logging.getLogger('related_links_predictor')
         self.eligible_source_content_ids = self._get_eligible_content_ids(source_content_ids)
@@ -75,6 +76,12 @@ class RelatedLinksPredictor:
         """
         return np.array_split(content_ids, chunks)
 
+
+def _potential_related_links_filter(links, probability_threshold, eligible_target_content_ids):
+    return links[(links['probability'] > probability_threshold) &
+                 (links['target_content_id'].isin(eligible_target_content_ids))]
+
+
 def _predict_related_links_for_content_ids(source_content_ids, eligible_target_content_ids, model,
                                            probability_threshold, num_links, related_links_filter):
     """
@@ -101,19 +108,17 @@ def _predict_related_links_for_content_ids(source_content_ids, eligible_target_c
 
         potential_related_links['source_content_id'] = content_id
 
-        target_content_ids_with_probabilities = potential_related_links[(potential_related_links['probability'] >
-                                                                         probability_threshold) &
-                                                                        (potential_related_links[
-                                                                            'target_content_id'].isin(
-                                                                            eligible_target_content_ids))]. \
+        target_cids_with_probabilities = _potential_related_links_filter(potential_related_links,
+                                                                         probability_threshold,
+                                                                         eligible_target_content_ids). \
             head(num_links)[['target_content_id', 'probability']].values.tolist()
 
-        filtered_target_content_ids_with_probabilities = related_links_filter.apply(
-            content_id, target_content_ids_with_probabilities)
+        filtered_target_cids_with_probabilities = related_links_filter.apply(
+            content_id, target_cids_with_probabilities)
 
-        total_links_removed += len(target_content_ids_with_probabilities) - len(filtered_target_content_ids_with_probabilities)
+        total_links_removed += len(target_cids_with_probabilities) - len(filtered_target_cids_with_probabilities)
 
-        related_links[content_id] = filtered_target_content_ids_with_probabilities
+        related_links[content_id] = filtered_target_cids_with_probabilities
 
     print(f"Total related links not meeting confidence: {total_links_removed}")
 

@@ -49,7 +49,7 @@ if __name__ == "__main__":
     module_logger = logging.getLogger('make_functional_edges_and_weights')
     data_dir = os.getenv("DATA_DIR")
     blacklisted_document_types = read_exclusions_yaml(
-    "document_types_excluded_from_the_topic_taxonomy.yml")['document_types']
+        "document_types_excluded_from_the_topic_taxonomy.yml")['document_types']
     yesterday = (datetime.today() - timedelta(1)).strftime('%Y%m%d')
     three_weeks_ago = (datetime.today() - timedelta(22)).strftime('%Y%m%d')
 

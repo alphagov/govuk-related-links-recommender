@@ -2,6 +2,7 @@ import yaml
 import os
 import pickle
 
+
 def read_file_as_string(filepath):
     """(str) -> str
     Opens the file at filepath for reading, removing /n
@@ -18,6 +19,7 @@ def read_exclusions_yaml(filename):
                          '..', 'config', filename),
             'r') as f:
         return yaml.safe_load(f)
+
 
 def load_pickled_content_id_list(filepath):
     """

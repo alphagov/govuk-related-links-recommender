@@ -28,8 +28,11 @@ class RelatedLinksCsvExporter:
                      'target_content_id': target_cid,
                      'target_base_path': self.content_id_to_base_path_mapper[target_cid],
                      'probability': prob,
-                     'source_page_views': self.content_ids_to_page_views_mapper.get(source_cid,np.nan),
-                     'target_page_views': self.content_ids_to_page_views_mapper.get(target_cid, np.nan)} for source_cid, results in self.related_links.items() for target_cid, prob in results]
+                     'source_page_views': self.content_ids_to_page_views_mapper.get(source_cid, np.nan),
+                     'target_page_views': self.content_ids_to_page_views_mapper.get(target_cid, np.nan)}
+                    for source_cid, results in self.related_links.items() for target_cid, prob in results]
         df_with_paths = pd.DataFrame(row_list,
-                                  columns=['source_base_path', 'target_base_path', 'probability', 'source_content_id', 'target_content_id', 'source_page_views', 'target_page_views'])
+                                     columns=['source_base_path', 'target_base_path', 'probability',
+                                              'source_content_id', 'target_content_id', 'source_page_views',
+                                              'target_page_views'])
         df_with_paths.to_csv(file_path, index=False, sep=sep)
