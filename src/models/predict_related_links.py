@@ -1,20 +1,27 @@
 # Use our saved down node2vec model to get recs for each content ID
-# Make sure to add exclusions - smart answers, simple smart answers, fatality notices, etc. + a file in the repo with a list of hardcoded specific exclusions
+# Make sure to add exclusions - smart answers, simple smart answers,
+# fatality notices, etc. + a file in the repo with a list of hardcoded
+# specific exclusions
+#
 # Use document types from content store data?
-# Does it break if there aren't 1000 recs for each link? maybe add a try around that to catch any exceptions
+# Does it break if there aren't 1000 recs for each link? maybe add a try
+# around that to catch any exceptions
 
 import logging.config
 import os
+import json
+
+from datetime import datetime
 
 from gensim.models import Word2Vec
 
-from src.utils.big_query_client import *
+from src.utils.big_query_client import BigQueryClient
 from src.utils.miscellaneous import load_pickled_content_id_list
-from src.utils.related_links_csv_exporter import *
-from src.utils.related_links_json_exporter import *
-from src.utils.related_links_predictor import *
-from src.utils.related_links_confidence_filter import *
-from src.utils.date_helper import *
+from src.utils.related_links_csv_exporter import RelatedLinksCsvExporter
+from src.utils.related_links_json_exporter import RelatedLinksJsonExporter
+from src.utils.related_links_predictor import RelatedLinksPredictor
+from src.utils.related_links_confidence_filter import RelatedLinksConfidenceFilter
+from src.utils.date_helper import DateHelper
 
 
 def get_content_id_to_base_path_mapper(path):
@@ -63,7 +70,8 @@ if __name__ == '__main__':
         100: 0.90,
         500: 0.65,
     }
-    related_links_filter = RelatedLinksConfidenceFilter(get_content_ids_to_page_views_mapper(all_content_ids_and_views_df), pageview_confidence_config)
+    related_links_filter = RelatedLinksConfidenceFilter(
+        get_content_ids_to_page_views_mapper(all_content_ids_and_views_df), pageview_confidence_config)
 
     logger.info(f'predicting related links')
     related_links_predictor = RelatedLinksPredictor(eligible_source_content_ids, eligible_target_content_ids,

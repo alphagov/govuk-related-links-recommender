@@ -262,18 +262,18 @@ def export_content_id_list(list_name, mongodb_collection, outfile):
         excluded_source_document_types = EXCLUDED_SOURCE_CONTENT['document_types']
 
         mongodb_filter = {"$and": [{"expanded_links.ordered_related_items": {"$exists": False}},
-                                                      {"document_type": {"$nin": BLACKLIST_DOCUMENT_TYPES}},
-                                                      {"document_type": {"$nin": excluded_source_document_types}},
-                                                      {"content_id": {"$nin": specific_excluded_source_content_ids}},
-                                                      {"phase": "live"}]}
+                                   {"document_type": {"$nin": BLACKLIST_DOCUMENT_TYPES}},
+                                   {"document_type": {"$nin": excluded_source_document_types}},
+                                   {"content_id": {"$nin": specific_excluded_source_content_ids}},
+                                   {"phase": "live"}]}
     if list_name == 'eligible_target':
         specific_excluded_target_content_ids = EXCLUDED_TARGET_CONTENT['content_ids']
         excluded_target_document_types = EXCLUDED_TARGET_CONTENT['document_types']
 
         mongodb_filter = {"$nor": [{"expanded_links.ordered_related_items": {"$exists": True}},
-                                                     {"document_type": {"$in": BLACKLIST_DOCUMENT_TYPES}},
-                                                     {"document_type": {"$in": excluded_target_document_types}},
-                                                     {"content_id": {"$in": specific_excluded_target_content_ids}}]}
+                                   {"document_type": {"$in": BLACKLIST_DOCUMENT_TYPES}},
+                                   {"document_type": {"$in": excluded_target_document_types}},
+                                   {"content_id": {"$in": specific_excluded_target_content_ids}}]}
 
     # TODO simplify this. Loop through cursor instead?
     content_ids_list_of_dicts = list(

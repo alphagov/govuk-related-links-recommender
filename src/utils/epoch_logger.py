@@ -1,5 +1,6 @@
 from gensim.models.callbacks import CallbackAny2Vec
 
+
 class EpochLogger(CallbackAny2Vec):
     """Callback to log information about training'"""
 
