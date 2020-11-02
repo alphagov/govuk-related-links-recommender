@@ -23,6 +23,8 @@ resource_types:
     type: docker-image
     source:
       repository: teliaoss/github-pr-resource
+      username: ((docker_hub_username))
+      password: ((docker_hub_authtoken))
 
 resources:
   - name: every-two-weeks-generation
@@ -61,6 +63,8 @@ jobs:
             source:
               repository: python
               tag: 3.6
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           inputs:
             - name: related-links-pr
           run:
@@ -82,6 +86,8 @@ jobs:
             source:
               repository: ruby
               tag: 2.6
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           inputs:
             - name: related-links-pr
           run:
@@ -121,6 +127,8 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           run: &update-asg
             path: bash
             args:
@@ -144,6 +152,8 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           run: &wait-for-instance
             path: bash
             args:
@@ -180,6 +190,8 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           run: &provision-generation-instance
             path: bash
             args:
@@ -241,6 +253,8 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           run: &watch-instance
             path: bash
             args:
@@ -282,6 +296,8 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           run: *update-asg
     on_failure: *destroy-generation-instance-integration
 
@@ -302,6 +318,8 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           run: *update-asg
       - task: wait-for-instance
         config:
@@ -313,6 +331,8 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           run: *wait-for-instance
       - task: provision-instance
         config:
@@ -328,6 +348,8 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           run: *provision-generation-instance
       - task: watch-instance
         config:
@@ -340,6 +362,8 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           run: *watch-instance
       - &destroy-generation-instance-staging
         task: destroy-generation-instance
@@ -354,6 +378,8 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           run: *update-asg
     on_failure: *destroy-generation-instance-staging
 
@@ -376,6 +402,8 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           run: *update-asg
       - task: wait-for-instance
         config:
@@ -387,6 +415,8 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           run: *wait-for-instance
       - task: provision-instance
         config:
@@ -402,6 +432,8 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           run: *provision-generation-instance
       - task: watch-instance
         config:
@@ -414,6 +446,8 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           run: *watch-instance
       - &destroy-generation-instance-production
         task: destroy-generation-instance
@@ -428,6 +462,8 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           run: *update-asg
     on_failure: *destroy-generation-instance-production
 
@@ -447,6 +483,8 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           run: *update-asg
       - task: wait-for-instance
         config:
@@ -458,6 +496,8 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           run: &wait-for-ingestion-instance
             path: bash
             args:
@@ -494,6 +534,8 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           run: &provision-ingestion-instance
             path: bash
             args:
@@ -555,6 +597,8 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           run: &watch-ingestion-instance
             path: bash
             args:
@@ -596,6 +640,8 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           run: *update-asg
     on_failure: *destroy-ingestion-instance-integration
 
@@ -615,6 +661,8 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           run: *update-asg
       - task: wait-for-instance
         config:
@@ -626,6 +674,8 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           run: *wait-for-ingestion-instance
       - task: provision-ingestion-instance
         config:
@@ -641,6 +691,8 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           run: *provision-ingestion-instance
       - task: watch-ingestion-instance
         config:
@@ -653,6 +705,8 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           run: *watch-ingestion-instance
       - &destroy-ingestion-instance-staging
         task: destroy-ingestion-instance
@@ -667,6 +721,8 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           run: *update-asg
     on_failure: *destroy-ingestion-instance-staging
 
@@ -688,6 +744,8 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           run: *update-asg
       - task: wait-for-instance
         config:
@@ -699,6 +757,8 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           run: *wait-for-ingestion-instance
       - task: provision-ingestion-instance
         config:
@@ -714,6 +774,8 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           run: *provision-ingestion-instance
       - task: watch-ingestion-instance
         config:
@@ -726,6 +788,8 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           run: *watch-ingestion-instance
       - &destroy-ingestion-instance-production
         task: destroy-ingestion-instance
@@ -740,5 +804,7 @@ jobs:
             source:
               repository: govsvc/task-toolbox
               tag: 1.1.0
+              username: ((docker_hub_username))
+              password: ((docker_hub_authtoken))
           run: *update-asg
     on_failure: *destroy-ingestion-instance-production
