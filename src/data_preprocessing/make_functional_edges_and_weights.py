@@ -50,11 +50,11 @@ if __name__ == "__main__":
     data_dir = os.getenv("DATA_DIR")
     blacklisted_document_types = read_exclusions_yaml(
         "document_types_excluded_from_the_topic_taxonomy.yml")['document_types']
-    yesterday = (datetime.today() - timedelta(1)).strftime('%Y%m%d')
-    three_weeks_ago = (datetime.today() - timedelta(22)).strftime('%Y%m%d')
+    two_days_ago = (datetime.today() - timedelta(2)).strftime('%Y%m%d')
+    start_date = (datetime.today() - timedelta(24)).strftime('%Y%m%d')
 
-    module_logger.info(f'running query between {yesterday} and {three_weeks_ago}')
-    edge_weights = EdgeWeightExtractor(blacklisted_document_types, three_weeks_ago, yesterday)
+    module_logger.info(f'running query between {two_days_ago} and {start_date}')
+    edge_weights = EdgeWeightExtractor(blacklisted_document_types, start_date, two_days_ago)
 
     module_logger.info(f'saving edges and weights to {os.path.join(data_dir, "tmp", "functional_edges.csv")}')
     edge_weights.extract_df_to_csv(os.path.join(data_dir, "tmp", "functional_edges.csv"))
