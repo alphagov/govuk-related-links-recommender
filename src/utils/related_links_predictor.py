@@ -7,8 +7,6 @@ import logging.config
 import os
 from collections import ChainMap
 
-logging.config.fileConfig('src/logging.conf')
-
 
 # TODO check probability threshold is correct 0.46
 # TODO check maximum 5 related links is correct

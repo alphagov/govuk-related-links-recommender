@@ -8,10 +8,9 @@ from pandas.io.json import json_normalize
 import pymongo
 from tqdm import tqdm
 import pickle
-
+from src.utils.miscellaneous import read_config_yaml
 from src.utils import text_preprocessing as tp
 
-from src.utils.miscellaneous import read_exclusions_yaml
 
 warnings.filterwarnings('ignore', category=UserWarning, module='bs4')
 
@@ -23,10 +22,10 @@ KEYS_FOR_LINK_TYPES = {
     "collection": "documents"
 }
 
-BLACKLIST_DOCUMENT_TYPES = read_exclusions_yaml(
+BLACKLIST_DOCUMENT_TYPES = read_config_yaml(
     "document_types_excluded_from_the_topic_taxonomy.yml")['document_types']
-EXCLUDED_SOURCE_CONTENT = read_exclusions_yaml("source_exclusions_that_are_not_linked_from.yml")
-EXCLUDED_TARGET_CONTENT = read_exclusions_yaml("target_exclusions_that_are_not_linked_to.yml")
+EXCLUDED_SOURCE_CONTENT = read_config_yaml("source_exclusions_that_are_not_linked_from.yml")
+EXCLUDED_TARGET_CONTENT = read_config_yaml("target_exclusions_that_are_not_linked_to.yml")
 
 RELATED_LINKS_PROJECTION = {
     "expanded_links.ordered_related_items.base_path": 1,
@@ -164,6 +163,7 @@ def get_page_text_df(mongodb_collection):
 def reshape_df_explode_list_column(wide_df, list_column):
     """
     Bit like a melt, we have a list column in a DataFrame, and we repeat all other columns for each item in the list
+    TODO: would be nice to bump pandas and call DataFrame.explode, but presumably it'll break other stuff
     :param wide_df: pandas DataFrame with a list column
     :param list_column: list column name
     :return: DataFrame with one row per item in the list_column
@@ -292,8 +292,10 @@ if __name__ == "__main__":  # our module is being executed as a program
 
     logging.config.fileConfig('src/logging.conf')
     module_logger = logging.getLogger('get_content_store_data')
+    prepro_cfg = read_config_yaml(
+        "preprocessing-config.yml")
 
-    mongo_client = pymongo.MongoClient("mongodb://localhost:27017/")
+    mongo_client = pymongo.MongoClient(prepro_cfg['mongo_client'])
     # TODO check this is consistent with naming of restored db in AWS
     content_store_db = mongo_client["content_store"]
     content_store_collection = content_store_db["content_items"]
@@ -314,8 +316,9 @@ if __name__ == "__main__":  # our module is being executed as a program
 
     output_df = get_structural_edges_df(content_store_collection, page_path_content_id_mapping)
 
-    module_logger.info(f'saving structural_edges (output_df) to {data_dir}/tmp/structural_edges.json')
-    output_df.to_csv(os.path.join(data_dir, "tmp", "structural_edges.csv"), index=False)
+    module_logger.info(
+        f'saving structural_edges (output_df) to {data_dir}/tmp/{prepro_cfg["structural_edges_filename"]}.json')
+    output_df.to_csv(os.path.join(data_dir, "tmp", prepro_cfg["structural_edges_filename"]), index=False)
 
     export_content_id_list("eligible_source",
                            content_store_collection,

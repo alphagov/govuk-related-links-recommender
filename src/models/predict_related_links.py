@@ -22,6 +22,7 @@ from src.utils.related_links_json_exporter import RelatedLinksJsonExporter
 from src.utils.related_links_predictor import RelatedLinksPredictor
 from src.utils.related_links_confidence_filter import RelatedLinksConfidenceFilter
 from src.utils.date_helper import DateHelper
+from src.utils.miscellaneous import read_config_yaml
 
 
 def get_content_id_to_base_path_mapper(path):
@@ -43,13 +44,17 @@ if __name__ == '__main__':
     logger = logging.getLogger('predict_related_links')
     DATA_DIR = os.getenv("DATA_DIR")
 
-    related_links_path = os.path.join(DATA_DIR, "predictions",
+    module_logger = logging.getLogger('get_content_store_data')
+    node2vec_cfg = read_config_yaml(
+        "node2vec-config.yml")
+
+    related_links_path = os.path.join(DATA_DIR, node2vec_cfg["predictions_filename"],
                                       datetime.today().strftime('%Y%m%d') + "suggested_related_links")
     content_id_base_mapping_path = os.path.join(DATA_DIR, 'tmp', 'content_id_base_path_mapping.json')
 
     logger.info(
-        f'loading model from "models/n2v.model"')
-    trained_model = Word2Vec.load("models/n2v.model")
+        f'loading model from models/{node2vec_cfg["model_filename"]}')
+    trained_model = Word2Vec.load("models/" + node2vec_cfg["model_filename"])
 
     logger.info(
         f'loading eligible_source_content_ids from {DATA_DIR}/tmp/eligible_source_content_ids.pkl')

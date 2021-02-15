@@ -2,8 +2,7 @@ import json
 
 import pandas as pd
 import pytest
-
-
+import yaml
 @pytest.fixture(scope="session")
 def structural_edges_fixture():
     return pd.read_csv('tests/unit/fixtures/structural_edges_test_sample.csv')
@@ -49,6 +48,24 @@ def node_id_content_id_mapping_fixture():
 @pytest.fixture(scope="session")
 def functional_edges_fixture():
     return pd.read_csv("tests/unit/fixtures/test_edge_and_weights_20190512.csv").reset_index(
+        drop=True)
+
+
+@pytest.fixture(scope="session")
+def weighted_graph_config_fixture():
+    with open('tests/unit/fixtures/weighted_config.yml') as f:
+        return yaml.safe_load(f)
+
+
+@pytest.fixture(scope="session")
+def unweighted_graph_config_fixture():
+    with open('tests/unit/fixtures/unweighted_config.yml') as f:
+        return yaml.safe_load(f)
+
+
+@pytest.fixture(scope="session")
+def weighted_network_fixture():
+    return pd.read_csv("tests/unit/fixtures/test_weighted_network.csv").reset_index(
         drop=True)
 
 
