@@ -15,8 +15,8 @@ logging.config.fileConfig('src/logging.conf')
 
 
 class EdgeWeightExtractor:
-    def __init__(self, blacklisted_document_types, date_from, date_until):
-        self.blacklisted_document_types = blacklisted_document_types
+    def __init__(self, blocklisted_document_types, date_from, date_until):
+        self.blocklisted_document_types = blocklisted_document_types
         self.date_from = date_from
         self.date_until = date_until
 
@@ -34,7 +34,7 @@ class EdgeWeightExtractor:
             query_parameters=[
                 bigquery.ScalarQueryParameter("three_weeks_ago", "STRING", self.date_from),
                 bigquery.ScalarQueryParameter("yesterday", "STRING", self.date_until),
-                bigquery.ArrayQueryParameter("excluded_document_types", "STRING", self.blacklisted_document_types)
+                bigquery.ArrayQueryParameter("excluded_document_types", "STRING", self.blocklisted_document_types)
             ]
         )
 
@@ -48,13 +48,13 @@ class EdgeWeightExtractor:
 if __name__ == "__main__":
     module_logger = logging.getLogger('make_functional_edges_and_weights')
     data_dir = os.getenv("DATA_DIR")
-    blacklisted_document_types = read_exclusions_yaml(
+    blocklisted_document_types = read_exclusions_yaml(
         "document_types_excluded_from_the_topic_taxonomy.yml")['document_types']
     two_days_ago = (datetime.today() - timedelta(2)).strftime('%Y%m%d')
     start_date = (datetime.today() - timedelta(24)).strftime('%Y%m%d')
 
     module_logger.info(f'running query between {two_days_ago} and {start_date}')
-    edge_weights = EdgeWeightExtractor(blacklisted_document_types, start_date, two_days_ago)
+    edge_weights = EdgeWeightExtractor(blocklisted_document_types, start_date, two_days_ago)
 
     module_logger.info(f'saving edges and weights to {os.path.join(data_dir, "tmp", "functional_edges.csv")}')
     edge_weights.extract_df_to_csv(os.path.join(data_dir, "tmp", "functional_edges.csv"))

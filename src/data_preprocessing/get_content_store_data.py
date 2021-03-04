@@ -23,7 +23,7 @@ KEYS_FOR_LINK_TYPES = {
     "collection": "documents"
 }
 
-BLACKLIST_DOCUMENT_TYPES = read_exclusions_yaml(
+BLOCKLIST_DOCUMENT_TYPES = read_exclusions_yaml(
     "document_types_excluded_from_the_topic_taxonomy.yml")['document_types']
 EXCLUDED_SOURCE_CONTENT = read_exclusions_yaml("source_exclusions_that_are_not_linked_from.yml")
 EXCLUDED_TARGET_CONTENT = read_exclusions_yaml("target_exclusions_that_are_not_linked_to.yml")
@@ -64,15 +64,15 @@ TEXT_PROJECTION = {
     "details.transaction_start_link": 1,
     "content_id": 1}
 
-FILTER_BASIC = {"$and": [{"document_type": {"$nin": BLACKLIST_DOCUMENT_TYPES}},
+FILTER_BASIC = {"$and": [{"document_type": {"$nin": BLOCKLIST_DOCUMENT_TYPES}},
                          {"phase": "live"}]}
 
 FILTER_RELATED_LINKS = {"$and": [{"expanded_links.ordered_related_items": {"$exists": True}},
-                                 {"document_type": {"$nin": BLACKLIST_DOCUMENT_TYPES}},
+                                 {"document_type": {"$nin": BLOCKLIST_DOCUMENT_TYPES}},
                                  {"phase": "live"}]}
 
 FILTER_COLLECTION_LINKS = {"$and": [{"expanded_links.documents": {"$exists": True}},
-                                    {"document_type": {"$nin": BLACKLIST_DOCUMENT_TYPES}},
+                                    {"document_type": {"$nin": BLOCKLIST_DOCUMENT_TYPES}},
                                     {"phase": "live"}]}
 
 OUTPUT_DF_COLUMNS = ['destination_base_path', 'destination_content_id', 'source_base_path', 'source_content_id']
@@ -262,7 +262,7 @@ def export_content_id_list(list_name, mongodb_collection, outfile):
         excluded_source_document_types = EXCLUDED_SOURCE_CONTENT['document_types']
 
         mongodb_filter = {"$and": [{"expanded_links.ordered_related_items": {"$exists": False}},
-                                   {"document_type": {"$nin": BLACKLIST_DOCUMENT_TYPES}},
+                                   {"document_type": {"$nin": BLOCKLIST_DOCUMENT_TYPES}},
                                    {"document_type": {"$nin": excluded_source_document_types}},
                                    {"content_id": {"$nin": specific_excluded_source_content_ids}},
                                    {"phase": "live"}]}
@@ -271,7 +271,7 @@ def export_content_id_list(list_name, mongodb_collection, outfile):
         excluded_target_document_types = EXCLUDED_TARGET_CONTENT['document_types']
 
         mongodb_filter = {"$nor": [{"expanded_links.ordered_related_items": {"$exists": True}},
-                                   {"document_type": {"$in": BLACKLIST_DOCUMENT_TYPES}},
+                                   {"document_type": {"$in": BLOCKLIST_DOCUMENT_TYPES}},
                                    {"document_type": {"$in": excluded_target_document_types}},
                                    {"content_id": {"$in": specific_excluded_target_content_ids}}]}
 
