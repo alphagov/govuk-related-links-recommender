@@ -42,8 +42,8 @@ FROM (
       CROSS JOIN
         UNNEST(sessions.hits) AS hits
                WHERE
-                 _TABLE_SUFFIX BETWEEN @three_weeks_ago
-                 AND @yesterday
+                 _TABLE_SUFFIX BETWEEN @from_date
+                 AND @to_date
         )
     WHERE
       hit_type = 'PAGE'
