@@ -8,9 +8,10 @@ window: 10
 min_count: 1
 batch_words: 4
 seed: 1
-epochs: 5
+#Epochs
+iter: 5
 # n cpus to use (null = cpu.count())
-workers: 4
+workers: 2
 # no file type suffix
 embeddings_filename: "n2v_node_embeddings"
 #run_link_generation will only upload models called n2v.model

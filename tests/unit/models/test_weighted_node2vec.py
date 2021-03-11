@@ -10,7 +10,11 @@ np.random.seed(2)
 
 
 def test_weighted_node2vec(weighted_graph_config_fixture):
-    """Tests weighted node2vec output is using weights correctly in both edge directions"""
+    """
+    Tests weighted node2vec output is using weights correctly in both edge directions
+
+    Tests model save/load works
+    """
     w_config = weighted_graph_config_fixture
 
     # Node 5 to node 4 has zero weight (zero transition probability)

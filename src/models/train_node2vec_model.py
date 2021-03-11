@@ -58,7 +58,7 @@ class N2VModel:
 
     def fit_model(self, window=10, min_count=1,
                   batch_words=4, seed=1, workers=None, callbacks=None,
-                  epochs=5, **kwargs):
+                  iter=5, **kwargs):
         self.logger.info('Fit node2vec model (create embeddings for nodes)')
         if workers is None:
             workers = cpu_count()
@@ -68,7 +68,7 @@ class N2VModel:
         self.logger.info(f'number of workers is {workers}')
         self.logger.info(f'window is {window}')
         self.logger.info(f'batch_words is {batch_words}')
-        self.logger.info(f'epochs is {epochs}')
+        self.logger.info(f'iter is {iter}')
         # Any keywords acceptable by gensim.Word2Vec can be passed, `dimensions` and `workers` are
         # automatically passed (from the Node2Vec constructor)
         # https://radimrehurek.com/gensim/models/word2vec.html#gensim.models.word2vec.Word2Vec
@@ -78,13 +78,13 @@ class N2VModel:
                                        seed=seed,
                                        workers=workers,
                                        callbacks=[callbacks],
-                                       epochs=epochs)
+                                       iter=iter)
 
     def save_model(self, embeddings_filepath, model_file_path):
-        module_logger.info(f'saving  embeddings to {embeddings_filepath}')
+        self.logger.info(f'saving  embeddings to {embeddings_filepath}')
         self.model.wv.save_word2vec_format(embeddings_filepath)
 
-        module_logger.info(f'saving model to  to {model_file_path}')
+        self.logger.info(f'saving model to  to {model_file_path}')
         self.model.save(model_file_path)
 
 
@@ -118,8 +118,6 @@ if __name__ == "__main__":  # our module is being executed as a program
     node_embeddings_file_path = os.path.join(model_dir,
                                              node2vec_config['embeddings_filename'])
 
-    node2vec_model.save(node_embeddings_file_path)
-
     node2vec_model_file_path = os.path.join(model_dir, node2vec_config['model_filename'])
 
-    node2vec_model.save(node2vec_model_file_path)
+    node2vec_model.save_model(node_embeddings_file_path, node2vec_model_file_path)
