@@ -1,5 +1,5 @@
 # Use edge weights in graph
-weighted_graph: True
+weighted_graph: False
 # Node2vec hyper params
 dimensions: 64
 walk_length: 10
@@ -8,8 +8,9 @@ window: 10
 min_count: 1
 batch_words: 4
 seed: 1
+epochs: 5
 # n cpus to use (null = cpu.count())
-workers: null
+workers: 4
 # no file type suffix
 embeddings_filename: "n2v_node_embeddings"
 #run_link_generation will only upload models called n2v.model

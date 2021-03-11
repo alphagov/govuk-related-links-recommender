@@ -15,7 +15,7 @@ class N2VModel:
         self.graph = graph
         self.model = model
         self.node2vec = node2vec
-        self.logger = logging.getLogger('node2vec')
+        self.logger = logging.getLogger('train_node2_vec_model')
 
     def create_graph(self, edges_df, weighted=False):
         """
@@ -51,12 +51,14 @@ class N2VModel:
         self.logger.info(f'number of workers is {workers}')
 
         self.node2vec = Node2Vec(self.graph,
-                                 dimensions,
-                                 walk_length,
-                                 num_walks,
-                                 workers)
+                                 dimensions=dimensions,
+                                 walk_length=walk_length,
+                                 num_walks=num_walks,
+                                 workers=workers)
 
-    def fit_model(self, window=10, min_count=1, batch_words=4, seed=1, workers=None, callbacks=None, **kwargs):
+    def fit_model(self, window=10, min_count=1,
+                  batch_words=4, seed=1, workers=None, callbacks=None,
+                  epochs=5, **kwargs):
         self.logger.info('Fit node2vec model (create embeddings for nodes)')
         if workers is None:
             workers = cpu_count()
@@ -64,6 +66,9 @@ class N2VModel:
             workers = workers
 
         self.logger.info(f'number of workers is {workers}')
+        self.logger.info(f'window is {window}')
+        self.logger.info(f'batch_words is {batch_words}')
+        self.logger.info(f'epochs is {epochs}')
         # Any keywords acceptable by gensim.Word2Vec can be passed, `dimensions` and `workers` are
         # automatically passed (from the Node2Vec constructor)
         # https://radimrehurek.com/gensim/models/word2vec.html#gensim.models.word2vec.Word2Vec
@@ -72,7 +77,8 @@ class N2VModel:
                                        batch_words=batch_words,
                                        seed=seed,
                                        workers=workers,
-                                       callbacks=[callbacks])
+                                       callbacks=[callbacks],
+                                       epochs=epochs)
 
     def save_model(self, embeddings_filepath, model_file_path):
         module_logger.info(f'saving  embeddings to {embeddings_filepath}')
@@ -85,6 +91,7 @@ class N2VModel:
 if __name__ == "__main__":  # our module is being executed as a program
     data_dir = os.getenv("DATA_DIR")
     model_dir = os.getenv("MODEL_DIR")
+    logging.config.fileConfig('src/logging.conf')
     module_logger = logging.getLogger('train_node2_vec_model')
 
     prepro_cfg = read_config_yaml(

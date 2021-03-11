@@ -1,8 +1,8 @@
 #Set to True for cheap small data
-use_intraday: True
-from_days_ago: 3
+use_intraday: False
+from_days_ago: 21
 to_days_ago: 2
-#run_link generation will only files called 'functional_edges.csv' and 'structural_edges.csv'
+#run_link generation will only upload files called 'functional_edges.csv' and 'structural_edges.csv'
 functional_edges_filename: "functional_edges.csv"
 structural_edges_filename: "structural_edges.csv"
 #run_link generation will only upload networks called 'network.csv'

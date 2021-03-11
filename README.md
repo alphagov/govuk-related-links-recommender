@@ -123,7 +123,7 @@ for settings. Runs quickly. Runs cheaply if you use `use_intraday: True` in the 
 
 ### Get the structural network
 
-`src/datapreprocessing/make_functional_edges_and_weights.py`
+`src/data_preprocessing/get_content_store_data.py`
 
 The structural network is the network of hyperlinks in gov.uk. Function expects a mongodb instance containing the content store on the ip and port configured in
 
@@ -141,7 +141,7 @@ Outputs csv of unique weighted source-destination pairs
 
 ### Training node2vec
 
-`src.models.train_node2vec_model`
+`src/models/train_node2vec_model`
 
 Config in `src/config/node2vec-config.yml`. Trains the model and saves the embeddings and model.
 
