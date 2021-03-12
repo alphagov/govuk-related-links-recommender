@@ -12,9 +12,11 @@ from google.cloud import bigquery
 
 
 class EdgeWeightExtractor:
-    def __init__(self, query_path, blacklisted_document_types, date_from=None, date_until=None):
+
+    def __init__(self, query_path, blocklisted_document_types, date_from=None, date_until=None):
         self.logger = logging.getLogger('make_functional_edges_and_weights.EdgeWeightExtractor')
-        self.blacklisted_document_types = blacklisted_document_types
+        self.blocklisted_document_types = bloklisted_document_types
+
         self.date_from = date_from
         self.date_until = date_until
         self.query_path = query_path
@@ -32,7 +34,8 @@ class EdgeWeightExtractor:
             query_parameters=[
                 bigquery.ScalarQueryParameter("from_date", "STRING", self.date_from),
                 bigquery.ScalarQueryParameter("to_date", "STRING", self.date_until),
-                bigquery.ArrayQueryParameter("excluded_document_types", "STRING", self.blacklisted_document_types)
+                bigquery.ArrayQueryParameter("excluded_document_types", "STRING", self.blocklisted_document_types)
+
             ]
         )
 
@@ -49,7 +52,7 @@ if __name__ == "__main__":
     logging.config.fileConfig('src/logging.conf')
     module_logger = logging.getLogger('make_functional_edges_and_weights')
     data_dir = os.getenv("DATA_DIR")
-    blacklisted_document_types = read_config_yaml(
+    blocklisted_document_types = read_config_yaml(
         "document_types_excluded_from_the_topic_taxonomy.yml")['document_types']
 
     preprocessing_config = read_config_yaml(
@@ -61,14 +64,15 @@ if __name__ == "__main__":
     if preprocessing_config['use_intraday']:
         module_logger.info(f'running all user query on intraday')
         edge_weights = EdgeWeightExtractor('src/data_preprocessing/intra_day_content_id_edge_weights.sql',
-                                           blacklisted_document_types)
+                                           blocklisted_document_types)
 
     else:
         module_logger.info(f'running all user query between {from_date} and {to_date}')
         edge_weights = EdgeWeightExtractor('src/data_preprocessing/query_content_id_edge_weights.sql',
-                                           blacklisted_document_types, from_date, to_date)
+                                           blocklisted_document_types, from_date, to_date)
 
     edge_weights.create_df()
+
 
     module_logger.info(
         f'saving edges and weights to {os.path.join(data_dir, "tmp", preprocessing_config["network_filename"])}')
