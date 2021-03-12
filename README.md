@@ -147,7 +147,7 @@ Config in `src/config/node2vec-config.yml`. Trains the model and saves the embed
 
 ### Predict links
 
-`src.models.predict_related_links`
+`src/models/predict_related_links`
 
 Gets the top 5 most similar nodes for every node (not explicitly excluded in the `source_exclusions_that_are_not_linked_from.yml` ) ! Filters out results subject to lots of uncertainty (ie low user traversal). Outputs a csv
 
