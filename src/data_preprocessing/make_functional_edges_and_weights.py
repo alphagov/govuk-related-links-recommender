@@ -15,7 +15,7 @@ class EdgeWeightExtractor:
 
     def __init__(self, query_path, blocklisted_document_types, date_from=None, date_until=None):
         self.logger = logging.getLogger('make_functional_edges_and_weights.EdgeWeightExtractor')
-        self.blocklisted_document_types = bloklisted_document_types
+        self.blocklisted_document_types = blocklisted_document_types
 
         self.date_from = date_from
         self.date_until = date_until
@@ -72,7 +72,6 @@ if __name__ == "__main__":
                                            blocklisted_document_types, from_date, to_date)
 
     edge_weights.create_df()
-
 
     module_logger.info(
         f'saving edges and weights to {os.path.join(data_dir, "tmp", preprocessing_config["network_filename"])}')
