@@ -61,4 +61,4 @@ GROUP BY
   source_content_id,
   destination_content_id
 HAVING
-  weight > 5
+  weight >= @weight_threshold

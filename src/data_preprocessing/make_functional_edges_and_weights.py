@@ -13,10 +13,10 @@ from google.cloud import bigquery
 
 class EdgeWeightExtractor:
 
-    def __init__(self, query_path, blocklisted_document_types, date_from=None, date_until=None):
+    def __init__(self, query_path, blocklisted_document_types, date_from=None, date_until=None, weight_threshold=None):
         self.logger = logging.getLogger('make_functional_edges_and_weights.EdgeWeightExtractor')
         self.blocklisted_document_types = blocklisted_document_types
-
+        self.weight_threshold = weight_threshold
         self.date_from = date_from
         self.date_until = date_until
         self.query_path = query_path
@@ -34,6 +34,7 @@ class EdgeWeightExtractor:
             query_parameters=[
                 bigquery.ScalarQueryParameter("from_date", "STRING", self.date_from),
                 bigquery.ScalarQueryParameter("to_date", "STRING", self.date_until),
+                bigquery.ScalarQueryParameter("weight_threshold", "INT64", self.weight_threshold),
                 bigquery.ArrayQueryParameter("excluded_document_types", "STRING", self.blocklisted_document_types)
 
             ]
@@ -58,18 +59,26 @@ if __name__ == "__main__":
     preprocessing_config = read_config_yaml(
         "preprocessing-config.yml")
 
+    weight_threshold = preprocessing_config['weight_threshold']
+
+    module_logger.info(f'Functional weight threshold is >= {weight_threshold}')
+
     to_date = (datetime.today() - timedelta(preprocessing_config['to_days_ago'])).strftime('%Y%m%d')
     from_date = (datetime.today() - timedelta(preprocessing_config['from_days_ago'])).strftime('%Y%m%d')
 
     if preprocessing_config['use_intraday']:
         module_logger.info(f'running all user query on intraday')
         edge_weights = EdgeWeightExtractor('src/data_preprocessing/intra_day_content_id_edge_weights.sql',
-                                           blocklisted_document_types)
+                                           blocklisted_document_types=blocklisted_document_types,
+                                           weight_threshold=weight_threshold)
 
     else:
         module_logger.info(f'running all user query between {from_date} and {to_date}')
         edge_weights = EdgeWeightExtractor('src/data_preprocessing/query_content_id_edge_weights.sql',
-                                           blocklisted_document_types, from_date, to_date)
+                                           blocklisted_document_types=blocklisted_document_types,
+                                           date_from=from_date,
+                                           date_until=to_date,
+                                           weight_threshold=weight_threshold)
 
     edge_weights.create_df()
 

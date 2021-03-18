@@ -9,7 +9,8 @@ def test_return_data_frame():
     """Tests that Edgeweight Extractor instantiates and runs query and result is unique set of edges and counts"""
     exclusions = read_config_yaml("document_types_excluded_from_the_topic_taxonomy.yml")['document_types']
     instance = EdgeWeightExtractor('src/data_preprocessing/intra_day_content_id_edge_weights.sql',
-                                   exclusions,
+                                   blocklisted_document_types=exclusions,
+                                   weight_threshold=10
                                    )
 
     instance.create_df()

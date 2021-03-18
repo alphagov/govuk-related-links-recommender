@@ -65,7 +65,8 @@ def unweighted_graph_config_fixture():
 
 @pytest.fixture(scope="session")
 def weighted_network_fixture():
-    return pd.read_csv("tests/unit/fixtures/test_weighted_network.csv").reset_index(
+    return pd.read_csv("tests/unit/fixtures/test_weighted_network.csv",
+                       dtype={'weight': 'int64'}).reset_index(
         drop=True)
 
 

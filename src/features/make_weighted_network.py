@@ -1,6 +1,5 @@
 import logging.config
 import os
-import numpy as np
 import pandas as pd
 from src.utils.miscellaneous import read_config_yaml
 
@@ -10,24 +9,23 @@ logging.config.fileConfig('src/logging.conf')
 
 def make_weighted_network_from_structural_and_functional(structural_edges, functional_edges):
     """
-    Combine structural and functional dataframes to get a deduplicated dataframe of edges
-    with plus one smoothed edge weights
+    Combine structural and functional dataframes to get a deduplicated dataframe of edges.
+    Functional edges have a weight equal to the number of users that traversed that edge
+    Structural edges are set a minimum weight of 50
     Return unique source destination pairs with weight
-    :param structural_edges: pandas DataFrame including columns ['source_content_id', 'destination_content_id']
-    :param functional_edges: pandas DataFrame including columns ['source_content_id', 'destination_content_id']
-    :return: pandas DataFrame with columns ['source_content_id', 'destination_content_id']
+    :param structural_edges: DataFrame including columns ['source_content_id', 'destination_content_id']
+    :param functional_edges: DataFrame including columns ['source_content_id', 'destination_content_id', 'weight']
+    :return: pandas DataFrame with columns ['source_content_id', 'destination_content_id','weight']
     """
+
+    # Set weight of structural edges to 50
+    structural_edges['weight'] = 50
+
     all_edges = pd.concat([structural_edges, functional_edges],
                           ignore_index=True, sort=True)
 
-    # Add one to all edge weights so no edge has zero transition probability
-    # Structural edges will therefore have a weight of 1
-    # Functional edges will have a weight of n_users
-    all_edges = all_edges.replace(np.nan, 0)
-    all_edges['weight'] = all_edges['weight'] + 1
-
-    # Deduplicate edges, retaining max edge weight (either 1 or functional edge weight)
-    all_edges = all_edges.groupby(['source_content_id', 'destination_content_id'], as_index=False).aggregate(max)
+    # Deduplicate edges, summing structural and functional edge weights
+    all_edges = all_edges.groupby(['source_content_id', 'destination_content_id'], as_index=False).aggregate(sum)
     all_edges = all_edges[
         ['source_content_id', 'destination_content_id', 'weight']].reset_index(drop=True)
     return all_edges

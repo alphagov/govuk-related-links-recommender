@@ -2,6 +2,8 @@
 use_intraday: False
 from_days_ago: 21
 to_days_ago: 2
+#minimum number of transitions required to be included in functional network
+weight_threshold: 10
 #run_link generation will only upload files called 'functional_edges.csv' and 'structural_edges.csv'
 functional_edges_filename: "functional_edges.csv"
 structural_edges_filename: "structural_edges.csv"
