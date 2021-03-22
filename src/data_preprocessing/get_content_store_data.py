@@ -23,8 +23,8 @@ KEYS_FOR_LINK_TYPES = {
 }
 
 BLOCKLIST_DOCUMENT_TYPES = read_config_yaml(
-
     "document_types_excluded_from_the_topic_taxonomy.yml")['document_types']
+
 EXCLUDED_SOURCE_CONTENT = read_config_yaml("source_exclusions_that_are_not_linked_from.yml")
 EXCLUDED_TARGET_CONTENT = read_config_yaml("target_exclusions_that_are_not_linked_to.yml")
 
@@ -84,7 +84,7 @@ def get_links(mongodb_collection, link_type):
         the expanded_links field
     :param mongodb_collection:
     :param link_type: either 'related' (looks in expanded_links.ordered_related_items)  or 'collection' (looks in
-        expanded_links.documents)
+        expanded_links.documents) NB doesn't consider suggested_ordered_related_items!
     :return: list of content items identified by content ID and base_path, and their links, of the type link_type, from
         the expanded_links field (content IDs and base_paths)
     """
@@ -164,7 +164,7 @@ def get_page_text_df(mongodb_collection):
 def reshape_df_explode_list_column(wide_df, list_column):
     """
     Bit like a melt, we have a list column in a DataFrame, and we repeat all other columns for each item in the list
-    TODO: would be nice to bump pandas and call DataFrame.explode, but presumably it'll break other stuff
+    TODO: would be nice to bump pandas and call DataFrame.explode, but it breaks other stuff
     :param wide_df: pandas DataFrame with a list column
     :param list_column: list column name
     :return: DataFrame with one row per item in the list_column
@@ -280,7 +280,7 @@ def export_content_id_list(list_name, mongodb_collection, outfile):
     content_ids_list_of_dicts = list(
         mongodb_collection.find(mongodb_filter, {"content_id": 1, '_id': 0}))
     content_ids_and_nones_list = [content_id.get('content_id') for content_id in content_ids_list_of_dicts]
-    content_ids_list = list(filter(None, content_ids_and_nones_list))
+    content_ids_list = list(set(list(filter(None, content_ids_and_nones_list))))
 
     with open(outfile, 'wb') as fp:
         pickle.dump(content_ids_list, fp)

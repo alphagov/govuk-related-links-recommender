@@ -82,6 +82,8 @@ if __name__ == "__main__":
 
     edge_weights.create_df()
 
+    filename = preprocessing_config["functional_edges_filename"]
+
     module_logger.info(
-        f'saving edges and weights to {os.path.join(data_dir, "tmp", preprocessing_config["network_filename"])}')
-    edge_weights.extract_df_to_csv(os.path.join(data_dir, "tmp", preprocessing_config['network_filename']))
+        f'saving edges and weights to {os.path.join(data_dir, "tmp", filename)}')
+    edge_weights.extract_df_to_csv(os.path.join(data_dir, "tmp", filename))

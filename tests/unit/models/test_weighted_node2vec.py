@@ -13,7 +13,7 @@ def test_weighted_node2vec(weighted_graph_config_fixture):
     """
     Tests weighted node2vec output is using weights correctly in both edge directions
 
-    Tests model save/load works
+    Tests nodes in = nodes out
     """
     w_config = weighted_graph_config_fixture
 
@@ -41,3 +41,5 @@ def test_weighted_node2vec(weighted_graph_config_fixture):
     counts = counts.replace(np.nan, 0)
     assert counts.iloc[5][4] == 0
     assert counts.iloc[4][5] != 0
+    assert len(set(edges['source_content_id']).union(
+        set(edges['destination_content_id']))) == len(wm.model.wv.vocab.keys())
