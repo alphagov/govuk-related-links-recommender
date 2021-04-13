@@ -54,7 +54,7 @@ def test_save_model(weighted_graph_config_fixture):
     Trains model, saves, loads and checks the model vocab is as trained
     """
     w_config = weighted_graph_config_fixture
-    model_dir = os.getenv("MODEL_DIR")
+    model_dir = 'tests/unit/tmp/'
 
     # Node 5 to node 4 has zero weight (zero transition probability)
     # Node 4 to node 5 has ten weight (high transition probability)
