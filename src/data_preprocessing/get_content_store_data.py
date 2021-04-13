@@ -8,25 +8,23 @@ from pandas.io.json import json_normalize
 import pymongo
 from tqdm import tqdm
 import pickle
-
+from src.utils.miscellaneous import read_config_yaml
 from src.utils import text_preprocessing as tp
-
-from src.utils.miscellaneous import read_exclusions_yaml
 
 warnings.filterwarnings('ignore', category=UserWarning, module='bs4')
 
 tqdm.pandas()
-
 
 KEYS_FOR_LINK_TYPES = {
     "related": "ordered_related_items",
     "collection": "documents"
 }
 
-BLACKLIST_DOCUMENT_TYPES = read_exclusions_yaml(
+BLOCKLIST_DOCUMENT_TYPES = read_config_yaml(
     "document_types_excluded_from_the_topic_taxonomy.yml")['document_types']
-EXCLUDED_SOURCE_CONTENT = read_exclusions_yaml("source_exclusions_that_are_not_linked_from.yml")
-EXCLUDED_TARGET_CONTENT = read_exclusions_yaml("target_exclusions_that_are_not_linked_to.yml")
+
+EXCLUDED_SOURCE_CONTENT = read_config_yaml("source_exclusions_that_are_not_linked_from.yml")
+EXCLUDED_TARGET_CONTENT = read_config_yaml("target_exclusions_that_are_not_linked_to.yml")
 
 RELATED_LINKS_PROJECTION = {
     "expanded_links.ordered_related_items.base_path": 1,
@@ -64,15 +62,15 @@ TEXT_PROJECTION = {
     "details.transaction_start_link": 1,
     "content_id": 1}
 
-FILTER_BASIC = {"$and": [{"document_type": {"$nin": BLACKLIST_DOCUMENT_TYPES}},
+FILTER_BASIC = {"$and": [{"document_type": {"$nin": BLOCKLIST_DOCUMENT_TYPES}},
                          {"phase": "live"}]}
 
 FILTER_RELATED_LINKS = {"$and": [{"expanded_links.ordered_related_items": {"$exists": True}},
-                                 {"document_type": {"$nin": BLACKLIST_DOCUMENT_TYPES}},
+                                 {"document_type": {"$nin": BLOCKLIST_DOCUMENT_TYPES}},
                                  {"phase": "live"}]}
 
 FILTER_COLLECTION_LINKS = {"$and": [{"expanded_links.documents": {"$exists": True}},
-                                    {"document_type": {"$nin": BLACKLIST_DOCUMENT_TYPES}},
+                                    {"document_type": {"$nin": BLOCKLIST_DOCUMENT_TYPES}},
                                     {"phase": "live"}]}
 
 OUTPUT_DF_COLUMNS = ['destination_base_path', 'destination_content_id', 'source_base_path', 'source_content_id']
@@ -84,9 +82,11 @@ def get_links(mongodb_collection, link_type):
         the expanded_links field
     :param mongodb_collection:
     :param link_type: either 'related' (looks in expanded_links.ordered_related_items)  or 'collection' (looks in
-        expanded_links.documents)
+        expanded_links.documents) NB doesn't consider suggested_ordered_related_items
+        (the algorithmically generated links)
     :return: list of content items identified by content ID and base_path, and their links, of the type link_type, from
         the expanded_links field (content IDs and base_paths)
+
     """
     if link_type == 'related':
         return list(mongodb_collection.find(FILTER_RELATED_LINKS, RELATED_LINKS_PROJECTION))
@@ -123,6 +123,7 @@ def convert_link_list_to_df(link_list, link_type, columns=OUTPUT_DF_COLUMNS):
 def get_path_content_id_mappings(mongodb_collection):
     """
     Queries a MongoDB collection and creates mappings of page_paths (base_paths with slugs), base_paths and content_ids
+    TODO There isn't a 1:1 relationship with content ids as paths, as this assumes. e.g multiple language versions.
     :param mongodb_collection:
     :return: Python dictionary {page_path: content_id}, Python dictionary {content_id: base_path}
     """
@@ -164,6 +165,7 @@ def get_page_text_df(mongodb_collection):
 def reshape_df_explode_list_column(wide_df, list_column):
     """
     Bit like a melt, we have a list column in a DataFrame, and we repeat all other columns for each item in the list
+    TODO: would be nice to bump pandas and call DataFrame.explode, but it breaks other stuff
     :param wide_df: pandas DataFrame with a list column
     :param list_column: list column name
     :return: DataFrame with one row per item in the list_column
@@ -262,7 +264,7 @@ def export_content_id_list(list_name, mongodb_collection, outfile):
         excluded_source_document_types = EXCLUDED_SOURCE_CONTENT['document_types']
 
         mongodb_filter = {"$and": [{"expanded_links.ordered_related_items": {"$exists": False}},
-                                   {"document_type": {"$nin": BLACKLIST_DOCUMENT_TYPES}},
+                                   {"document_type": {"$nin": BLOCKLIST_DOCUMENT_TYPES}},
                                    {"document_type": {"$nin": excluded_source_document_types}},
                                    {"content_id": {"$nin": specific_excluded_source_content_ids}},
                                    {"phase": "live"}]}
@@ -271,15 +273,16 @@ def export_content_id_list(list_name, mongodb_collection, outfile):
         excluded_target_document_types = EXCLUDED_TARGET_CONTENT['document_types']
 
         mongodb_filter = {"$nor": [{"expanded_links.ordered_related_items": {"$exists": True}},
-                                   {"document_type": {"$in": BLACKLIST_DOCUMENT_TYPES}},
+                                   {"document_type": {"$in": BLOCKLIST_DOCUMENT_TYPES}},
                                    {"document_type": {"$in": excluded_target_document_types}},
-                                   {"content_id": {"$in": specific_excluded_target_content_ids}}]}
+                                   {"content_id": {"$in": specific_excluded_target_content_ids}},
+                                   {"locale": {"$ne": "en"}}]}
 
     # TODO simplify this. Loop through cursor instead?
     content_ids_list_of_dicts = list(
         mongodb_collection.find(mongodb_filter, {"content_id": 1, '_id': 0}))
     content_ids_and_nones_list = [content_id.get('content_id') for content_id in content_ids_list_of_dicts]
-    content_ids_list = list(filter(None, content_ids_and_nones_list))
+    content_ids_list = list(filter(None, set(content_ids_and_nones_list)))
 
     with open(outfile, 'wb') as fp:
         pickle.dump(content_ids_list, fp)
@@ -292,8 +295,10 @@ if __name__ == "__main__":  # our module is being executed as a program
 
     logging.config.fileConfig('src/logging.conf')
     module_logger = logging.getLogger('get_content_store_data')
+    prepro_cfg = read_config_yaml(
+        "preprocessing-config.yml")
 
-    mongo_client = pymongo.MongoClient("mongodb://localhost:27017/")
+    mongo_client = pymongo.MongoClient(prepro_cfg['mongo_client'])
     # TODO check this is consistent with naming of restored db in AWS
     content_store_db = mongo_client["content_store"]
     content_store_collection = content_store_db["content_items"]
@@ -314,8 +319,9 @@ if __name__ == "__main__":  # our module is being executed as a program
 
     output_df = get_structural_edges_df(content_store_collection, page_path_content_id_mapping)
 
-    module_logger.info(f'saving structural_edges (output_df) to {data_dir}/tmp/structural_edges.json')
-    output_df.to_csv(os.path.join(data_dir, "tmp", "structural_edges.csv"), index=False)
+    module_logger.info(
+        f'saving structural_edges (output_df) to {data_dir}/tmp/{prepro_cfg["structural_edges_filename"]}.json')
+    output_df.to_csv(os.path.join(data_dir, "tmp", prepro_cfg["structural_edges_filename"]), index=False)
 
     export_content_id_list("eligible_source",
                            content_store_collection,
@@ -325,7 +331,6 @@ if __name__ == "__main__":  # our module is being executed as a program
                            content_store_collection,
                            os.path.join(data_dir, "tmp",
                                         "eligible_target_content_ids.pkl"))
-
 
 # This is code from a colleague's blog, with an alternative way of doing this, that we need to compare efficiency with.
 # We haven't done it yet, because for MVP we're sticking with what we have already made work for our use case (getting
