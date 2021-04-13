@@ -37,7 +37,6 @@ class EdgeWeightExtractor:
                 bigquery.ScalarQueryParameter("to_date", "STRING", self.date_until),
                 bigquery.ScalarQueryParameter("weight_threshold", "INT64", self.weight_threshold),
                 bigquery.ArrayQueryParameter("excluded_document_types", "STRING", self.blocklisted_document_types)
-
             ]
         )
 
