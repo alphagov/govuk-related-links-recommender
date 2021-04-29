@@ -253,7 +253,7 @@ jobs:
 
                   echo "Running link generation in background..."
                   echo "Writing log to /var/tmp/related_links_process.log"
-                  ./run_link_generation > /var/tmp/related_links_process.log 2>&1 &
+                  ./run_link_generation > /var/tmp/related_links_process.log 2>&1
                 EOF
       - task: watch-instance
         config:
@@ -364,20 +364,6 @@ jobs:
               username: ((docker_hub_username))
               password: ((docker_hub_authtoken))
           run: *provision-generation-instance
-      - task: watch-instance
-        config:
-          params:
-            CONCOURSE_PRIVATE_KEY: ((concourse_private_key))
-            ROLE_ARN: ((concourse_role_arn_staging))
-          platform: linux
-          image_resource:
-            type: docker-image
-            source:
-              repository: govsvc/task-toolbox
-              tag: 1.1.0
-              username: ((docker_hub_username))
-              password: ((docker_hub_authtoken))
-          run: *watch-instance
       - &destroy-generation-instance-staging
         task: destroy-generation-instance
         config:
@@ -448,20 +434,6 @@ jobs:
               username: ((docker_hub_username))
               password: ((docker_hub_authtoken))
           run: *provision-generation-instance
-      - task: watch-instance
-        config:
-          params:
-            CONCOURSE_PRIVATE_KEY: ((concourse_private_key))
-            ROLE_ARN: ((concourse_role_arn_production))
-          platform: linux
-          image_resource:
-            type: docker-image
-            source:
-              repository: govsvc/task-toolbox
-              tag: 1.1.0
-              username: ((docker_hub_username))
-              password: ((docker_hub_authtoken))
-          run: *watch-instance
       - &destroy-generation-instance-production
         task: destroy-generation-instance
         config:
