@@ -51,3 +51,5 @@ aws s3 cp $MODEL_DIR/n2v.model s3://$RELATED_LINKS_BUCKET/n2v.model
 aws s3 cp $DATA_DIR/tmp/network.csv s3://$RELATED_LINKS_BUCKET/network.csv
 aws s3 cp $DATA_DIR/tmp/structural_edges.csv s3://$RELATED_LINKS_BUCKET/structural_edges.csv
 aws s3 cp $DATA_DIR/tmp/functional_edges.csv s3://$RELATED_LINKS_BUCKET/functional_edges.csv
+
+echo "related_links process succeeded"
