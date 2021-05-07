@@ -1,0 +1,18 @@
+# Use edge weights in graph
+weighted_graph: True
+# Node2vec hyper params
+dimensions: 10
+walk_length: 10
+num_walks: 10
+window: 5
+min_count: 1
+batch_words: 4
+seed: 1
+# n cpus to use (null = cpu.count())
+workers: null
+# no file type suffix
+embeddings_filename: "test_weighted_node_embeddings"
+#run_link_generation will only upload models called n2v.model
+model_filename: "test_weighted_n2v"
+#run_link_generation.sh is only going to find and upload files with 'suggested_related_links' in the filename to aws
+predictions_filename: "test_weighted_suggested_related_links"

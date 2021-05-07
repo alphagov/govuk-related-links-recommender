@@ -13,7 +13,18 @@ def read_file_as_string(filepath):
     return lines
 
 
-def read_exclusions_yaml(filename):
+def parse_sql_script(path) -> str:
+    """Parse a SQL script directly from the `folder` folder.
+    Args:
+        path: The path and filename of the SQL script.
+    Returns:
+        A string of the parsed SQL script.
+    """
+    with open(path, "r") as f:
+        return f.read()
+
+
+def read_config_yaml(filename):
     with open(
             os.path.join(os.path.abspath(os.path.dirname(__file__)),
                          '..', 'config', filename),

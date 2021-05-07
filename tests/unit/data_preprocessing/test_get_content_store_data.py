@@ -15,6 +15,7 @@ from src.data_preprocessing.get_content_store_data import (
     export_content_id_list
 )
 
+# flake8: noqa
 
 @pytest.fixture(scope="session")
 def related_links_link_list_fixture():
@@ -1307,7 +1308,8 @@ def test_export_content_id_list(mongodb):
             'tests/unit/fixtures/expected_eligible_source_content_ids.pkl',
             "rb") as input_file:
         expected = pickle.load(input_file)
-    assert check == expected
+        expected = list(set(expected))
+    assert set(check) == set(expected)
 
     export_content_id_list("eligible_target",
                            mongodb.content_store_data_sample,
