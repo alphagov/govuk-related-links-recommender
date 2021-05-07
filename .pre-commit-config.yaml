@@ -2,28 +2,28 @@
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
 -   repo: https://gitlab.com/pycqa/flake8
-    rev: 3.7.9
+    rev: 3.8.4
     hooks:
     -   id: flake8
-        args: ['src']
+        args: ["src"]
 -   repo: https://github.com/Yelp/detect-secrets
-    rev: v0.13.1
+    rev: v1.0.3
     hooks:
     -   id: detect-secrets
-        args: ['--baseline', '.secrets.baseline']
+        args: ["--baseline", ".secrets.baseline"]
         exclude: .*/tests/.*
--   repo: https://github.com/aflc/pre-commit-jupyter
-    rev: v1.1.0
-    hooks:
-    -   id: jupyter-notebook-cleanup
-        args:
-        -   --remove-kernel-metadata
-        -   --pin-patterns
-        -   "[keep_output]"
+- repo: https://github.com/kynan/nbstripout
+  rev: 0.3.9
+  hooks:
+    - id: nbstripout
+      args:
+        - --extra-keys
+        - "metadata.colab metadata.kernelspec cell.metadata.colab cell.metadata.executionInfo cell.metadata.id cell.metadata.outputId"
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.4.0
+    rev: v3.4.0
     hooks:
     -   id: check-added-large-files
-        args: ['--maxkb=5120']
+        args: ["--maxkb=5120"]
     -   id: end-of-file-fixer
+        exclude: '\.Rd'
     -   id: trailing-whitespace

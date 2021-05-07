@@ -69,4 +69,4 @@ def test_get_excluded_document_types():
 
 def test_parse_sql_script():
     query = parse_sql_script('tests/unit/fixtures/test_query.sql')
-    assert isinstance(query, str)
+    assert query == '--Random comment\nSELECT *  from bigtable\n'
