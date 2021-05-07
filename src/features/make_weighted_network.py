@@ -10,8 +10,10 @@ logging.config.fileConfig('src/logging.conf')
 def make_weighted_network_from_structural_and_functional(structural_edges, functional_edges, structural_edge_weight):
     """
     Combine structural and functional dataframes to get a deduplicated dataframe of edges.
-    Functional edges have a weight equal to the number of users that traversed that edge
-    Structural edges are set a weight of 50 (so equivalent to 50 users going between those two pages)
+    Functional edges have a weight equal to the number of users that traversed that edge (excluding any below
+    weight_threshold)
+    Structural edges are set a weight of structural_edge_weight (so equivalent to structural_edge_weight users going
+    between those two pages)
     Return unique source destination pairs with weight
     :param structural_edges: DataFrame including columns ['source_content_id', 'destination_content_id']
     :param functional_edges: DataFrame including columns ['source_content_id', 'destination_content_id', 'weight']
@@ -19,7 +21,7 @@ def make_weighted_network_from_structural_and_functional(structural_edges, funct
     :return: pandas DataFrame with columns ['source_content_id', 'destination_content_id','weight']
     """
 
-    # Set weight of structural edges to 1
+    # Set weight of structural edges to structural_edge_weight
     structural_edges['weight'] = structural_edge_weight
 
     all_edges = pd.concat([structural_edges, functional_edges],
