@@ -253,7 +253,7 @@ jobs:
 
                   echo "Running link generation in background..."
                   echo "Writing log to /var/tmp/related_links_process.log"
-                  ./run_link_generation > /var/tmp/related_links_process.log 2>&1
+                  ./run_link_generation > /var/tmp/related_links_process.log 2>&1 &
                 EOF
       - task: watch-instance
         config:
