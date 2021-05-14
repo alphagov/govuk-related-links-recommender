@@ -46,6 +46,7 @@ class N2VModel:
 
         if workers is None:
             workers = cpu_count()
+            self.logger.info(f'workers was None, cpu_count is {cpu_count}')
 
         self.logger.info(f'number of workers is {workers}')
 
