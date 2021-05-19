@@ -300,9 +300,19 @@ if __name__ == "__main__":  # our module is being executed as a program
 
     mongo_client = pymongo.MongoClient(prepro_cfg['mongo_client'])
     # TODO check this is consistent with naming of restored db in AWS
-    content_store_db = mongo_client["content_store"]
-    content_store_collection = content_store_db["content_items"]
 
+    # Check if the content_store is in mongo
+    content_store_name = prepro_cfg['content_store_db_name']
+    mongo_db_names = mongo_client.list_database_names()
+
+    if content_store_name not in mongo_db_names:
+        error_message = ('database "{}" was not found in mongo. '
+                         'Databases available: {}').format(content_store_name, str(mongo_db_names))
+        module_logger.error(error_message)
+        raise Exception(error_message)
+
+    content_store_db = mongo_client[content_store_name]
+    content_store_collection = content_store_db["content_items"]
     page_path_content_id_mapping, content_id_base_path_mapping = get_path_content_id_mappings(content_store_collection)
 
     module_logger.info(f'saving page_path_content_id_mapping to {data_dir}/tmp/page_path_content_id_mapping.json')
