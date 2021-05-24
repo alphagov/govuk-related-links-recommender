@@ -12,4 +12,3 @@ structural_edges_filename: "structural_edges.csv"
 #run_link generation will only upload networks called 'network.csv'
 network_filename: "network.csv"
 mongo_client: "mongodb://localhost:27017/"
-content_store_db_name: "content_store"
