@@ -1,14 +1,7 @@
 govuk-related-links-recommender
 ==============================
 
-Main things this repo does:
-
-1) Training an ML model for creating suggested related links like these (on the right sidebar) https://www.gov.uk/government/collections/health-certificates-for-animal-and-animal-product-imports-to-great-britain
-2) Getting suggested recommended links from the trained model
-3) Uploading the model, data, logs and recommended links to aws
-4) Feeding links from AWS to the publishing api
-
-More details here: https://docs.publishing.service.gov.uk/manual/related-links.html
+Machine learning model to recommend related content
 
 Project Organization
 ------------
@@ -66,91 +59,10 @@ Project Organization
 
 ## Python environment
 Need to set and activate environment variables before running pipeline. To run the make_functional_edges_and_weights.py
-script, use command line to `export GOOGLE_APPLICATION_CREDENTIALS='path/to/GOV-UK BigQuery analytics-fa2ed548d98c.json'`
+script, use command line to `export GOOGLE_APPLICATION_CREDENTIALS='path/to/GOV-UK BigQuery analytics-fa2ed548d98c.json'` 
 
-Environment variables are also used to locate data and model directories: DATA_DIR and MODEL_DIR.
-Make sure these are activated before running data pipeline.
-
-
-## Config
-
-### Preprocessing config
-
-`src/config/preprocessing-config.yml`
-
-Set the names for the structural (hyperlink) and functional (user movement) graphs/networks output csvs, from/to dates for GA data, if you want to use intraday data (cheap and quick!), and where the mongodb instance containing the content store is serving from
-
-### Node2vec config
-
-`src/config/node2vec-config.yml`
-
-Set whether you want to use weighted edges in node2vec (weights=user movement), various hyperparameters and output filenames for the model and embeddings
-
-
-### Important: Output file names
-
-The names of the files that get uploaded to AWS (and ingested into the content api) are hardcoded in `run_link_generation` and `run_link_ingestion`.
-So any other file name (ie youve changed it in `node2vec-config.yml`) won't get picked up.
-
-## Running the complete pipeline (high level)
-
-### Run link generation
-
-`run_link_generation.sh`
-
-1) Downloads content store backup from aws
-2) sets up mongodb of content store
-3) Runs `run_all.py` (see below for the contents of that)
-4) Uploads to aws
-
-### Run link ingestion
-
-`run_link_ingestion.sh`
-
-1) Feeds links from AWS to the publishing api
-
-## Running the pipeline (low level)
-
-Here's a run through of what `run.py` does:
-
-
-### Get the functional network
-
-`src/datapreprocessing/make_functional_edges_and_weights.py`
-
-The functional network is how users move around gov.uk. Function queries `govuk-bigquery-analytics` for a list of source and destination content ids and a count of how many times users made that transition. Outputs a csv of weighted source-destination pairs. See `src/config/preprocessing-config.yml`
-for settings. Runs quickly. Runs cheaply if you use `use_intraday: True` in the config.
-
-### Get the structural network
-
-`src/data_preprocessing/get_content_store_data.py`
-
-The structural network is the network of hyperlinks in gov.uk. Function assumes there is a mongodb instance containing the content store on the ip and port configured in `src/config/preprocessing-config.yml`
-
-Extracts all the links from content store content. Outputs csv of unweighted source - destination pairs. Seems extremely faffy and takes a long time.
-
-How to set up mongodb instance locally: https://github.com/ukgovdatascience/govuk-mongodb-content
-
-### Create functional + structural network
-
-`src/features/make_weighted_network.py`
-
-Concatenates the structural and functional edgelists. Untravelled edges (ie from the structural network) get assigned `weight = 1`. Everything else has `weight = n users that travelled that edge`
-
-Outputs csv of unique weighted source-destination pairs
-
-### Training node2vec
-
-`src/models/train_node2vec_model`
-
-Config in `src/config/node2vec-config.yml`. Trains the model and saves the embeddings and model.
-
-### Predict links
-
-`src/models/predict_related_links`
-
-Gets the top 5 most similar nodes for every node (not explicitly excluded in the `source_exclusions_that_are_not_linked_from.yml` ) ! Filters out results subject to lots of uncertainty (ie low user traversal). Outputs a csv
-
+Environment variables are also used to locate data and model directories: DATA_DIR and MODEL_DIR. 
+Make sure these are activated before runnning data pipeline.
 
 ## Rules for displaying automated related links
 **Do-not-display-automated-related-links-from these-pages**
@@ -161,7 +73,7 @@ Gets the top 5 most similar nodes for every node (not explicitly excluded in the
 (~related_links.link.str.contains("/y/")) &
                               (~related_links.link.str.endswith("/y")) &
                               (~related_links.link.str.contains("/no/")) &
-                              (~related_links.link.str.endswith("/no")) &
+                              (~related_links.link.str.endswith("/no")) & 
                               (~related_links.link.str.contains("/education/"))
 ```
 - '/contact-student-finance-england'
@@ -195,4 +107,5 @@ Gets the top 5 most similar nodes for every node (not explicitly excluded in the
 - '/employment-tribunals'
 - '/staying-uk-eu-citizen'
 - '/report-driving-medical-condition'
-- '/check-flood-risk' (edited)
+- '/check-flood-risk' (edited) 
+

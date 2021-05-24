@@ -7,6 +7,8 @@ import logging.config
 import os
 from collections import ChainMap
 
+logging.config.fileConfig('src/logging.conf')
+
 
 # TODO check probability threshold is correct 0.46
 # TODO check maximum 5 related links is correct
@@ -18,7 +20,8 @@ class RelatedLinksPredictor:
     :param source_content_ids: list of content_ids we can link from
     :param target_content_ids: list of content_ids we can link to
     :param model: node2vec model where model.wv.vocab.keys() are content_ids
-    :param probability_threshold: number in the range [0,1] representing the similarity of two nodes.
+    :param probability_threshold: the model's predicted probability of a link between source_content_id and
+        target_content_id (optional)
    :param num_links: maximum number of links to recommend (optional)
     """
 
