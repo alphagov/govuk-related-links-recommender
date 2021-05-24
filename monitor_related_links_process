@@ -6,11 +6,3 @@ LINK_PROCESS_PID="$(ps aux | grep run_link_ | grep -v grep | awk '{print $2}')"
 echo "PID of the link generation / ingestion process is $LINK_PROCESS_PID"
 
 tail -f --pid=$LINK_PROCESS_PID /var/tmp/related_links_process.log
-
-LOG_LAST_LINE=$(tail -n 1 /var/tmp/related_links_process.log)
-if [ "$LOG_LAST_LINE" != "related_links process succeeded" ]; then
-    echo "Unexpected last line. It looks like the process failed."
-    exit 1
-else
-    echo "Process finished successfully."
-fi

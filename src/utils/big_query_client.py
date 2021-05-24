@@ -1,7 +1,10 @@
-from src.utils.miscellaneous import parse_sql_script
+from src.utils.miscellaneous import read_file_as_string
+
 import google.auth
 from google.cloud import bigquery
 import logging.config
+
+logging.config.fileConfig('src/logging.conf')
 
 
 class BigQueryClient:
@@ -11,8 +14,8 @@ class BigQueryClient:
         self.client = bigquery.Client(credentials=credentials, project=project_id)
         self.logger = logging.getLogger('big_query_client')
 
-    def query_date_range(self, query_path, start_date, end_date):
-        self.logger.info(f'Running {query_path}')
+    def query_page_views(self, start_date, end_date):
+        self.logger.info('Querying BigQuery for content_ids')
 
         query_config = bigquery.QueryJobConfig(
             query_parameters=[
@@ -20,7 +23,7 @@ class BigQueryClient:
                 bigquery.ScalarQueryParameter("end_date", "STRING", end_date)
             ]
         )
-        query_string = parse_sql_script(query_path)
+        query_string = read_file_as_string("src/models/query_eligible_source_content_ids.sql")
 
         df = self.client.query(query_string, job_config=query_config).to_dataframe()
         self.logger.info(f'Got page views for {df.shape[0]} content_ids.')

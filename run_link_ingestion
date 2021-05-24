@@ -23,9 +23,7 @@ gem install bundler
 bundle
 
 # Run publishing
-bundle exec rake content:update_related_links_from_json['/var/data/latest_related_links.json','/var/data/related_link_exclusions.json']
+bundle exec rake content:update_related_links_from_json['/var/data/latest_related_links.json','/var/data/related_link_exclusions.json'] 
 
 # Copy log to S3
 aws s3 cp /var/tmp/related_links_process.log s3://$RELATED_LINKS_BUCKET/related_links_ingestion.log
-
-echo "related_links process succeeded"

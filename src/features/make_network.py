@@ -9,14 +9,13 @@ logging.config.fileConfig('src/logging.conf')
 
 def make_network_from_structural_and_functional(structural_edges, functional_edges):
     """
-    TODO: remove this module (weighted network does the same thing)
-    Combine structural and functional dataframes to get a complete dataframe of edges
+    Combine structural and functional dataframes to get a deduplicated dataframe of edges
     :param structural_edges: pandas DataFrame including columns ['source_content_id', 'destination_content_id']
     :param functional_edges: pandas DataFrame including columns ['source_content_id', 'destination_content_id']
     :return: pandas DataFrame with columns ['source_content_id', 'destination_content_id']
     """
     all_edges = pd.concat([structural_edges, functional_edges],
-                          ignore_index=True, sort=False)
+                          ignore_index=True, sort=True)
     network_edges = all_edges[
         ['source_content_id', 'destination_content_id', 'weight']].drop_duplicates().reset_index(drop=True)
 

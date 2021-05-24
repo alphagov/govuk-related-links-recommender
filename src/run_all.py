@@ -18,7 +18,6 @@ if __name__ == '__main__':
 
     functional_edges_and_weights = multiprocessing.Process(
         name='make_functional_edges_and_weights', target=make_functional_edges_and_weights)
-
     content_store_data = multiprocessing.Process(name='get_content_store_data', target=get_content_store_data)
 
     functional_edges_and_weights.start()
@@ -32,9 +31,9 @@ if __name__ == '__main__':
     content_store_data.join()
     module_logger.info('get_content_store_data is finished')
 
-    module_logger.info('running make_weighted_network')
-    runpy.run_module('src.features.make_weighted_network', run_name='__main__')
-    module_logger.info('make_weighted_network is finished')
+    module_logger.info('running make_network')
+    runpy.run_module('src.features.make_network', run_name='__main__')
+    module_logger.info('make_network is finished')
 
     module_logger.info('running train_node2vec_model')
     runpy.run_module('src.models.train_node2vec_model', run_name='__main__')

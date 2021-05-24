@@ -2,9 +2,12 @@ import os
 from datetime import datetime, timedelta
 import logging.config
 
-from src.utils.miscellaneous import read_config_yaml, parse_sql_script
+from src.utils.miscellaneous import read_exclusions_yaml, read_file_as_string
 import google.auth
 from google.cloud import bigquery
+
+
+logging.config.fileConfig('src/logging.conf')
 
 
 # Need to have active environment variable called GOOGLE_APPLICATION_CREDENTIALS pointing to json file with
@@ -12,36 +15,29 @@ from google.cloud import bigquery
 
 
 class EdgeWeightExtractor:
-
-    def __init__(self, query_path, blocklisted_document_types, date_from=None, date_until=None, weight_threshold=None):
-        self.logger = logging.getLogger('make_functional_edges_and_weights.EdgeWeightExtractor')
+    def __init__(self, blocklisted_document_types, date_from, date_until):
         self.blocklisted_document_types = blocklisted_document_types
-        self.weight_threshold = weight_threshold
         self.date_from = date_from
         self.date_until = date_until
-        self.query_path = query_path
-        self.df = None
+
+        logger = logging.getLogger('make_functional_edges_and_weights.EdgeWeightExtractor')
         credentials, project_id = google.auth.default()
-        self.logger.info(f'creating bigqquery client for project {project_id}')
-        # TODO use the big query client util in future
+        logger.info(f'creating bigqquery client for project {project_id}')
         self.client = bigquery.Client(
             credentials=credentials,
             project=project_id
         )
-        self.logger.info(f'reading query from {query_path}')
-        self.query_edge_list = parse_sql_script(self.query_path)
+        logger.info('reading query from  src/data_preprocessing/query_content_id_edge_weights.sql')
+        self.query_edge_list = read_file_as_string("src/data_preprocessing/query_content_id_edge_weights.sql")
 
         self.query_config = bigquery.QueryJobConfig(
             query_parameters=[
-                bigquery.ScalarQueryParameter("from_date", "STRING", self.date_from),
-                bigquery.ScalarQueryParameter("to_date", "STRING", self.date_until),
-                bigquery.ScalarQueryParameter("weight_threshold", "INT64", self.weight_threshold),
+                bigquery.ScalarQueryParameter("three_weeks_ago", "STRING", self.date_from),
+                bigquery.ScalarQueryParameter("yesterday", "STRING", self.date_until),
                 bigquery.ArrayQueryParameter("excluded_document_types", "STRING", self.blocklisted_document_types)
             ]
         )
 
-    def create_df(self):
-        self.logger.info(f'running query from {self.query_path}')
         self.df = self.client.query(self.query_edge_list, job_config=self.query_config).to_dataframe()
 
     def extract_df_to_csv(self, file_path):
@@ -50,40 +46,15 @@ class EdgeWeightExtractor:
 
 
 if __name__ == "__main__":
-    logging.config.fileConfig('src/logging.conf')
     module_logger = logging.getLogger('make_functional_edges_and_weights')
     data_dir = os.getenv("DATA_DIR")
-    blocklisted_document_types = read_config_yaml(
+    blocklisted_document_types = read_exclusions_yaml(
         "document_types_excluded_from_the_topic_taxonomy.yml")['document_types']
+    two_days_ago = (datetime.today() - timedelta(2)).strftime('%Y%m%d')
+    start_date = (datetime.today() - timedelta(24)).strftime('%Y%m%d')
 
-    preprocessing_config = read_config_yaml(
-        "preprocessing-config.yml")
+    module_logger.info(f'running query between {two_days_ago} and {start_date}')
+    edge_weights = EdgeWeightExtractor(blocklisted_document_types, start_date, two_days_ago)
 
-    weight_threshold = preprocessing_config['weight_threshold']
-
-    module_logger.info(f'Functional weight threshold is >= {weight_threshold}')
-
-    to_date = (datetime.today() - timedelta(preprocessing_config['to_days_ago'])).strftime('%Y%m%d')
-    from_date = (datetime.today() - timedelta(preprocessing_config['from_days_ago'])).strftime('%Y%m%d')
-
-    if preprocessing_config['use_intraday']:
-        module_logger.info(f'running all user query on intraday')
-        edge_weights = EdgeWeightExtractor('src/data_preprocessing/intra_day_content_id_edge_weights.sql',
-                                           blocklisted_document_types=blocklisted_document_types,
-                                           weight_threshold=weight_threshold)
-
-    else:
-        module_logger.info(f'running all user query between {from_date} and {to_date}')
-        edge_weights = EdgeWeightExtractor('src/data_preprocessing/query_content_id_edge_weights.sql',
-                                           blocklisted_document_types=blocklisted_document_types,
-                                           date_from=from_date,
-                                           date_until=to_date,
-                                           weight_threshold=weight_threshold)
-
-    edge_weights.create_df()
-
-    filename = preprocessing_config["functional_edges_filename"]
-
-    module_logger.info(
-        f'saving edges and weights to {os.path.join(data_dir, "tmp", filename)}')
-    edge_weights.extract_df_to_csv(os.path.join(data_dir, "tmp", filename))
+    module_logger.info(f'saving edges and weights to {os.path.join(data_dir, "tmp", "functional_edges.csv")}')
+    edge_weights.extract_df_to_csv(os.path.join(data_dir, "tmp", "functional_edges.csv"))
