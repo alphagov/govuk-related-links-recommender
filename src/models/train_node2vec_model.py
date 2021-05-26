@@ -47,12 +47,13 @@ def train_node2_vec_model(edges_df,
     node2vec = Node2Vec(graph, dimensions=64, walk_length=10, num_walks=300,
                         workers=workers)
 
-    logger.info('Fit node2vec model (create embeddings for nodes)')
     # Any keywords acceptable by gensim.Word2Vec can be passed, `dimensions` and `workers` are
     # automatically passed (from the Node2Vec constructor)
     # https://radimrehurek.com/gensim/models/word2vec.html#gensim.models.word2vec.Word2Vec
     # TODO: search this parameter space systematically and change node2vec parameters
+    logger.info('call EpochLogger')
     epoch_logger = EpochLogger()
+    logger.info('Fit node2vec model (create embeddings for nodes)')
     model = node2vec.fit(window=10, min_count=1, batch_words=4, seed=1,
                          workers=1, callbacks=[epoch_logger])
 
