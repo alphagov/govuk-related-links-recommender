@@ -9,6 +9,7 @@ export MODEL_DIR=./models
 if [[ ! "$GOOGLE_APPLICATION_CREDENTIALS" ]]; then
     echo "Please set GOOGLE_APPLICATION_CREDENTIALS to where your google credentials file is located"
     echo "e.g. export GOOGLE_APPLICATION_CREDENTIALS=tmp/creds.json"
+    echo "Then run this script again"
     exit
 fi
 

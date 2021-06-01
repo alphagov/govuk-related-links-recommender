@@ -59,9 +59,9 @@ Project Organization
 
 ## Python environment
 Need to set and activate environment variables before running pipeline. To run the make_functional_edges_and_weights.py
-script, use command line to `export GOOGLE_APPLICATION_CREDENTIALS='path/to/GOV-UK BigQuery analytics-fa2ed548d98c.json'` 
+script, use command line to `export GOOGLE_APPLICATION_CREDENTIALS='path/to/GOV-UK BigQuery analytics-fa2ed548d98c.json'`
 
-Environment variables are also used to locate data and model directories: DATA_DIR and MODEL_DIR. 
+Environment variables are also used to locate data and model directories: DATA_DIR and MODEL_DIR.
 Make sure these are activated before runnning data pipeline.
 
 ## Rules for displaying automated related links
@@ -73,7 +73,7 @@ Make sure these are activated before runnning data pipeline.
 (~related_links.link.str.contains("/y/")) &
                               (~related_links.link.str.endswith("/y")) &
                               (~related_links.link.str.contains("/no/")) &
-                              (~related_links.link.str.endswith("/no")) & 
+                              (~related_links.link.str.endswith("/no")) &
                               (~related_links.link.str.contains("/education/"))
 ```
 - '/contact-student-finance-england'
@@ -107,5 +107,18 @@ Make sure these are activated before runnning data pipeline.
 - '/employment-tribunals'
 - '/staying-uk-eu-citizen'
 - '/report-driving-medical-condition'
-- '/check-flood-risk' (edited) 
+- '/check-flood-risk' (edited)
 
+
+## Poetry setup
+
+We're experimenting with Poetry to prevent dependencies breaking or incompatibilities with python versions.
+In order to try it out, leave any virtualenv you might have activated and run:
+
+    ./poetry-install.sh
+
+Install `pyenv` and `poetry` if needed, and when the script has finished, run:
+
+    ./poetry-run.sh
+
+The link generation process should start and run normally
