@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# remote="$1"
+# url="$2"
+
+echo "Running pre-commit tests"
+
+flake8 src
+pytest tests/unit
+
+echo "All tests passed"
