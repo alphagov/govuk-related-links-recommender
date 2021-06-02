@@ -7,18 +7,17 @@ class EpochLogger(CallbackAny2Vec):
 
     def __init__(self):
         self.epoch = 0
-        self.logger = getLogger('gensim_node2vec')
-        self.logger.info('EpochLogger initiated, epoch = 0')
+        getLogger('gensim_node2vec').info('EpochLogger initiated, epoch = 0')
 
     def on_epoch_begin(self, model):
-        self.logger.info(f'Model training epoch #{self.epoch} begins')
+        getLogger('gensim_node2vec').info(f'Model training epoch #{self.epoch} begins')
 
     def on_epoch_end(self, model):
-        self.logger.info(f'Model training epoch #{self.epoch} ends')
+        getLogger('gensim_node2vec').info(f'Model training epoch #{self.epoch} ends')
         self.epoch += 1
 
     def on_train_begin(self, model):
-        self.logger.info(f'Model training begins')
+        getLogger('gensim_node2vec').info(f'Model training begins')
 
     def on_train_end(self, model):
-        self.logger.info(f'Model raining ends')
+        getLogger('gensim_node2vec').info(f'Model raining ends')
