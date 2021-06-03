@@ -30,3 +30,13 @@ def load_pickled_content_id_list(filepath):
     with open(filepath, "rb") as input_file:
         id_list = pickle.load(input_file)
     return id_list
+
+
+def safe_getenv(env_variable_name):
+    """
+    Like os.getenv but throws an exception if the variable isn't set
+    """
+    value = os.getenv(env_variable_name)
+    if value is None:
+        raise Exception(f"You need to set the {env_variable_name} environment variable.")
+    return value

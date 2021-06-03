@@ -6,6 +6,7 @@ import networkx as nx
 from node2vec import Node2Vec
 
 from src.utils.epoch_logger import EpochLogger
+from src.utils.miscellaneous import safe_getenv
 import pandas as pd
 
 logging.config.fileConfig('src/logging.conf')
@@ -63,8 +64,8 @@ def train_node2_vec_model(edges_df,
 
 
 if __name__ == "__main__":  # our module is being executed as a program
-    data_dir = os.getenv("DATA_DIR")
-    model_dir = os.getenv("MODEL_DIR")
+    data_dir = safe_getenv('DATA_DIR')
+    model_dir = safe_getenv('MODEL_DIR')
     module_logger = logging.getLogger('train_node2_vec_model')
 
     module_logger.info(f'reading in all_edges.csv and node_id_content_id_mapping.json')
