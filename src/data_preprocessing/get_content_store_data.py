@@ -11,7 +11,7 @@ import pickle
 
 from src.utils import text_preprocessing as tp
 
-from src.utils.miscellaneous import read_exclusions_yaml
+from src.utils.miscellaneous import read_exclusions_yaml, safe_getenv
 
 warnings.filterwarnings('ignore', category=UserWarning, module='bs4')
 
@@ -288,15 +288,15 @@ def export_content_id_list(list_name, mongodb_collection, outfile):
 
 
 if __name__ == "__main__":  # our module is being executed as a program
-    data_dir = os.getenv("DATA_DIR")
+    data_dir = safe_getenv('DATA_DIR')
 
     logging.config.fileConfig('src/logging.conf')
     module_logger = logging.getLogger('get_content_store_data')
 
     mongo_client = pymongo.MongoClient("mongodb://localhost:27017/")
     # TODO check this is consistent with naming of restored db in AWS
-    content_store_db = mongo_client["content_store"]
-    content_store_collection = content_store_db["content_items"]
+    content_store_db = mongo_client['content_store']
+    content_store_collection = content_store_db['content_items']
 
     page_path_content_id_mapping, content_id_base_path_mapping = get_path_content_id_mappings(content_store_collection)
 

@@ -16,7 +16,7 @@ from datetime import datetime
 from gensim.models import Word2Vec
 
 from src.utils.big_query_client import BigQueryClient
-from src.utils.miscellaneous import load_pickled_content_id_list
+from src.utils.miscellaneous import load_pickled_content_id_list, safe_getenv
 from src.utils.related_links_csv_exporter import RelatedLinksCsvExporter
 from src.utils.related_links_json_exporter import RelatedLinksJsonExporter
 from src.utils.related_links_predictor import RelatedLinksPredictor
@@ -41,7 +41,7 @@ def get_content_ids_to_page_views_mapper(df):
 if __name__ == '__main__':
     logging.config.fileConfig('src/logging.conf')
     logger = logging.getLogger('predict_related_links')
-    DATA_DIR = os.getenv("DATA_DIR")
+    DATA_DIR = safe_getenv('DATA_DIR')
 
     related_links_path = os.path.join(DATA_DIR, "predictions",
                                       datetime.today().strftime('%Y%m%d') + "suggested_related_links")

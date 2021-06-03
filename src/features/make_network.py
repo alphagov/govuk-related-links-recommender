@@ -1,7 +1,7 @@
 import logging.config
 import os
-
 import pandas as pd
+from src.utils.miscellaneous import safe_getenv
 
 # link types we want to use for our structural network
 logging.config.fileConfig('src/logging.conf')
@@ -23,7 +23,7 @@ def make_network_from_structural_and_functional(structural_edges, functional_edg
 
 
 if __name__ == "__main__":  # our module is being executed as a program
-    data_dir = os.getenv('DATA_DIR')
+    data_dir = safe_getenv('DATA_DIR')
     module_logger = logging.getLogger('make_structural_network')
 
     module_logger.info(

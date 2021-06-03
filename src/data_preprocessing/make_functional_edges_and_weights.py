@@ -2,7 +2,7 @@ import os
 from datetime import datetime, timedelta
 import logging.config
 
-from src.utils.miscellaneous import read_exclusions_yaml, read_file_as_string
+from src.utils.miscellaneous import read_exclusions_yaml, read_file_as_string, safe_getenv
 import google.auth
 from google.cloud import bigquery
 
@@ -47,7 +47,7 @@ class EdgeWeightExtractor:
 
 if __name__ == "__main__":
     module_logger = logging.getLogger('make_functional_edges_and_weights')
-    data_dir = os.getenv("DATA_DIR")
+    data_dir = safe_getenv('DATA_DIR')
     blocklisted_document_types = read_exclusions_yaml(
         "document_types_excluded_from_the_topic_taxonomy.yml")['document_types']
     two_days_ago = (datetime.today() - timedelta(2)).strftime('%Y%m%d')
