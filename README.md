@@ -113,12 +113,20 @@ Make sure these are activated before runnning data pipeline.
 ## Poetry setup
 
 We're experimenting with Poetry to prevent dependencies breaking or incompatibilities with python versions.
-In order to try it out, leave any virtualenv you might have activated and run:
+In order to try it out:
+
+- install [pyenv](https://github.com/pyenv/pyenv-installer) and [poetry](https://python-poetry.org/docs/#installation)
+- leave any virtualenv you might have activated
+- run:
 
     ./poetry-install.sh
 
-Install `pyenv` and `poetry` if needed, and when the script has finished, run:
+- then, each time you want to run the related-links generator:
 
     ./poetry-run.sh
 
-The link generation process should start and run normally
+If you want to run it in an environment similar to what we have in production, install docker and run:
+
+    docker build --network=host -t govuk-related-links-recommender -f Dockerfile-for-local-development .
+
+    docker run -it govuk-related-links-recommender

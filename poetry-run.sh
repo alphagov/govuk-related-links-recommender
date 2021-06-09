@@ -13,4 +13,4 @@ if [[ ! "$GOOGLE_APPLICATION_CREDENTIALS" ]]; then
     exit
 fi
 
-poetry run python src/run_all.py
+"$HOME"/.poetry/bin/poetry run python src/run_all.py

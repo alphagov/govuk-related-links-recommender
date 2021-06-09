@@ -1,10 +1,12 @@
 FROM ubuntu:18.04
 
 # Prepare container to compile python via pyenv
-RUN apt-get update
+RUN apt-get update -y
+RUN apt-get upgrade -y
 
 RUN DEBIAN_FRONTEND="noninteractive" apt-get install --yes python3 python3-distutils curl git gcc make zlib1g zlib1g-dev libreadline-dev libbz2-dev libssl-dev build-essential libreadline-dev libsqlite3-dev wget llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 10
+
 
 
 # Install pyenv
@@ -17,5 +19,5 @@ RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-
 WORKDIR /root
 COPY . .
 RUN ./poetry-install.sh
-CMD ./poetry-run.sh
 
+CMD ./poetry-run.sh
