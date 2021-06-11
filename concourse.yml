@@ -197,6 +197,7 @@ jobs:
             ROLE_ARN: ((concourse_role_arn_integration))
             CONTENT_STORE_BUCKET: ((content_store_bucket_integration))
             RELATED_LINKS_BUCKET: ((related_links_bucket_integration))
+            GIT_CLONE_ARGS: "--branch integration"
           platform: linux
           image_resource:
             type: docker-image
@@ -233,7 +234,7 @@ jobs:
                   cd /var/data/github
 
                   # Clone related links repository
-                  git clone https://github.com/alphagov/govuk-related-links-recommender.git
+                  git clone $GIT_CLONE_ARGS https://github.com/alphagov/govuk-related-links-recommender.git
                   cd govuk-related-links-recommender
 
                   # Set execute permission on scripts
@@ -541,6 +542,7 @@ jobs:
             PUBLISHING_API_URI: ((publishing_api_uri_integration))
             PUBLISHING_API_BEARER_TOKEN: ((publishing_api_bearer_token_integration))
             RELATED_LINKS_BUCKET: ((related_links_bucket_integration))
+            GIT_CLONE_ARGS: "--branch integration"
           platform: linux
           image_resource:
             type: docker-image
@@ -577,7 +579,7 @@ jobs:
                   cd /var/data/github
 
                   # Clone related links repository
-                  git clone https://github.com/alphagov/govuk-related-links-recommender.git
+                  git clone "$GIT_CLONE_ARGS" https://github.com/alphagov/govuk-related-links-recommender.git
                   cd govuk-related-links-recommender
 
                   # Set execute permission on scripts
