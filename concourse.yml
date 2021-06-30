@@ -297,23 +297,6 @@ jobs:
 
                   ./monitor_related_links_process
                 EOF
-      - &destroy-generation-instance-integration
-        task: destroy-generation-instance
-        config:
-          params:
-            DESIRED_CAPACITY: 0
-            ASG_NAME: related-links-generation
-            ROLE_ARN: ((concourse_role_arn_integration))
-          platform: linux
-          image_resource:
-            type: docker-image
-            source:
-              repository: govsvc/task-toolbox
-              tag: 1.1.0
-              username: ((docker_hub_username))
-              password: ((docker_hub_authtoken))
-          run: *update-asg
-    on_failure: *destroy-generation-instance-integration
 
   - name: run-generation-staging
     serial_groups:
@@ -642,23 +625,6 @@ jobs:
 
                   ./monitor_related_links_process
                 EOF
-      - &destroy-ingestion-instance-integration
-        task: destroy-ingestion-instance
-        config:
-          params:
-            DESIRED_CAPACITY: 0
-            ASG_NAME: related-links-ingestion
-            ROLE_ARN: ((concourse_role_arn_integration))
-          platform: linux
-          image_resource:
-            type: docker-image
-            source:
-              repository: govsvc/task-toolbox
-              tag: 1.1.0
-              username: ((docker_hub_username))
-              password: ((docker_hub_authtoken))
-          run: *update-asg
-    on_failure: *destroy-ingestion-instance-integration
 
   - name: run-ingestion-staging
     serial_groups:
