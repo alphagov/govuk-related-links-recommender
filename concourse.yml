@@ -666,6 +666,7 @@ jobs:
             PUBLISHING_API_URI: ((publishing_api_uri_staging))
             PUBLISHING_API_BEARER_TOKEN: ((publishing_api_bearer_token_staging))
             RELATED_LINKS_BUCKET: ((related_links_bucket_staging))
+            GIT_CLONE_ARGS: ""
           platform: linux
           image_resource:
             type: docker-image
@@ -749,6 +750,7 @@ jobs:
             PUBLISHING_API_URI: ((publishing_api_uri_production))
             PUBLISHING_API_BEARER_TOKEN: ((publishing_api_bearer_token_production))
             RELATED_LINKS_BUCKET: ((related_links_bucket_production))
+            GIT_CLONE_ARGS: ""
           platform: linux
           image_resource:
             type: docker-image
