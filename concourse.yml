@@ -339,6 +339,7 @@ jobs:
             ROLE_ARN: ((concourse_role_arn_staging))
             CONTENT_STORE_BUCKET: ((content_store_bucket_staging))
             RELATED_LINKS_BUCKET: ((related_links_bucket_staging))
+            GIT_CLONE_ARGS: ""
           platform: linux
           image_resource:
             type: docker-image
@@ -423,6 +424,7 @@ jobs:
             ROLE_ARN: ((concourse_role_arn_production))
             CONTENT_STORE_BUCKET: ((content_store_bucket_production))
             RELATED_LINKS_BUCKET: ((related_links_bucket_production))
+            GIT_CLONE_ARGS: ""
           platform: linux
           image_resource:
             type: docker-image
