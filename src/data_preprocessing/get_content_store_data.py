@@ -293,7 +293,7 @@ if __name__ == "__main__":  # our module is being executed as a program
     logging.config.fileConfig('src/logging.conf')
     module_logger = logging.getLogger('get_content_store_data')
 
-    mongo_client = pymongo.MongoClient("mongodb://localhost:27017/")
+    mongo_client = pymongo.MongoClient("mongodb://content-store/")
     # TODO check this is consistent with naming of restored db in AWS
     content_store_db = mongo_client['content_store']
     content_store_collection = content_store_db['content_items']
