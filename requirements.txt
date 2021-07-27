@@ -53,6 +53,7 @@ six==1.16.0
 smart-open==5.1.0
 soupsieve==2.2.1
 tqdm==4.32.2
+typing-extensions==3.10.0.0
 urllib3==1.26.6
 wcwidth==0.2.5
 webencodings==0.5.1

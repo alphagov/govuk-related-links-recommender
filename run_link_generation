@@ -33,7 +33,7 @@ cd /var/data/github/govuk-related-links-recommender
 pip3 install -r requirements.txt
 
 # Start related links generation process
-python3.6 src/run_all.py
+python3.7 src/run_all.py
 
 cd /var/data/github/govuk-related-links-recommender/data/predictions
 
