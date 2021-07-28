@@ -3,9 +3,6 @@
 set -ueo pipefail
 
 echo "Starting run_link_generation script..."
-
-python -V
-
 sleep 60
 
 export DATA_DIR=$PWD/data
@@ -36,6 +33,7 @@ cd /var/data/github/govuk-related-links-recommender
 pip3 install -r requirements.txt
 
 # Start related links generation process
+python3.7 -V
 python3.7 src/run_all.py
 
 cd /var/data/github/govuk-related-links-recommender/data/predictions
