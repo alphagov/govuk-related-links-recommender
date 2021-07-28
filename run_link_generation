@@ -3,6 +3,9 @@
 set -ueo pipefail
 
 echo "Starting run_link_generation script..."
+
+python -V
+
 sleep 60
 
 export DATA_DIR=$PWD/data
