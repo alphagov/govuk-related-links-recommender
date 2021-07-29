@@ -197,7 +197,6 @@ jobs:
             ROLE_ARN: ((concourse_role_arn_integration))
             CONTENT_STORE_BUCKET: ((content_store_bucket_integration))
             RELATED_LINKS_BUCKET: ((related_links_bucket_integration))
-            GIT_BRANCH_TO_CLONE: integration
           platform: linux
           image_resource:
             type: docker-image
@@ -235,7 +234,7 @@ jobs:
 
                   echo "Cloning recommender repo"
                   # Clone related links repository
-                  git clone --branch "$GIT_BRANCH_TO_CLONE" https://github.com/alphagov/govuk-related-links-recommender.git
+                  git clone https://github.com/alphagov/govuk-related-links-recommender.git
                   cd govuk-related-links-recommender
 
                   # Set execute permission on scripts
@@ -357,7 +356,6 @@ jobs:
             ROLE_ARN: ((concourse_role_arn_staging))
             CONTENT_STORE_BUCKET: ((content_store_bucket_staging))
             RELATED_LINKS_BUCKET: ((related_links_bucket_staging))
-            GIT_BRANCH_TO_CLONE: master
           platform: linux
           image_resource:
             type: docker-image
@@ -442,7 +440,6 @@ jobs:
             ROLE_ARN: ((concourse_role_arn_production))
             CONTENT_STORE_BUCKET: ((content_store_bucket_production))
             RELATED_LINKS_BUCKET: ((related_links_bucket_production))
-            GIT_BRANCH_TO_CLONE: master
           platform: linux
           image_resource:
             type: docker-image
@@ -545,7 +542,6 @@ jobs:
             PUBLISHING_API_URI: ((publishing_api_uri_integration))
             PUBLISHING_API_BEARER_TOKEN: ((publishing_api_bearer_token_integration))
             RELATED_LINKS_BUCKET: ((related_links_bucket_integration))
-            GIT_BRANCH_TO_CLONE: integration
           platform: linux
           image_resource:
             type: docker-image
@@ -582,7 +578,7 @@ jobs:
                   cd /var/data/github
 
                   # Clone related links repository
-                  git clone --branch "$GIT_BRANCH_TO_CLONE" https://github.com/alphagov/govuk-related-links-recommender.git
+                  git clone https://github.com/alphagov/govuk-related-links-recommender.git
                   cd govuk-related-links-recommender
 
                   # Set execute permission on scripts
@@ -703,7 +699,6 @@ jobs:
             PUBLISHING_API_URI: ((publishing_api_uri_staging))
             PUBLISHING_API_BEARER_TOKEN: ((publishing_api_bearer_token_staging))
             RELATED_LINKS_BUCKET: ((related_links_bucket_staging))
-            GIT_BRANCH_TO_CLONE: master
           platform: linux
           image_resource:
             type: docker-image
@@ -787,7 +782,6 @@ jobs:
             PUBLISHING_API_URI: ((publishing_api_uri_production))
             PUBLISHING_API_BEARER_TOKEN: ((publishing_api_bearer_token_production))
             RELATED_LINKS_BUCKET: ((related_links_bucket_production))
-            GIT_BRANCH_TO_CLONE: master
           platform: linux
           image_resource:
             type: docker-image
