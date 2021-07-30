@@ -28,12 +28,16 @@ ls -lat content_store_production
 # Restore content store data to MongoDb
 mongorestore -d content_store -c content_items /var/data/content_store_production/content_items.bson
 
+echo "Check we have the right Python version"
+python3.7 -V
+pip3 -V
+
+
 # Install requirements
 cd /var/data/github/govuk-related-links-recommender
 pip3 install -r requirements.txt
 
 # Start related links generation process
-python3.7 -V
 python3.7 src/run_all.py
 
 cd /var/data/github/govuk-related-links-recommender/data/predictions
