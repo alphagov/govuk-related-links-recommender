@@ -38,13 +38,11 @@ FROM (
         WHERE
           index=2) AS document_type
       FROM
-        `govuk-bigquery-analytics.87773428.ga_sessions_*` AS sessions
+        `govuk-bigquery-analytics.87773428.ga_sessions_intraday_*` AS sessions
       CROSS JOIN
         UNNEST(sessions.hits) AS hits
-               WHERE
-                 _TABLE_SUFFIX BETWEEN @from_date
-                 AND @to_date
-        )
+            WHERE _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d',(CURRENT_DATE()))
+       )
     WHERE
       hit_type = 'PAGE'
       AND page_path != '/'
