@@ -14,12 +14,15 @@ import json
 from gensim.models import Word2Vec
 
 from src.utils.big_query_client import BigQueryClient
-from src.utils.miscellaneous import load_pickled_content_id_list, safe_getenv
+from src.utils.miscellaneous import load_pickled_content_id_list, safe_getenv, read_config_yaml
+# This needs to be here to load the model
 from src.utils.related_links_csv_exporter import RelatedLinksCsvExporter
 from src.utils.related_links_json_exporter import RelatedLinksJsonExporter
 from src.utils.related_links_predictor import RelatedLinksPredictor
 from src.utils.related_links_confidence_filter import RelatedLinksConfidenceFilter
 from src.utils.date_helper import DateHelper
+# This needs to be here to load the model
+from src.utils.epoch_logger import EpochLogger  # noqa: F401
 
 
 def get_content_id_to_base_path_mapper(path):
@@ -39,16 +42,21 @@ def get_content_ids_to_page_views_mapper(df):
 if __name__ == '__main__':
 
     data_dir = safe_getenv('DATA_DIR')
+    node2vec_cfg = read_config_yaml(
+        "node2vec-config.yml")
+
     model_filename = \
-        os.path.join(data_dir, 'n2v.model')
+        os.path.join(data_dir, node2vec_cfg['model_filename'])
     eligible_source_content_ids_filename = \
         os.path.join(data_dir, 'eligible_source_content_ids.pkl')
     eligible_target_content_ids_filename = \
         os.path.join(data_dir, 'eligible_target_content_ids.pkl')
     content_id_base_path_mapping_filename = \
         os.path.join(data_dir, 'content_id_base_path_mapping.json')
-    related_links_filename = os.path.join(data_dir, 'suggested_related_links.json')
-    related_links_100_filename = os.path.join(data_dir, 'suggested_related_links.tsv')
+    related_links_filename = os.path.join(data_dir,
+                                          f'{node2vec_cfg["predictions_filename"]}.json')
+    related_links_100_filename = os.path.join(data_dir,
+                                              f'{node2vec_cfg["predictions_filename"]}.tsv')
 
     logging.config.fileConfig('src/logging.conf')
     logger = logging.getLogger('predict_related_links')
@@ -59,12 +67,13 @@ if __name__ == '__main__':
     eligible_source_content_ids = load_pickled_content_id_list(eligible_source_content_ids_filename)
     eligible_target_content_ids = load_pickled_content_id_list(eligible_target_content_ids_filename)
 
-    logger.info('Querying Big Query for content ids and views')
+    logger.info('Querying Big Query for content ids and view counts')
     yesterday = DateHelper.get_datetime_for_yesterday()
     three_weeks_ago = DateHelper.get_datetime_for_days_ago(22)
 
     bq_client = BigQueryClient()
-    all_content_ids_and_views_df = bq_client.query_page_views(three_weeks_ago, yesterday)
+    query_path = 'src/models/query_eligible_source_content_ids.sql'
+    all_content_ids_and_views_df = bq_client.query_date_range(query_path, three_weeks_ago, yesterday)
 
     pageview_confidence_config = {
         100: 0.90,

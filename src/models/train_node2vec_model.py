@@ -5,70 +5,105 @@ import networkx as nx
 from node2vec import Node2Vec
 
 from src.utils.epoch_logger import EpochLogger
-from src.utils.miscellaneous import safe_getenv
+from src.utils.miscellaneous import read_config_yaml, safe_getenv
 import pandas as pd
 
 logging.config.fileConfig('src/logging.conf')
 
 
-def create_graph(edges_df):
-    logger = logging.getLogger('train_node2_vec_model.create_graph')
+class N2VModel:
+    def __init__(self, node2vec=None, graph=None, model=None):
+        self.graph = graph
+        self.model = model
+        self.node2vec = node2vec
+        self.logger = logging.getLogger('train_node2_vec_model')
 
-    logger.info('creating graph from edges_df')
-    graph = nx.from_pandas_edgelist(edges_df, source='source_content_id',
-                                    target='destination_content_id',
-                                    create_using=nx.DiGraph())
-    return graph
+    def create_graph(self, edges_df, weighted=False):
+        """
+        Creates a networkx graph from edge list dataframe
 
+            Parameters:
+                edges_df (Dataframe): List of of [weighted] edges
+                weighted (bool): If true, generated the weighted matrix usinng 'weight' col in edges_df
 
-def train_node2_vec_model(edges_df,
-                          workers=None):
-    """
-    Train a node2vec model using a DataFrame of edges (source and target node_ids)
-    and a mapping of the node_ids (used in the DataFrame) to GOV.UK content_ids
-    :param edges_df: pandas DataFrame with source and target columns (containing node_ids)
-    :param workers: (optional, default=number of CPUs) number of workers to use for the node2vec random walks and
-        fitting
-    :return: a node2vec model
-    """
-    logger = logging.getLogger('train_node2_vec_model.train_node2_vec_model')
-    logging.getLogger().setLevel(logging.DEBUG)
+            Returns:
 
-    if workers is None:
-        workers = cpu_count()
+        """
+        if not weighted:
+            self.logger.info('creating unweighted graph from edges_df')
+            self.graph = nx.from_pandas_edgelist(edges_df, source='source_content_id',
+                                                 target='destination_content_id',
+                                                 create_using=nx.DiGraph())
+        else:
+            self.logger.info('creating weighted graph from edges_df')
+            self.graph = nx.from_pandas_edgelist(edges_df, source='source_content_id',
+                                                 target='destination_content_id',
+                                                 edge_attr='weight',
+                                                 create_using=nx.DiGraph())
 
-    logger.info(f'number of workers is {workers}')
+    def generate_walks(self, dimensions=64, walk_length=10, num_walks=300, workers=None, **kwargs):
 
-    graph = create_graph(edges_df)
+        self.logger.info('Precomputing probabilities and generating walks')
 
-    logger.info('Precomputing probabilities and generating walks')
-    # TODO: search this parameter space systematically and change node2vec parameters
-    node2vec = Node2Vec(graph, dimensions=64, walk_length=10, num_walks=300,
-                        workers=workers)
+        if workers is None:
+            workers = cpu_count()
 
-    # Any keywords acceptable by gensim.Word2Vec can be passed, `dimensions` and `workers` are
-    # automatically passed (from the Node2Vec constructor)
-    # https://radimrehurek.com/gensim/models/word2vec.html#gensim.models.word2vec.Word2Vec
-    # TODO: search this parameter space systematically and change node2vec parameters
-    logger.info('call EpochLogger')
-    epoch_logger = EpochLogger()
-    logger.info('Fit node2vec model (create embeddings for nodes)')
-    model = node2vec.fit(window=10, min_count=1, batch_words=4, seed=1,
-                         workers=1, callbacks=[epoch_logger])
+        self.logger.info(f'number of workers is {workers}')
 
-    logger.info('Completed fitting model.')
+        self.node2vec = Node2Vec(self.graph,
+                                 dimensions=dimensions,
+                                 walk_length=walk_length,
+                                 num_walks=num_walks,
+                                 workers=workers)
 
-    return model
+    def fit_model(self, window=10, min_count=1,
+                  batch_words=4, seed=1, workers=None, callbacks=None,
+                  iter=5, **kwargs):
+
+        # Try setting workers=1 if you want a deterministic output
+        self.logger.info('Fit node2vec model (create embeddings for nodes)')
+        if workers is None:
+            workers = cpu_count()
+
+        self.logger.info(f'number of workers is {workers}')
+        self.logger.info(f'window is {window}')
+        self.logger.info(f'batch_words is {batch_words}')
+        self.logger.info(f'iter is {iter}')
+        # Any keywords acceptable by gensim.Word2Vec can be passed, `dimensions` and `workers` are
+        # automatically passed (from the Node2Vec constructor)
+        # https://radimrehurek.com/gensim/models/word2vec.html#gensim.models.word2vec.Word2Vec
+        self.model = self.node2vec.fit(window=window,
+                                       min_count=min_count,
+                                       batch_words=batch_words,
+                                       seed=seed,
+                                       workers=workers,
+                                       callbacks=[callbacks],
+                                       iter=iter)
+
+    def save_model(self, embeddings_filepath, model_file_path):
+        self.logger.info(f'saving  embeddings to {embeddings_filepath}')
+        self.model.wv.save_word2vec_format(embeddings_filepath)
+
+        self.logger.info(f'saving model to  to {model_file_path}')
+        self.model.save(model_file_path)
 
 
 if __name__ == "__main__":  # our module is being executed as a program
 
     data_dir = safe_getenv('DATA_DIR')
-    network_input_filename = os.path.join(data_dir, 'network.csv')
+
+    prepro_cfg = read_config_yaml(
+        "preprocessing-config.yml")
+
+    node2vec_config = read_config_yaml(
+        "node2vec-config.yml")
+
+    network_input_filename = os.path.join(data_dir, prepro_cfg['network_filename'])
     model_filename = os.path.join(data_dir, 'n2v.model')
     node_embeddings_filename = os.path.join(data_dir, 'n2v_node_embeddings')
 
     module_logger = logging.getLogger('train_node2_vec_model')
+
     module_logger.info(f'reading in {network_input_filename}')
     edges = pd.read_csv(
         network_input_filename,
@@ -76,10 +111,12 @@ if __name__ == "__main__":  # our module is being executed as a program
                'destination_content_id': object}
     )
 
-    node2vec_model = train_node2_vec_model(edges)
+    node2vec_model = N2VModel()
 
-    module_logger.info(f'saving node embeddings to {node_embeddings_filename}')
-    node2vec_model.wv.save_word2vec_format(node_embeddings_filename)
+    node2vec_model.create_graph(edges, node2vec_config['weighted_graph'])
 
-    module_logger.info(f'saving model to {model_filename}')
-    node2vec_model.save(model_filename)
+    node2vec_model.generate_walks(**node2vec_config)
+
+    node2vec_model.fit_model(**node2vec_config, callbacks=EpochLogger())
+
+    node2vec_model.save_model(node_embeddings_filename, model_filename)
