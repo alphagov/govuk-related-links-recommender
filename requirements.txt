@@ -25,6 +25,7 @@ flake8==3.7.8
 pytest==5.0.1
 pytest-mongodb==2.1.2
 
+src~=0.1.0
 setuptools~=50.3.2
 
 pre-commit~=2.14.0
