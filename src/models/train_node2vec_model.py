@@ -6,117 +6,87 @@ import networkx as nx
 from node2vec import Node2Vec
 
 from src.utils.epoch_logger import EpochLogger
-from src.utils.miscellaneous import read_config_yaml, safe_getenv
+from src.utils.miscellaneous import safe_getenv
 import pandas as pd
 
+logging.config.fileConfig('src/logging.conf')
 
-class N2VModel:
-    def __init__(self, node2vec=None, graph=None, model=None):
-        self.graph = graph
-        self.model = model
-        self.node2vec = node2vec
-        self.logger = logging.getLogger('train_node2_vec_model')
 
-    def create_graph(self, edges_df, weighted=False):
-        """
-        Creates a networkx graph from edge list dataframe
+def create_graph(edges_df):
+    logger = logging.getLogger('train_node2_vec_model.create_graph')
 
-            Parameters:
-                edges_df (Dataframe): List of of [weighted] edges
-                weighted (bool): If true, generated the weighted matrix usinng 'weight' col in edges_df
+    logger.info('creating graph from edges_df')
+    graph = nx.from_pandas_edgelist(edges_df, source='source_content_id',
+                                    target='destination_content_id',
+                                    create_using=nx.DiGraph())
+    return graph
 
-            Returns:
 
-        """
-        if not weighted:
-            self.logger.info('creating unweighted graph from edges_df')
-            self.graph = nx.from_pandas_edgelist(edges_df, source='source_content_id',
-                                                 target='destination_content_id',
-                                                 create_using=nx.DiGraph())
-        else:
-            self.logger.info('creating weighted graph from edges_df')
-            self.graph = nx.from_pandas_edgelist(edges_df, source='source_content_id',
-                                                 target='destination_content_id',
-                                                 edge_attr='weight',
-                                                 create_using=nx.DiGraph())
+def train_node2_vec_model(edges_df,
+                          workers=None):
+    """
+    Train a node2vec model using a DataFrame of edges (source and target node_ids)
+    and a mapping of the node_ids (used in the DataFrame) to GOV.UK content_ids
+    :param edges_df: pandas DataFrame with source and target columns (containing node_ids)
+    # :param node_id_content_id_mapping: Python dictionary {node_id: content_id}
+    :param workers: (optional, default=number of CPUs) number of workers to use for the node2vec random walks and
+        fitting
+    :return: a node2vec model
+    """
+    logger = logging.getLogger('train_node2_vec_model.train_node2_vec_model')
+    logging.getLogger().setLevel(logging.DEBUG)
 
-    def generate_walks(self, dimensions=64, walk_length=10, num_walks=300, workers=None, **kwargs):
+    if workers is None:
+        workers = cpu_count()
 
-        self.logger.info('Precomputing probabilities and generating walks')
+    logger.info(f'number of workers is {workers}')
 
-        if workers is None:
-            workers = cpu_count()
+    graph = create_graph(edges_df)
 
-        self.logger.info(f'number of workers is {workers}')
+    logger.info('Precomputing probabilities and generating walks')
+    # TODO: search this parameter space systematically and change node2vec parameters
+    node2vec = Node2Vec(graph, dimensions=64, walk_length=10, num_walks=300,
+                        workers=workers)
 
-        self.node2vec = Node2Vec(self.graph,
-                                 dimensions=dimensions,
-                                 walk_length=walk_length,
-                                 num_walks=num_walks,
-                                 workers=workers)
+    # Any keywords acceptable by gensim.Word2Vec can be passed, `dimensions` and `workers` are
+    # automatically passed (from the Node2Vec constructor)
+    # https://radimrehurek.com/gensim/models/word2vec.html#gensim.models.word2vec.Word2Vec
+    # TODO: search this parameter space systematically and change node2vec parameters
+    logger.info('call EpochLogger')
+    epoch_logger = EpochLogger()
+    logger.info('Fit node2vec model (create embeddings for nodes)')
+    model = node2vec.fit(window=10, min_count=1, batch_words=4, seed=1,
+                         workers=1, callbacks=[epoch_logger])
 
-    def fit_model(self, window=10, min_count=1,
-                  batch_words=4, seed=1, workers=None, callbacks=None,
-                  iter=5, **kwargs):
+    logger.info('Completed fitting model.')
 
-        # Try setting workers=1 if you want a deterministic output
-        self.logger.info('Fit node2vec model (create embeddings for nodes)')
-        if workers is None:
-            workers = cpu_count()
-
-        self.logger.info(f'number of workers is {workers}')
-        self.logger.info(f'window is {window}')
-        self.logger.info(f'batch_words is {batch_words}')
-        self.logger.info(f'iter is {iter}')
-        # Any keywords acceptable by gensim.Word2Vec can be passed, `dimensions` and `workers` are
-        # automatically passed (from the Node2Vec constructor)
-        # https://radimrehurek.com/gensim/models/word2vec.html#gensim.models.word2vec.Word2Vec
-        self.model = self.node2vec.fit(window=window,
-                                       min_count=min_count,
-                                       batch_words=batch_words,
-                                       seed=seed,
-                                       workers=workers,
-                                       callbacks=[callbacks],
-                                       iter=iter)
-
-    def save_model(self, embeddings_filepath, model_file_path):
-        self.logger.info(f'saving  embeddings to {embeddings_filepath}')
-        self.model.wv.save_word2vec_format(embeddings_filepath)
-
-        self.logger.info(f'saving model to  to {model_file_path}')
-        self.model.save(model_file_path)
+    return model
 
 
 if __name__ == "__main__":  # our module is being executed as a program
     data_dir = safe_getenv('DATA_DIR')
     model_dir = safe_getenv('MODEL_DIR')
-    logging.config.fileConfig('src/logging.conf')
     module_logger = logging.getLogger('train_node2_vec_model')
 
-    prepro_cfg = read_config_yaml(
-        "preprocessing-config.yml")
-
-    node2vec_config = read_config_yaml(
-        "node2vec-config.yml")
-
-    module_logger.info('reading in all_edges.csv and node_id_content_id_mapping.json')
+    module_logger.info(f'reading in all_edges.csv and node_id_content_id_mapping.json')
     edges = pd.read_csv(
-        os.path.join(data_dir, 'tmp', prepro_cfg['network_filename']),
+        os.path.join(data_dir, 'tmp', 'network.csv'),
         dtype={'source_content_id': object,
                'destination_content_id': object}
     )
 
-    node2vec_model = N2VModel()
+    node2vec_model = train_node2_vec_model(edges)
 
-    node2vec_model.create_graph(edges, node2vec_config['weighted_graph'])
-
-    node2vec_model.generate_walks(**node2vec_config)
-
-    node2vec_model.fit_model(**node2vec_config, callbacks=EpochLogger())
-
+    # TODO:think about a function that gets the filepath for the thing and does that saving.
+    #  Depends how often we do that whether it's needed. Not for MVP
     node_embeddings_file_path = os.path.join(model_dir,
-                                             node2vec_config['embeddings_filename'])
+                                             "n2v_node_embeddings")
+    module_logger.info(f'saving node embeddings to {node_embeddings_file_path}')
+    node2vec_model.wv.save_word2vec_format(node_embeddings_file_path)
 
-    node2vec_model_file_path = os.path.join(model_dir, node2vec_config['model_filename'])
-
-    node2vec_model.save_model(node_embeddings_file_path, node2vec_model_file_path)
+    node2vec_model_file_path = os.path.join(model_dir, "n2v.model")
+    module_logger.info(f'saving model to {node2vec_model_file_path}')
+    node2vec_model.save(node2vec_model_file_path)
+    # should we test saving and loading models and embeddings?
+    # TODO: might be useful to have some utility class somewhere that deals with read/write
+    #  and is tested there. Probably not needed for MVP.
