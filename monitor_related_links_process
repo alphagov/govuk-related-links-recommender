@@ -5,20 +5,7 @@ set -eo pipefail
 LINK_PROCESS_PID="$(ps aux | grep run_link_ | grep -v grep | awk '{print $2}')"
 echo "PID of the link generation / ingestion process is $LINK_PROCESS_PID"
 
-
-while /bin/true; do
-    echo "== mem check =="
-    date
-    free -h
-    echo "==============="
-    sleep 300
-done &
-
-MEM_CHECK_PID=$!
-
 tail -f --pid=$LINK_PROCESS_PID /var/tmp/related_links_process.log /var/log/syslog
-
-kill -9 $MEM_CHECK_PID
 
 LOG_LAST_LINE=$(tail -n 1 /var/tmp/related_links_process.log)
 if [ "$LOG_LAST_LINE" != "related_links process succeeded" ]; then

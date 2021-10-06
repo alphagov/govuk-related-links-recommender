@@ -42,8 +42,8 @@ FROM (
       CROSS JOIN
         UNNEST(sessions.hits) AS hits
                WHERE
-                 _TABLE_SUFFIX BETWEEN @from_date
-                 AND @to_date
+                 _TABLE_SUFFIX BETWEEN @three_weeks_ago
+                 AND @yesterday
         )
     WHERE
       hit_type = 'PAGE'
@@ -63,4 +63,4 @@ GROUP BY
   source_content_id,
   destination_content_id
 HAVING
-  weight >= @weight_threshold
+  weight > 5
