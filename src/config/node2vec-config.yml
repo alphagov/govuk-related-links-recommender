@@ -11,7 +11,7 @@ seed: 1
 #Epochs
 iter: 5
 # n cpus to use (null = cpu.count())
-workers: null
+workers: None
 # no file type suffix
 embeddings_filename: "n2v_node_embeddings"
 #run_link_generation will only upload models called n2v.model
