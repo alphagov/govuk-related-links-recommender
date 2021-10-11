@@ -2,6 +2,18 @@
 
 set -ueo pipefail
 
+
+
+function file_or_die {
+    if [ -s $1 ]; then
+        echo "Found $1. All good"
+    else
+        echo "$1 not found or is empty. Exiting"
+        exit 255
+    fi
+}
+
+
 echo "Starting run_link_generation script..."
 sleep 60
 
@@ -33,23 +45,42 @@ cd /var/data/github/govuk-related-links-recommender
 pip3 install -r requirements.txt
 
 # Start related links generation process
-python3.6 src/run_all.py
+#python3.6 src/run_all.py
 
+echo "### Starting related links generation process"
+
+echo "# Generating structural edges"
+python3.6 src/data_preprocessing/get_content_store_data.py
+file_or_die "$DATA_DIR/tmp/structural_edges.csv"
+aws s3 cp $DATA_DIR/tmp/structural_edges.csv s3://$RELATED_LINKS_BUCKET/structural_edges.csv
+
+echo "# Generating functional edges"
+python3.6 src/data_preprocessing/make_functional_edges_and_weights.py
+file_or_die "$DATA_DIR/tmp/functional_edges.csv"
+aws s3 cp $DATA_DIR/tmp/functional_edges.csv s3://$RELATED_LINKS_BUCKET/functional_edges.csv
+
+echo "# Running make_network"
+python3.6 src/features/make_network.py
+file_or_die "$DATA_DIR/tmp/network.csv"
+aws s3 cp $DATA_DIR/tmp/network.csv s3://$RELATED_LINKS_BUCKET/network.csv
+
+echo "# Running train_node2vec_model"
+python3.6 src/models/train_node2vec_model.py
+file_or_die "$MODEL_DIR/n2v.model"
+aws s3 cp $MODEL_DIR/n2v.model s3://$RELATED_LINKS_BUCKET/n2v.model
+
+echo "# Running predicted_related_links"
+python3.6 src/models/predict_related_links.py
+file_or_die "suggested_related_links.json"
+file_or_die "suggested_related_links.csv"
 cd /var/data/github/govuk-related-links-recommender/data/predictions
-
 SUGGESTED_LINKS_JSON="$(ls -t | grep suggested_related_links.json | head -1)"
 SUGGESTED_LINKS_TSV="$(ls -t | grep suggested_related_links.tsv | head -1)"
-
-# Copy outputs to S3
 aws s3 cp $DATA_DIR/predictions/$SUGGESTED_LINKS_JSON s3://$RELATED_LINKS_BUCKET/$SUGGESTED_LINKS_JSON
 aws s3 cp $DATA_DIR/predictions/$SUGGESTED_LINKS_TSV s3://$RELATED_LINKS_BUCKET/$SUGGESTED_LINKS_TSV
 
+echo "# Copying logs to S3"
 aws s3 cp /tmp/govuk-related-links-recommender.log s3://$RELATED_LINKS_BUCKET/govuk-related-links-recommender.log
 aws s3 cp /var/tmp/related_links_process.log s3://$RELATED_LINKS_BUCKET/related_links_generation.log
-
-aws s3 cp $MODEL_DIR/n2v.model s3://$RELATED_LINKS_BUCKET/n2v.model
-aws s3 cp $DATA_DIR/tmp/network.csv s3://$RELATED_LINKS_BUCKET/network.csv
-aws s3 cp $DATA_DIR/tmp/structural_edges.csv s3://$RELATED_LINKS_BUCKET/structural_edges.csv
-aws s3 cp $DATA_DIR/tmp/functional_edges.csv s3://$RELATED_LINKS_BUCKET/functional_edges.csv
 
 echo "related_links process succeeded"
