@@ -1,107 +1,53 @@
-.PHONY: clean data lint requirements sync_data_to_s3 sync_data_from_s3 test
-
-# #################################################################################
-# # GLOBALS                                                                       #
-# #################################################################################
-
-# PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-# BUCKET = [OPTIONAL] your-bucket-for-syncing-data (do not include 's3://')
-# PROFILE = default
-PROJECT_NAME = govuk-related-links-recommender
-PYTHON_INTERPRETER = python3
+DATA_DIR=./data
 
 
-#################################################################################
-# COMMANDS                                                                      #
-#################################################################################
+all: ${DATA_DIR}/suggested_related_links.json
 
-## Install Python Dependencies
-requirements: test_environment
-	$(PYTHON_INTERPRETER) -m pip install -U pip setuptools wheel
-	$(PYTHON_INTERPRETER) -m pip install -r requirements.txt
+# Input: mongodb
+# Output:
+#  - content_id_base_path_mapping.json
+#  - page_content_id_mapping.json
+#  - eligible_source_content_ids.pkl
+#  - eligible_target_content_ids.pkl
+#  - structural_edges.csv
 
-## Delete all compiled Python files
-clean:
-	find . -type f -name "*.py[co]" -delete
-	find . -type d -name "__pycache__" -delete
-# 	do we want to delete everything in data/tmp?
+get_content_store_outputs: ${DATA_DIR}/content_id_base_path_mapping.json ${DATA_DIR}/page_content_id_mapping.json
+get_content_store_outputs: ${DATA_DIR}/eligible_source_content_ids.plk ${DATA_DIR}/eligible_target_content_ids.plk
+get_content_store_outputs: ${DATA_DIR}/structural_edges.csv
 
-## Lint using flake8
-lint:
-	flake8 src
-
-## Test python environment is setup correctly
-test_environment:
-	$(PYTHON_INTERPRETER) test_environment.py
-
-## Run tests using pytest
-test: lint
-	pytest
+get_content_store_outputs:
+	python3.6 src/data_preprocessing/get_content_store_data.py
+#	aws s3 cp ${DATA_DIR}/structural_edges.csv s3://${RELATED_LINKS_BUCKET}/structural_edges.csv
 
 
-#################################################################################
-# PROJECT RULES                                                                 #
-#################################################################################
+# Input: Big query
+# Output: functional_edges.csv
+${DATA_DIR}/functional_edges.csv:
+	python3.6 src/data_preprocessing/make_functional_edges_and_weights.py
+#	aws s3 cp ${DATA_DIR}/functional_edges.csv s3://${RELATED_LINKS_BUCKET}/functional_edges.csv
 
 
+# Output: network.csv
+${DATA_DIR}/network.csv: ${DATA_DIR}/functional_edges.csv ${DATA_DIR}/structural_edges.csv
+	python3.6 src/features/make_network.py
+#	aws s3 cp ${DATA_DIR}/network.csv s3://${RELATED_LINKS_BUCKET}/network.csv
 
-################################################################################
-# Self Documenting Commands                                                    #
-################################################################################
 
-.DEFAULT_GOAL := help
+# Output:
+# - n2v.model
+# - n2v_node_embeddings
+${DATA_DIR}/n2v.model: ${DATA_DIR}/network.csv
+	python3.6 src/models/train_node2vec_model.py
+#	aws s3 cp ${DATA_DIR}/n2v.model s3://${RELATED_LINKS_BUCKET}/n2v.model
 
-# Inspired by <http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html>
-# sed script explained:
-# /^##/:
-# 	* save line in hold space
-# 	* purge line
-# 	* Loop:
-# 		* append newline + line to hold space
-# 		* go to next line
-# 		* if line starts with doc comment, strip comment character off and loop
-# 	* remove target prerequisites
-# 	* append hold space (+ newline) to line
-# 	* replace newline plus comments by `---`
-# 	* print line
-# Separate expressions are necessary because labels cannot be delimited by
-# semicolon; see <http://stackoverflow.com/a/11799865/1968>
-.PHONY: help
-help:
-	@echo "$$(tput bold)Available rules:$$(tput sgr0)"
-	@echo
-	@sed -n -e "/^## / { \
-		h; \
-		s/.*//; \
-		:doc" \
-		-e "H; \
-		n; \
-		s/^## //; \
-		t doc" \
-		-e "s/:.*//; \
-		G; \
-		s/\\n## /---/; \
-		s/\\n/ /g; \
-		p; \
-	}" ${MAKEFILE_LIST} \
-	| LC_ALL='C' sort --ignore-case \
-	| awk -F '---' \
-		-v ncol=$$(tput cols) \
-		-v indent=19 \
-		-v col_on="$$(tput setaf 6)" \
-		-v col_off="$$(tput sgr0)" \
-	'{ \
-		printf "%s%*s%s ", col_on, -indent, $$1, col_off; \
-		n = split($$2, words, " "); \
-		line_length = ncol - indent; \
-		for (i = 1; i <= n; i++) { \
-			line_length -= length(words[i]) + 1; \
-			if (line_length <= 0) { \
-				line_length = ncol - indent - length(words[i]) - 1; \
-				printf "\n%*s ", -indent, " "; \
-			} \
-			printf "%s ", words[i]; \
-		} \
-		printf "\n"; \
-	}' \
-	| more $(shell test $(shell uname) = Darwin && echo '--no-init --raw-control-chars')
+
+# Input:
+#  - n2v.model
+#  - content_id_base_path_mapping.json
+#  - eligible_source_content_ids.pkl
+#  - eligible_target_content_ids.pkl
+${DATA_DIR}/suggested_related_links.csv ${DATA_DIR}/suggested_related_links.json:
+	python src/models/predict_related_links.py
+#	TIMESTAMP=$(shell date +%Y%m%d)
+#	aws s3 cp ${DATA_DIR}/suggested_related_links.json s3://$RELATED_LINKS_BUCKET/${TIMESTAMP}suggested_related_links.json
+#	aws s3 cp ${DATA_DIR}/suggested_related_links.csv s3://$RELATED_LINKS_BUCKET/${TIMESTAMP}suggested_related_links.csv

@@ -288,43 +288,46 @@ def export_content_id_list(list_name, mongodb_collection, outfile):
 
 
 if __name__ == "__main__":  # our module is being executed as a program
+
+    mongodb_url = 'mongodb://localhost:27017'
     data_dir = safe_getenv('DATA_DIR')
+    content_id_base_path_mapping_filename = os.path.join(data_dir, 'content_id_base_path_mapping.json')
+    page_path_content_id_mapping_filename = os.path.join(data_dir, 'page_path_content_id_mapping.json')
+    eligible_source_content_ids_filename = os.path.join(data_dir, 'eligible_source_content_ids.pkl')
+    eligible_target_content_ids_filename = os.path.join(data_dir, 'eligible_target_content_ids.pkl')
+    structural_edges_output_filename = os.path.join(data_dir, 'structural_edges.csv')
 
     logging.config.fileConfig('src/logging.conf')
     module_logger = logging.getLogger('get_content_store_data')
 
-    mongo_client = pymongo.MongoClient("mongodb://localhost:27017/")
-    # TODO check this is consistent with naming of restored db in AWS
+    mongo_client = pymongo.MongoClient(mongodb_url)
     content_store_db = mongo_client['content_store']
     content_store_collection = content_store_db['content_items']
 
     page_path_content_id_mapping, content_id_base_path_mapping = get_path_content_id_mappings(content_store_collection)
 
-    module_logger.info(f'saving page_path_content_id_mapping to {data_dir}/tmp/page_path_content_id_mapping.json')
+    module_logger.info(f'saving page_path_content_id_mapping to {page_path_content_id_mapping_filename}')
     with open(
-            os.path.join(data_dir, 'tmp', 'page_path_content_id_mapping.json'),
+            page_path_content_id_mapping_filename,
             'w') as page_path_content_id_file:
         json.dump(page_path_content_id_mapping, page_path_content_id_file)
 
-    module_logger.info(f'saving content_id_base_path_mapping to {data_dir}/tmp/content_id_base_path_mapping.json')
-    with open(
-            os.path.join(data_dir, 'tmp', 'content_id_base_path_mapping.json'),
-            'w') as content_id_base_path_file:
+    module_logger.info(f'saving content_id_base_path_mapping to {content_id_base_path_mapping_filename}')
+    with open(content_id_base_path_mapping_filename, 'w') as content_id_base_path_file:
         json.dump(content_id_base_path_mapping, content_id_base_path_file)
 
     output_df = get_structural_edges_df(content_store_collection, page_path_content_id_mapping)
 
-    module_logger.info(f'saving structural_edges (output_df) to {data_dir}/tmp/structural_edges.json')
-    output_df.to_csv(os.path.join(data_dir, "tmp", "structural_edges.csv"), index=False)
+    module_logger.info(f'saving structural_edges (output_df) to {structural_edges_output_filename}')
+    output_df.to_csv(structural_edges_output_filename, index=False)
 
     export_content_id_list("eligible_source",
                            content_store_collection,
-                           os.path.join(data_dir, "tmp", "eligible_source_content_ids.pkl"))
+                           eligible_source_content_ids_filename)
 
     export_content_id_list("eligible_target",
                            content_store_collection,
-                           os.path.join(data_dir, "tmp",
-                                        "eligible_target_content_ids.pkl"))
+                           eligible_target_content_ids_filename)
 
 
 # This is code from a colleague's blog, with an alternative way of doing this, that we need to compare efficiency with.

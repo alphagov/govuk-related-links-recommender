@@ -1,7 +1,6 @@
 import os
 import logging.config
 from multiprocessing import cpu_count
-
 import networkx as nx
 from node2vec import Node2Vec
 
@@ -28,7 +27,6 @@ def train_node2_vec_model(edges_df,
     Train a node2vec model using a DataFrame of edges (source and target node_ids)
     and a mapping of the node_ids (used in the DataFrame) to GOV.UK content_ids
     :param edges_df: pandas DataFrame with source and target columns (containing node_ids)
-    # :param node_id_content_id_mapping: Python dictionary {node_id: content_id}
     :param workers: (optional, default=number of CPUs) number of workers to use for the node2vec random walks and
         fitting
     :return: a node2vec model
@@ -64,29 +62,24 @@ def train_node2_vec_model(edges_df,
 
 
 if __name__ == "__main__":  # our module is being executed as a program
-    data_dir = safe_getenv('DATA_DIR')
-    model_dir = safe_getenv('MODEL_DIR')
-    module_logger = logging.getLogger('train_node2_vec_model')
 
-    module_logger.info(f'reading in all_edges.csv and node_id_content_id_mapping.json')
+    data_dir = safe_getenv('DATA_DIR')
+    network_input_filename = os.path.join(data_dir, 'network.csv')
+    model_filename = os.path.join(data_dir, 'n2v.model')
+    node_embeddings_filename = os.path.join(data_dir, 'n2v_node_embeddings')
+
+    module_logger = logging.getLogger('train_node2_vec_model')
+    module_logger.info(f'reading in {network_input_filename}')
     edges = pd.read_csv(
-        os.path.join(data_dir, 'tmp', 'network.csv'),
+        network_input_filename,
         dtype={'source_content_id': object,
                'destination_content_id': object}
     )
 
     node2vec_model = train_node2_vec_model(edges)
 
-    # TODO:think about a function that gets the filepath for the thing and does that saving.
-    #  Depends how often we do that whether it's needed. Not for MVP
-    node_embeddings_file_path = os.path.join(model_dir,
-                                             "n2v_node_embeddings")
-    module_logger.info(f'saving node embeddings to {node_embeddings_file_path}')
-    node2vec_model.wv.save_word2vec_format(node_embeddings_file_path)
+    module_logger.info(f'saving node embeddings to {node_embeddings_filename}')
+    node2vec_model.wv.save_word2vec_format(node_embeddings_filename)
 
-    node2vec_model_file_path = os.path.join(model_dir, "n2v.model")
-    module_logger.info(f'saving model to {node2vec_model_file_path}')
-    node2vec_model.save(node2vec_model_file_path)
-    # should we test saving and loading models and embeddings?
-    # TODO: might be useful to have some utility class somewhere that deals with read/write
-    #  and is tested there. Probably not needed for MVP.
+    module_logger.info(f'saving model to {model_filename}')
+    node2vec_model.save(model_filename)

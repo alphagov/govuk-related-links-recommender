@@ -18,7 +18,6 @@ echo "Starting run_link_generation script..."
 sleep 60
 
 export DATA_DIR=$PWD/data
-export MODEL_DIR=$PWD/models
 export GOOGLE_APPLICATION_CREDENTIALS=/var/tmp/bigquery.json
 
 # Store Big Query credentials
@@ -44,40 +43,55 @@ mongorestore -d content_store -c content_items /var/data/content_store_productio
 cd /var/data/github/govuk-related-links-recommender
 pip3 install -r requirements.txt
 
-# Start related links generation process
-#python3.6 src/run_all.py
-
 echo "### Starting related links generation process"
 
 echo "# Generating structural edges"
+# Input: mongodb
 python3.6 src/data_preprocessing/get_content_store_data.py
-file_or_die "$DATA_DIR/tmp/structural_edges.csv"
-aws s3 cp $DATA_DIR/tmp/structural_edges.csv s3://$RELATED_LINKS_BUCKET/structural_edges.csv
+file_or_die "$DATA_DIR/structural_edges.csv"
+file_or_die "$DATA_DIR/content_id_base_path_mapping.json"
+file_or_die "$DATA_DIR/page_path_content_id_mapping.json"
+file_or_die "$DATA_DIR/eligible_source_content_ids.pkl"
+file_or_die "$DATA_DIR/eligible_target_content_ids.pkl"
+aws s3 cp $DATA_DIR/structural_edges.csv s3://$RELATED_LINKS_BUCKET/structural_edges.csv
+
 
 echo "# Generating functional edges"
+# Input: Big query
 python3.6 src/data_preprocessing/make_functional_edges_and_weights.py
-file_or_die "$DATA_DIR/tmp/functional_edges.csv"
-aws s3 cp $DATA_DIR/tmp/functional_edges.csv s3://$RELATED_LINKS_BUCKET/functional_edges.csv
+file_or_die "$DATA_DIR/functional_edges.csv"
+aws s3 cp $DATA_DIR/functional_edges.csv s3://$RELATED_LINKS_BUCKET/functional_edges.csv
 
 echo "# Running make_network"
+# Input:
+#  - structural_edges.csv
+#  - functional_edges.csv
+# Output: network.csv
 python3.6 src/features/make_network.py
-file_or_die "$DATA_DIR/tmp/network.csv"
-aws s3 cp $DATA_DIR/tmp/network.csv s3://$RELATED_LINKS_BUCKET/network.csv
+file_or_die "$DATA_DIR/network.csv"
+aws s3 cp $DATA_DIR/network.csv s3://$RELATED_LINKS_BUCKET/network.csv
 
 echo "# Running train_node2vec_model"
+# Input: network.csv
 python3.6 src/models/train_node2vec_model.py
-file_or_die "$MODEL_DIR/n2v.model"
-aws s3 cp $MODEL_DIR/n2v.model s3://$RELATED_LINKS_BUCKET/n2v.model
+file_or_die "$DATA_DIR/n2v.model"
+file_or_die "$DATA_DIR/n2v_node_embeddings"
+aws s3 cp $DATA_DIR/n2v.model s3://$RELATED_LINKS_BUCKET/n2v.model
+aws s3 cp $DATA_DIR/n2v_node_embeddings s3://$RELATED_LINKS_BUCKET/n2v_node_embeddings
+
 
 echo "# Running predicted_related_links"
-python3.6 src/models/predict_related_links.py
-file_or_die "suggested_related_links.json"
-file_or_die "suggested_related_links.csv"
-cd /var/data/github/govuk-related-links-recommender/data/predictions
-SUGGESTED_LINKS_JSON="$(ls -t | grep suggested_related_links.json | head -1)"
-SUGGESTED_LINKS_TSV="$(ls -t | grep suggested_related_links.tsv | head -1)"
-aws s3 cp $DATA_DIR/predictions/$SUGGESTED_LINKS_JSON s3://$RELATED_LINKS_BUCKET/$SUGGESTED_LINKS_JSON
-aws s3 cp $DATA_DIR/predictions/$SUGGESTED_LINKS_TSV s3://$RELATED_LINKS_BUCKET/$SUGGESTED_LINKS_TSV
+# Input: n2v.model
+#  - content_id_base_path_mapping.json
+#  - eligible_source_content_ids.pkl
+#  - eligible_target_content_ids.pkl
+python src/models/predict_related_links.py
+file_or_die "${DATA_DIR}/suggested_related_links.json"
+file_or_die "${DATA_DIR}/suggested_related_links.csv"
+TIMESTAMP=`date +%Y%m%d`
+aws s3 cp ${DATA_DIR}/suggested_related_links.json s3://$RELATED_LINKS_BUCKET/${TIMESTAMP}suggested_related_links.json
+aws s3 cp ${DATA_DIR}/suggested_related_links.csv s3://$RELATED_LINKS_BUCKET/${TIMESTAMP}suggested_related_links.csv
+
 
 echo "# Copying logs to S3"
 aws s3 cp /tmp/govuk-related-links-recommender.log s3://$RELATED_LINKS_BUCKET/govuk-related-links-recommender.log
