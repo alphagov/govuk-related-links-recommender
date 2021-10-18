@@ -17,7 +17,7 @@ class EpochLogger(CallbackAny2Vec):
         self.epoch += 1
 
     def on_train_begin(self, model):
-        getLogger('gensim_node2vec').info(f'Model training begins')
+        getLogger('gensim_node2vec').info('Model training begins')
 
     def on_train_end(self, model):
-        getLogger('gensim_node2vec').info(f'Model raining ends')
+        getLogger('gensim_node2vec').info('Model raining ends')

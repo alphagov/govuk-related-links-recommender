@@ -11,8 +11,6 @@ import logging.config
 import os
 import json
 
-from datetime import datetime
-
 from gensim.models import Word2Vec
 
 from src.utils.big_query_client import BigQueryClient
@@ -39,25 +37,26 @@ def get_content_ids_to_page_views_mapper(df):
 
 
 if __name__ == '__main__':
+
+    data_dir = safe_getenv('DATA_DIR')
+    model_filename = "n2v.model"
+    eligible_source_content_ids_filename = \
+        os.path.join(data_dir, 'eligible_source_content_ids.pkl')
+    eligible_target_content_ids_filename = \
+        os.path.join(data_dir, 'eligible_target_content_ids.pkl')
+    content_id_base_path_mapping_filename = \
+        os.path.join(data_dir, 'content_id_base_path_mapping.json')
+    related_links_filename = os.path.join(data_dir, 'suggested_related_links.json')
+    related_links_100_filename = os.path.join(data_dir, 'suggested_related_links.csv')
+
     logging.config.fileConfig('src/logging.conf')
     logger = logging.getLogger('predict_related_links')
-    DATA_DIR = safe_getenv('DATA_DIR')
-
-    related_links_path = os.path.join(DATA_DIR, "predictions",
-                                      datetime.today().strftime('%Y%m%d') + "suggested_related_links")
-    content_id_base_mapping_path = os.path.join(DATA_DIR, 'tmp', 'content_id_base_path_mapping.json')
 
     logger.info(
-        f'loading model from "models/n2v.model"')
-    trained_model = Word2Vec.load("models/n2v.model")
-
-    logger.info(
-        f'loading eligible_source_content_ids from {DATA_DIR}/tmp/eligible_source_content_ids.pkl')
-    eligible_source_content_ids = load_pickled_content_id_list(os.path.join(DATA_DIR, "tmp",
-                                                                            "eligible_source_content_ids.pkl"))
-
-    eligible_target_content_ids = load_pickled_content_id_list(os.path.join(DATA_DIR, "tmp",
-                                                                            "eligible_target_content_ids.pkl"))
+        f'loading eligible_source_content_ids from {eligible_source_content_ids_filename}'
+        f'and {eligible_target_content_ids_filename}')
+    eligible_source_content_ids = load_pickled_content_id_list(eligible_source_content_ids_filename)
+    eligible_target_content_ids = load_pickled_content_id_list(eligible_target_content_ids_filename)
 
     logger.info('Querying Big Query for content ids and views')
     yesterday = DateHelper.get_datetime_for_yesterday()
@@ -73,14 +72,18 @@ if __name__ == '__main__':
     related_links_filter = RelatedLinksConfidenceFilter(
         get_content_ids_to_page_views_mapper(all_content_ids_and_views_df), pageview_confidence_config)
 
-    logger.info(f'predicting related links')
-    related_links_predictor = RelatedLinksPredictor(eligible_source_content_ids, eligible_target_content_ids,
-                                                    trained_model, related_links_filter)
+    logger.info(f'loading model from {model_filename}')
+    trained_model = Word2Vec.load(model_filename)
+
+    logger.info('predicting related links')
+    related_links_predictor = RelatedLinksPredictor(
+        eligible_source_content_ids, eligible_target_content_ids,
+        trained_model, related_links_filter)
     related_links = related_links_predictor.predict_all_related_links()
 
     logger.info('Exporting related links as JSON')
     json_exporter = RelatedLinksJsonExporter(related_links)
-    json_exporter.export(f'{related_links_path}.json')
+    json_exporter.export(related_links_filename)
 
     logger.info('Filtering to content_ids in the vocabulary')
     all_content_ids_and_views_df.query(
@@ -88,10 +91,11 @@ if __name__ == '__main__':
         inplace=True)
 
     logger.info('Exporting top 100 pages as CSV')
-    csv_exporter = RelatedLinksCsvExporter(related_links,
-                                           get_content_id_to_base_path_mapper(content_id_base_mapping_path),
-                                           get_content_ids_to_page_views_mapper(all_content_ids_and_views_df))
-    csv_exporter.export(f'{related_links_path}.tsv')
+    csv_exporter = RelatedLinksCsvExporter(
+        related_links,
+        get_content_id_to_base_path_mapper(content_id_base_path_mapping_filename),
+        get_content_ids_to_page_views_mapper(all_content_ids_and_views_df))
+    csv_exporter.export(related_links_100_filename)
 
 # Code for how links were generated for the A/B test below, saved for the future,
 # it was easier/quicker to write it in a more DataFrame-y method for now but we could revisit this later

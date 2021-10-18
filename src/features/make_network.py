@@ -23,25 +23,25 @@ def make_network_from_structural_and_functional(structural_edges, functional_edg
 
 
 if __name__ == "__main__":  # our module is being executed as a program
+
     data_dir = safe_getenv('DATA_DIR')
+    functional_edges_input_filename = os.path.join(data_dir, 'functional_edges.csv')
+    structural_edges_input_filename = os.path.join(data_dir, 'structural_edges.csv')
+    network_output_filename = os.path.join(data_dir, 'network.csv')
+
     module_logger = logging.getLogger('make_structural_network')
 
-    module_logger.info(
-        f'reading {data_dir}/tmp/structural_edges.csv created by data_preprocessing/get_content_store_data')
-    structural_edges_df = pd.read_csv(os.path.join(data_dir, 'tmp', 'structural_edges.csv'))
+    module_logger.info(f'reading {structural_edges_input_filename}')
+    structural_edges_df = pd.read_csv(structural_edges_input_filename)
     module_logger.info(f'structural_edges_df.shape = {structural_edges_df.shape}')
 
-    module_logger.info(
-        f'reading {data_dir}/tmp/functional_edges.csv.gz created by '
-        f'data_preprocessing/make_functional_edges_and_weights')
-    functional_edges_df = pd.read_csv(
-        os.path.join(data_dir, 'tmp', 'functional_edges.csv'))
+    module_logger.info(f'reading {functional_edges_input_filename}')
+    functional_edges_df = pd.read_csv(functional_edges_input_filename)
     module_logger.info(f'functional_edges_df.shape = {functional_edges_df.shape}')
 
     module_logger.info('making network_df using structural_edges_df and functional_edges_df')
     network_df = make_network_from_structural_and_functional(structural_edges_df, functional_edges_df)
     module_logger.info(f'network_df.shape = {network_df.shape}')
 
-    module_logger.info(f'saving network_df to {data_dir}/tmp/network.csv')
-    network_df.to_csv(os.path.join(
-        data_dir, 'tmp', 'network.csv'), index=False)
+    module_logger.info(f'saving network_df to {network_output_filename}')
+    network_df.to_csv(network_output_filename, index=False)
