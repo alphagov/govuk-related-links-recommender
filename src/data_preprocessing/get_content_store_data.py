@@ -126,7 +126,7 @@ def get_path_content_id_mappings(mongodb_collection):
     :param mongodb_collection:
     :return: Python dictionary {page_path: content_id}, Python dictionary {content_id: base_path}
     """
-    logging.info(f'querying MongoDB for base_paths, slugs, and content_ids')
+    logging.info('querying MongoDB for base_paths, slugs, and content_ids')
     base_path_content_id_cursor = mongodb_collection.find({"$and": [
         {"content_id": {"$exists": True}},
         {"phase": "live"}]},
@@ -187,7 +187,7 @@ def extract_embedded_links_df(page_text_df, base_path_to_content_id_mapping):
         'destination_base_path','destination_content_id', 'link_type']
     """
     page_text_df['embedded_links'] = page_text_df['all_details'].progress_apply(tp.extract_links_from_content_details)
-    logging.info(f'have applied extract_links_from_content_details to page_text_df')
+    logging.info('have applied extract_links_from_content_details to page_text_df')
 
     embedded_links_df = page_text_df[['_id', 'content_id', 'embedded_links']]
     logging.info(f'shape of df with link list (wide before melt)={embedded_links_df.shape}')
@@ -198,7 +198,7 @@ def extract_embedded_links_df(page_text_df, base_path_to_content_id_mapping):
     embedded_links_df['embedded_links'] = embedded_links_df['embedded_links'].apply(tp.clean_page_path)
     embedded_links_df['destination_content_id'] = embedded_links_df['embedded_links'].map(
         base_path_to_content_id_mapping)
-    logging.info(f'mapping of page_path to content_id has completed')
+    logging.info('mapping of page_path to content_id has completed')
 
     embedded_links_df.rename(
         columns={

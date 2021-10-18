@@ -53,7 +53,8 @@ if __name__ == '__main__':
     logger = logging.getLogger('predict_related_links')
 
     logger.info(
-        f'loading eligible_source_content_ids from {eligible_source_content_ids_filename} and {eligible_target_content_ids_filename}')
+        f'loading eligible_source_content_ids from {eligible_source_content_ids_filename}'
+        f'and {eligible_target_content_ids_filename}')
     eligible_source_content_ids = load_pickled_content_id_list(eligible_source_content_ids_filename)
     eligible_target_content_ids = load_pickled_content_id_list(eligible_target_content_ids_filename)
 
@@ -74,7 +75,7 @@ if __name__ == '__main__':
     logger.info(f'loading model from {model_filename}')
     trained_model = Word2Vec.load(model_filename)
 
-    logger.info(f'predicting related links')
+    logger.info('predicting related links')
     related_links_predictor = RelatedLinksPredictor(
         eligible_source_content_ids, eligible_target_content_ids,
         trained_model, related_links_filter)
