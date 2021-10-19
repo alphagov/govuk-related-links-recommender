@@ -18,6 +18,7 @@ echo "Starting run_link_generation script..."
 sleep 60
 
 export DATA_DIR=$PWD/data
+mkdir -p $DATA_DIR # make sure it exists
 export GOOGLE_APPLICATION_CREDENTIALS=/var/tmp/bigquery.json
 
 # Store Big Query credentials
