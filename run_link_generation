@@ -86,7 +86,7 @@ echo "# Running predicted_related_links"
 #  - content_id_base_path_mapping.json
 #  - eligible_source_content_ids.pkl
 #  - eligible_target_content_ids.pkl
-python src/models/predict_related_links.py
+python3.6 src/models/predict_related_links.py
 file_or_die "${DATA_DIR}/suggested_related_links.json"
 file_or_die "${DATA_DIR}/suggested_related_links.csv"
 TIMESTAMP=`date +%Y%m%d`
