@@ -88,10 +88,10 @@ echo "# Running predicted_related_links"
 #  - eligible_target_content_ids.pkl
 python3.6 src/models/predict_related_links.py
 file_or_die "${DATA_DIR}/suggested_related_links.json"
-file_or_die "${DATA_DIR}/suggested_related_links.csv"
+file_or_die "${DATA_DIR}/suggested_related_links.tsv"
 TIMESTAMP=`date +%Y%m%d`
 aws s3 cp ${DATA_DIR}/suggested_related_links.json s3://$RELATED_LINKS_BUCKET/${TIMESTAMP}suggested_related_links.json
-aws s3 cp ${DATA_DIR}/suggested_related_links.csv s3://$RELATED_LINKS_BUCKET/${TIMESTAMP}suggested_related_links.csv
+aws s3 cp ${DATA_DIR}/suggested_related_links.tsv s3://$RELATED_LINKS_BUCKET/${TIMESTAMP}suggested_related_links.tsv
 
 
 echo "# Copying logs to S3"

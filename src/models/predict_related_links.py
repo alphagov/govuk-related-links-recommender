@@ -39,7 +39,8 @@ def get_content_ids_to_page_views_mapper(df):
 if __name__ == '__main__':
 
     data_dir = safe_getenv('DATA_DIR')
-    model_filename = "n2v.model"
+    model_filename = \
+        os.path.join(data_dir, 'n2v.model')
     eligible_source_content_ids_filename = \
         os.path.join(data_dir, 'eligible_source_content_ids.pkl')
     eligible_target_content_ids_filename = \
@@ -47,7 +48,7 @@ if __name__ == '__main__':
     content_id_base_path_mapping_filename = \
         os.path.join(data_dir, 'content_id_base_path_mapping.json')
     related_links_filename = os.path.join(data_dir, 'suggested_related_links.json')
-    related_links_100_filename = os.path.join(data_dir, 'suggested_related_links.csv')
+    related_links_100_filename = os.path.join(data_dir, 'suggested_related_links.tsv')
 
     logging.config.fileConfig('src/logging.conf')
     logger = logging.getLogger('predict_related_links')
