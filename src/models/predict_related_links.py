@@ -39,7 +39,8 @@ def get_content_ids_to_page_views_mapper(df):
 if __name__ == '__main__':
 
     data_dir = safe_getenv('DATA_DIR')
-    model_filename = "n2v.model"
+    model_filename = \
+        os.path.join(data_dir, 'n2v.model')
     eligible_source_content_ids_filename = \
         os.path.join(data_dir, 'eligible_source_content_ids.pkl')
     eligible_target_content_ids_filename = \
