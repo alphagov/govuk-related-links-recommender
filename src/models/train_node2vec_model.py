@@ -84,32 +84,24 @@ class N2VModel:
         self.logger.info(f'saving  embeddings to {embeddings_filepath}')
         self.model.wv.save_word2vec_format(embeddings_filepath)
 
-        self.logger.info(f'saving model to  to {model_file_path}')
+        self.logger.info(f'saving model to {model_file_path}')
         self.model.save(model_file_path)
 
 
 if __name__ == "__main__":  # our module is being executed as a program
 
     data_dir = safe_getenv('DATA_DIR')
+    preprocessing_config = read_config_yaml("preprocessing-config.yml")
+    node2vec_config = read_config_yaml("node2vec-config.yml")
 
-    prepro_cfg = read_config_yaml(
-        "preprocessing-config.yml")
-
-    node2vec_config = read_config_yaml(
-        "node2vec-config.yml")
-
-    network_input_filename = os.path.join(data_dir, prepro_cfg['network_filename'])
-    model_filename = os.path.join(data_dir, 'n2v.model')
-    node_embeddings_filename = os.path.join(data_dir, 'n2v_node_embeddings')
+    network_input_filename = os.path.join(data_dir, preprocessing_config['network_filename'])
+    model_filename = os.path.join(data_dir, preprocessing_config['model_filename'])
+    node_embeddings_filename = os.path.join(data_dir, preprocessing_config['embeddings_filename'])
 
     module_logger = logging.getLogger('train_node2_vec_model')
 
     module_logger.info(f'reading in {network_input_filename}')
-    edges = pd.read_csv(
-        network_input_filename,
-        dtype={'source_content_id': object,
-               'destination_content_id': object}
-    )
+    edges = pd.read_csv(network_input_filename, dtype={'source_content_id': object, 'destination_content_id': object})
 
     node2vec_model = N2VModel()
 

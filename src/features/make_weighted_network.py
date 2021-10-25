@@ -24,8 +24,7 @@ def make_weighted_network_from_structural_and_functional(structural_edges, funct
     # Set weight of structural edges to structural_edge_weight
     structural_edges['weight'] = structural_edge_weight
 
-    all_edges = pd.concat([structural_edges, functional_edges],
-                          ignore_index=True, sort=False)
+    all_edges = pd.concat([structural_edges, functional_edges], ignore_index=True, sort=False)
 
     # Deduplicate edges, summing structural and functional edge weights
     all_edges = all_edges.groupby(['source_content_id', 'destination_content_id'], as_index=False).aggregate(sum)
@@ -35,32 +34,31 @@ def make_weighted_network_from_structural_and_functional(structural_edges, funct
 
 
 if __name__ == "__main__":  # our module is being executed as a program
+
     data_dir = safe_getenv('DATA_DIR')
+    preprocessing_config = read_config_yaml("preprocessing-config.yml")
+
+    functional_edges_input_filename = os.path.join(data_dir, preprocessing_config["functional_edges_filename"])
+    structural_edges_input_filename = os.path.join(data_dir, preprocessing_config["structural_edges_filename"])
+    network_output_filename = os.path.join(data_dir, preprocessing_config["network_filename"])
+
+    structural_edge_weight = preprocessing_config['structural_edge_weight']
+
     module_logger = logging.getLogger('making_network')
 
-    preprocessing_config = read_config_yaml(
-        "preprocessing-config.yml")
-
-    module_logger.info(
-        f"""reading {data_dir}/tmp/{preprocessing_config["structural_edges_filename"]}
-            created by data_preprocessing/get_content_store_data""")
-    structural_edges_df = pd.read_csv(os.path.join(data_dir, 'tmp', preprocessing_config["structural_edges_filename"]))
+    module_logger.info(f'reading {structural_edges_input_filename}')
+    structural_edges_df = pd.read_csv(structural_edges_input_filename)
     module_logger.info(f'structural_edges_df.shape = {structural_edges_df.shape}')
 
-    module_logger.info(
-        f'reading {data_dir}/tmp/{preprocessing_config["functional_edges_filename"]} created by '
-        f'data_preprocessing/make_functional_edges_and_weights')
-    functional_edges_df = pd.read_csv(
-        os.path.join(data_dir, 'tmp', preprocessing_config["functional_edges_filename"]))
+    module_logger.info(f'reading {functional_edges_input_filename}')
+    functional_edges_df = pd.read_csv(functional_edges_input_filename)
     module_logger.info(f'functional_edges_df.shape = {functional_edges_df.shape}')
 
     module_logger.info('making network_df using structural_edges_df and functional_edges_df')
-    module_logger.info(f"structural edgeweight is {preprocessing_config['structural_edge_weight']}")
-    network_df = make_weighted_network_from_structural_and_functional(structural_edges_df,
-                                                                      functional_edges_df,
-                                                                      preprocessing_config['structural_edge_weight'])
+    module_logger.info(f"structural edgeweight is {structural_edge_weight}")
+    network_df = make_weighted_network_from_structural_and_functional(
+        structural_edges_df, functional_edges_df, structural_edge_weight)
     module_logger.info(f'network_df.shape = {network_df.shape}')
 
-    module_logger.info(f'saving network_df to {data_dir}/tmp/{preprocessing_config["network_filename"]}')
-    network_df.to_csv(os.path.join(
-        data_dir, 'tmp', preprocessing_config["network_filename"]), index=False)
+    module_logger.info(f'saving network_df to {network_output_filename}')
+    network_df.to_csv(network_output_filename, index=False)

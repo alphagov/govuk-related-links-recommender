@@ -292,18 +292,18 @@ def export_content_id_list(list_name, mongodb_collection, outfile):
 if __name__ == "__main__":  # our module is being executed as a program
 
     data_dir = safe_getenv('DATA_DIR')
-    prepro_cfg = read_config_yaml("preprocessing-config.yml")
+    preprocessing_config = read_config_yaml("preprocessing-config.yml")
 
     content_id_base_path_mapping_filename = os.path.join(data_dir, 'content_id_base_path_mapping.json')
     page_path_content_id_mapping_filename = os.path.join(data_dir, 'page_path_content_id_mapping.json')
     eligible_source_content_ids_filename = os.path.join(data_dir, 'eligible_source_content_ids.pkl')
     eligible_target_content_ids_filename = os.path.join(data_dir, 'eligible_target_content_ids.pkl')
-    structural_edges_output_filename = os.path.join(data_dir, prepro_cfg['structural_edges_filename'])
+    structural_edges_output_filename = os.path.join(data_dir, preprocessing_config['structural_edges_filename'])
 
     logging.config.fileConfig('src/logging.conf')
     module_logger = logging.getLogger('get_content_store_data')
 
-    mongo_client = pymongo.MongoClient(prepro_cfg['mongo_client'])
+    mongo_client = pymongo.MongoClient(preprocessing_config['mongo_client'])
     # TODO check this is consistent with naming of restored db in AWS
     content_store_db = mongo_client['content_store']
     content_store_collection = content_store_db['content_items']
@@ -311,9 +311,7 @@ if __name__ == "__main__":  # our module is being executed as a program
     page_path_content_id_mapping, content_id_base_path_mapping = get_path_content_id_mappings(content_store_collection)
 
     module_logger.info(f'saving page_path_content_id_mapping to {page_path_content_id_mapping_filename}')
-    with open(
-            page_path_content_id_mapping_filename,
-            'w') as page_path_content_id_file:
+    with open(page_path_content_id_mapping_filename, 'w') as page_path_content_id_file:
         json.dump(page_path_content_id_mapping, page_path_content_id_file)
 
     module_logger.info(f'saving content_id_base_path_mapping to {content_id_base_path_mapping_filename}')

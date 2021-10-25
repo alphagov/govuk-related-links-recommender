@@ -54,14 +54,13 @@ class EdgeWeightExtractor:
 
 if __name__ == "__main__":
     data_dir = safe_getenv('DATA_DIR')
-    functional_edges_output_filename = os.path.join(data_dir, 'functional_edges.csv')
+
+    preprocessing_config = read_config_yaml("preprocessing-config.yml")
+    functional_edges_output_filename = os.path.join(data_dir, preprocessing_config["functional_edges_filename"])
 
     module_logger = logging.getLogger('make_functional_edges_and_weights')
     blocklisted_document_types = read_config_yaml(
         "document_types_excluded_from_the_topic_taxonomy.yml")['document_types']
-
-    preprocessing_config = read_config_yaml(
-        "preprocessing-config.yml")
 
     weight_threshold = preprocessing_config['weight_threshold']
 
@@ -85,8 +84,6 @@ if __name__ == "__main__":
                                            weight_threshold=weight_threshold)
 
     edge_weights.create_df()
-
-    filename = preprocessing_config["functional_edges_filename"]
 
     module_logger.info(f'saving edges and weights to {functional_edges_output_filename}')
     edge_weights.extract_df_to_csv(functional_edges_output_filename)
