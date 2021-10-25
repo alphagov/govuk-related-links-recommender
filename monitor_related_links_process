@@ -15,7 +15,7 @@ done &
 
 MEM_CHECK_PID=$!
 
-tail -f --pid=$LINK_PROCESS_PID /var/tmp/related_links_process.log /var/log/syslog
+tail -f --pid=$LINK_PROCESS_PID /var/tmp/related_links_process.log
 
 kill -9 $MEM_CHECK_PID
 
