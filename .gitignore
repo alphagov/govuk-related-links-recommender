@@ -109,4 +109,5 @@ venv.bak/
 *.DS_Store
 
 #
-tmp/
+.gitignore
+mongodump.tgz

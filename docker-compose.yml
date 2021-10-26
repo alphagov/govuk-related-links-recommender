@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+  content-store:
+    image: mongo:4.0
+
+  content-store-seed:
+    build: ./mongo-seed
+    links:
+      - content-store
+
+  generation:
+    build: .
+    depends_on:
+      content-store-seed:
+        condition: service_completed_successfully
+    links:
+      - content-store
