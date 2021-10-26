@@ -8,11 +8,13 @@ services:
     build: ./mongo-seed
     links:
       - content-store
+    volumes:
+      - /home/mf/govuk/tmp:/var/tmp:ro
 
-  generation:
-    build: .
-    depends_on:
-      content-store-seed:
-        condition: service_completed_successfully
-    links:
-      - content-store
+  # generation:
+  #   build: .
+  #   depends_on:
+  #     content-store-seed:
+  #       condition: service_completed_successfully
+  #   links:
+  #     - content-store
