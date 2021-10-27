@@ -15,6 +15,7 @@ np.random.seed(2)
 @pytest.mark.skip(reason="not staying deterministic")
 def test_train_node2_vec_model(all_network_fixture):
     # TODO if this needs to be deterministic use the same random walks for training the model (probably)
+    # TODO use weighted_network fixture instead of all_network_fixture
     n2v = N2VModel()
 
     n2v.create_graph(all_network_fixture)

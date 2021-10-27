@@ -17,4 +17,5 @@ embeddings_filename: "n2v_node_embeddings"
 #run_link_generation will only upload models called n2v.model
 model_filename: "n2v"
 #run_link_generation.sh is only going to find and upload files with 'suggested_related_links' in the filename to aws
-predictions_filename: "suggested_related_links"
+predictions_filename: "suggested_related_links.json"
+top_100_predictions_filename: "suggested_related_links.tsv"

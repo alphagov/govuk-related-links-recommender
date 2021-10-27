@@ -54,9 +54,8 @@ if __name__ == '__main__':
     content_id_base_path_mapping_filename = \
         os.path.join(data_dir, 'content_id_base_path_mapping.json')
     related_links_filename = os.path.join(data_dir,
-                                          f'{node2vec_cfg["predictions_filename"]}.json')
-    related_links_100_filename = os.path.join(data_dir,
-                                              f'{node2vec_cfg["predictions_filename"]}.tsv')
+                                          node2vec_cfg["predictions_filename"])
+    related_links_100_filename = os.path.join(data_dir, node2vec_cfg["top_100_predictions_filename"])
 
     logging.config.fileConfig('src/logging.conf')
     logger = logging.getLogger('predict_related_links')
