@@ -1,0 +1,7 @@
+FROM mongo:4.0
+
+RUN apt-get update && apt-get install -y wget && \
+    wget -q https://downloads.mongodb.com/compass/mongodb-mongosh_1.1.0_amd64.deb && \
+    dpkg -i mongodb-mongosh_1.1.0_amd64.deb
+
+CMD mongosh mongodb://content-store/content_store

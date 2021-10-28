@@ -20,6 +20,8 @@ sleep 60
 export DATA_DIR=$PWD/data
 mkdir -p $DATA_DIR # make sure it exists
 export GOOGLE_APPLICATION_CREDENTIALS=/var/tmp/bigquery.json
+export MONGO_URL="mongodb://localhost:27017"
+
 
 # Store Big Query credentials
 echo $BIG_QUERY_CREDENTIALS > /var/tmp/bigquery.json

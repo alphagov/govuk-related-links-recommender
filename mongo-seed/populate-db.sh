@@ -6,6 +6,8 @@ DB_URL="mongodb://content-store/content_store"
 
 echo "POPULATING CONTENT STORE"
 
+mongosh --quiet --eval "db.content_items.find().count()" ${DB_URL}
+
 num_records=$(mongosh --quiet --eval "db.content_items.find().count()" ${DB_URL})
 echo "$num_records content items found"
 

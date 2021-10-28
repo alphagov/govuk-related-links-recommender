@@ -3,10 +3,14 @@ version: "3.9"
 services:
   content-store:
     image: mongo:4.0
+    logging:
+      driver: none
 
   content-store-seed:
     build: ./mongo-seed
     links:
+      - content-store
+    depends_on:
       - content-store
     volumes:
       - /home/mf/govuk/tmp:/var/tmp:ro
@@ -18,3 +22,19 @@ services:
   #       condition: service_completed_successfully
   #   links:
   #     - content-store
+  #   stdin_open: true # docker run -i
+  #   tty: true        # docker run -t
+
+
+  mongosh:
+    build:
+      context: ./mongo-seed
+      dockerfile: Dockerfile-mongosh
+
+#    depends_on:
+#      content-store-seed:
+#        condition: service_completed_successfully
+    links:
+      - content-store
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t

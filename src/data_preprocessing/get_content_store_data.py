@@ -289,7 +289,7 @@ def export_content_id_list(list_name, mongodb_collection, outfile):
 
 if __name__ == "__main__":  # our module is being executed as a program
 
-    mongodb_url = 'mongodb://localhost:27017'
+    mongodb_url = safe_getenv('MONGO_URL')
     data_dir = safe_getenv('DATA_DIR')
     content_id_base_path_mapping_filename = os.path.join(data_dir, 'content_id_base_path_mapping.json')
     page_path_content_id_mapping_filename = os.path.join(data_dir, 'page_path_content_id_mapping.json')
@@ -301,6 +301,9 @@ if __name__ == "__main__":  # our module is being executed as a program
     module_logger = logging.getLogger('get_content_store_data')
 
     mongo_client = pymongo.MongoClient(mongodb_url)
+
+    module_logger.info(f'mongo url is {mongodb_url}')
+
     content_store_db = mongo_client['content_store']
     content_store_collection = content_store_db['content_items']
 
