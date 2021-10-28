@@ -12,3 +12,5 @@ structural_edges_filename: "structural_edges.csv"
 #run_link generation will only upload networks called 'network.csv'
 network_filename: "network.csv"
 mongo_client: "mongodb://localhost:27017/"
+model_filename: "n2v.model"
+embeddings_filename: "n2v_node_embeddings"
