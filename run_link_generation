@@ -60,7 +60,7 @@ file_or_die "$DATA_DIR/eligible_source_content_ids.pkl"
 file_or_die "$DATA_DIR/eligible_target_content_ids.pkl"
 aws s3 cp $DATA_DIR/structural_edges.csv s3://$RELATED_LINKS_BUCKET/structural_edges.csv
 aws s3 cp $DATA_DIR/content_id_base_path_mapping.json s3://$RELATED_LINKS_BUCKET/content_id_base_path_mapping.json
-aws s3 cp $DATA_DIR/page_path_content_id_mapping.csv s3://$RELATED_LINKS_BUCKET/page_path_content_id_mapping.csv
+aws s3 cp $DATA_DIR/page_path_content_id_mapping.json s3://$RELATED_LINKS_BUCKET/page_path_content_id_mapping.json
 aws s3 cp $DATA_DIR/eligible_source_content_ids.pkl s3://$RELATED_LINKS_BUCKET/eligible_source_content_ids.pkl
 aws s3 cp $DATA_DIR/eligible_target_content_ids.pkl s3://$RELATED_LINKS_BUCKET/eligible_target_content_ids.pkl
 
