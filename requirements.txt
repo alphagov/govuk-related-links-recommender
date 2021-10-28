@@ -16,8 +16,16 @@ google-cloud-core==1.3.0
 google-auth==1.6.3
 google-cloud-bigquery==1.17.0
 
+#notebook requirements
+pigeon-jupyter==0.1.0
+
 
 # test requirements
 flake8==3.7.8
 pytest==5.0.1
 pytest-mongodb==2.1.2
+
+setuptools~=50.3.2
+
+pre-commit~=2.14.0
+detect-secrets==1.0.3

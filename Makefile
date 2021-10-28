@@ -20,7 +20,7 @@ $(DATA_DIR)/functional_edges.csv:
 
 
 $(DATA_DIR)/network.csv: $(DATA_DIR)/functional_edges.csv $(DATA_DIR)/structural_edges.csv
-	python3.6 src/features/make_network.py
+	python3.6 src/features/make_weighted_network.py
 	aws s3 cp $(DATA_DIR)/network.csv s3://$(RELATED_LINKS_BUCKET)/network.csv
 
 
