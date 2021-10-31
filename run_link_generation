@@ -45,14 +45,14 @@ cd /var/data/github/govuk-related-links-recommender
 pip3 install -r requirements.txt
 
 echo "Python version installed:"
-python3.6 -V
+python3.8 -V
 
 
 echo -e "\n\n### Starting related links generation process\n"
 
 echo -e "\n\n# Generating structural edges\n"
 # Input: mongodb
-python3.6 src/data_preprocessing/get_content_store_data.py
+python3.8 src/data_preprocessing/get_content_store_data.py
 file_or_die "$DATA_DIR/structural_edges.csv"
 file_or_die "$DATA_DIR/content_id_base_path_mapping.json"
 file_or_die "$DATA_DIR/page_path_content_id_mapping.json"
@@ -66,7 +66,7 @@ aws s3 cp $DATA_DIR/eligible_target_content_ids.pkl s3://$RELATED_LINKS_BUCKET/e
 
 echo -e "\n\n# Generating functional edges\n"
 # Input: Big query
-python3.6 src/data_preprocessing/make_functional_edges_and_weights.py
+python3.8 src/data_preprocessing/make_functional_edges_and_weights.py
 file_or_die "$DATA_DIR/functional_edges.csv"
 aws s3 cp $DATA_DIR/functional_edges.csv s3://$RELATED_LINKS_BUCKET/functional_edges.csv
 
@@ -75,19 +75,21 @@ echo -e "\n\n# Running make_weighted_network\n"
 #  - structural_edges.csv
 #  - functional_edges.csv
 # Output: network.csv
-python3.6 src/features/make_weighted_network.py
+python3.8 src/features/make_weighted_network.py
 file_or_die "$DATA_DIR/network.csv"
 aws s3 cp $DATA_DIR/network.csv s3://$RELATED_LINKS_BUCKET/network.csv
 
 echo -e "\n\n# Running train_node2vec_model\n"
 # Input: network.csv
-python3.6 src/models/train_node2vec_model.py
+python3.8 src/models/train_node2vec_model.py
 file_or_die "$DATA_DIR/n2v.model"
 file_or_die "$DATA_DIR/n2v_node_embeddings"
+file_or_die "$DATA_DIR/n2v.model.wv.vectors.npy"
 # NOTE: Word2Vec.save() can generate more files, with unspecified names. See
 # https://stackoverflow.com/questions/47173538/why-are-multiple-model-files-created-in-gensim-word2vec
 aws s3 cp $DATA_DIR/n2v.model s3://$RELATED_LINKS_BUCKET/n2v.model
 aws s3 cp $DATA_DIR/n2v_node_embeddings s3://$RELATED_LINKS_BUCKET/n2v_node_embeddings
+aws s3 cp $DATA_DIR/n2v.model.wv.vectors.npy s3://$RELATED_LINKS_BUCKET/n2v.model.wv.vectors.npy
 
 
 echo -e "\n\n# Running predicted_related_links\n"
@@ -97,7 +99,7 @@ echo -e "\n\n# Running predicted_related_links\n"
 #  - content_id_base_path_mapping.json
 #  - eligible_source_content_ids.pkl
 #  - eligible_target_content_ids.pkl
-python3.6 src/models/predict_related_links.py
+python3.8 src/models/predict_related_links.py
 file_or_die "${DATA_DIR}/suggested_related_links.json"
 file_or_die "${DATA_DIR}/suggested_related_links.tsv"
 TIMESTAMP=`date +%Y%m%d`

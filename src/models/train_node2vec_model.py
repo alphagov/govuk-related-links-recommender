@@ -78,7 +78,7 @@ class N2VModel:
                                        seed=seed,
                                        workers=workers,
                                        callbacks=[callbacks],
-                                       iter=iter)
+                                       epochs=iter)
 
     def save_model(self, embeddings_filepath, model_file_path):
         self.logger.info(f'saving  embeddings to {embeddings_filepath}')

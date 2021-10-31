@@ -61,7 +61,8 @@ class RelatedLinksPredictor:
         return [
             content_id for content_id in tqdm(
                 source_content_ids, desc="eligible_content_ids"
-            ) if content_id in self.model.wv.vocab.keys()
+            ) if content_id in self.model.wv.keys()
+
         ]
 
     def _split_content_ids(self, content_ids, chunks):
