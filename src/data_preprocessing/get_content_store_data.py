@@ -4,7 +4,6 @@ import os
 import warnings
 import numpy as np
 import pandas as pd
-from pandas.io.json import json_normalize
 import pymongo
 from tqdm import tqdm
 import pickle
@@ -110,10 +109,10 @@ def convert_link_list_to_df(link_list, link_type, columns=OUTPUT_DF_COLUMNS):
     except KeyError:
         raise ValueError(
             f'link_type should be one of {KEYS_FOR_LINK_TYPES.keys()}')
-    df = json_normalize(link_list,
-                        record_path=[['expanded_links', link_key]],
-                        meta=['_id', 'content_id'],
-                        meta_prefix='source_')
+    df = pd.json_normalize(link_list,
+                           record_path=[['expanded_links', link_key]],
+                           meta=['_id', 'content_id'],
+                           meta_prefix='source_')
     df.columns = columns
     df['link_type'] = f'{link_type}_link'
     return df
@@ -153,7 +152,7 @@ def get_page_text_df(mongodb_collection):
     :return: pandas DataFrame with: _id (base_path), content_id, and all_details list column
     """
     text_list = list(mongodb_collection.find(FILTER_BASIC, TEXT_PROJECTION))
-    df = json_normalize(text_list)
+    df = pd.json_normalize(text_list)
     # concatenate text from all columns (except first 2) into a list -> so we get a list of all the details fields
     # that we queried
     df['all_details'] = df.iloc[:, 2:-1].values.tolist()

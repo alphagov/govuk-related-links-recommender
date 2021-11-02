@@ -6,13 +6,12 @@ pyyaml
 html5lib
 beautifulsoup4
 pandas
-numpy
+numpy==1.20.3 # limited by fastnode2vec
 pymongo
 pyarrow
 tqdm
-node2vec
-gensim
-networkx
+fastnode2vec
+gensim==3.8.3 # move to 4 when fastnode2vec supports it
 google-cloud-core
 google-auth
 google-cloud-bigquery

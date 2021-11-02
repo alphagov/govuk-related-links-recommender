@@ -61,7 +61,7 @@ class RelatedLinksPredictor:
         return [
             content_id for content_id in tqdm(
                 source_content_ids, desc="eligible_content_ids"
-            ) if content_id in self.model.wv.keys()
+            ) if content_id in self.model.wv.vocab.keys()
 
         ]
 
