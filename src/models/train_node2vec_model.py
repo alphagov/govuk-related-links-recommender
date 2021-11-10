@@ -105,7 +105,7 @@ if __name__ == "__main__":  # our module is being executed as a program
 
     node2vec_model = N2VModel()
 
-    node2vec_model.create_graph(edges, node2vec_config['weighted_graph'], True)
+    node2vec_model.create_graph(edges, node2vec_config['weighted_graph'])
 
     node2vec_model.generate_walks(**node2vec_config)
 
