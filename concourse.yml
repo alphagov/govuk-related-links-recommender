@@ -586,6 +586,7 @@ jobs:
                   chmod +x ./run_link_ingestion
 
                   # Make environment variables accessible to scripts
+                  export GOVUK_APP_NAME="govuk-related-links-recommender"
                   export RELATED_LINKS_BUCKET="$RELATED_LINKS_BUCKET"
                   export PUBLISHING_API_URI="$PUBLISHING_API_URI"
                   export PUBLISHING_API_BEARER_TOKEN="$PUBLISHING_API_BEARER_TOKEN"
