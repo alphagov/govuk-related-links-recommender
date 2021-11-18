@@ -59,6 +59,7 @@ def test_get_excluded_document_types():
                  'topical_event_about_page',
                  'travel_advice',
                  'travel_advice_index',
+                 'uk_market_conformity_assessment_body',
                  'working_group',
                  'world_location',
                  'worldwide_organisation']
