@@ -1,0 +1,32 @@
+name: CI
+on: [push]
+jobs:
+  Run-Python-Tests-and-Linting:
+    runs-on: ubuntu-latest
+    container:
+      image: python:3.6
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Run Tests and Linting
+        shell: bash
+        run: |
+          set -eo pipefail
+          pip install -r requirements.txt
+          flake8 src
+          pytest tests/unit
+
+  Run-Ruby-Tests:
+    runs-on: ubuntu-latest
+    container:
+      image: ruby:2.7.3
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Run Tests
+        shell: bash
+        run: |
+          set -eo pipefail
+          gem install bundler
+          bundle install
+          rspec spec
