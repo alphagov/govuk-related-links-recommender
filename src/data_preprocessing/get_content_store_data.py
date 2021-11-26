@@ -127,16 +127,19 @@ def get_path_content_id_mappings(mongodb_collection):
     :return: Python dictionary {page_path: content_id}, Python dictionary {content_id: base_path}
     """
     logging.info('querying MongoDB for base_paths, slugs, and content_ids')
-    base_path_content_id_cursor = mongodb_collection.find({"$and": [
-        {"content_id": {"$exists": True}},
-        {"phase": "live"}]},
+    base_path_content_id_cursor = mongodb_collection.find(
+        {"$and": [
+            {"content_id": {"$exists": True}},
+            {"phase": "live"}]},
         {"content_id": 1,
-         "details.parts.slug": 1})
+         "details.parts.slug": 1,
+         "locale": 1})
     page_path_content_id_mapping = dict()
     content_id_base_path_mapping = dict()
     for item in base_path_content_id_cursor:
         page_path_content_id_mapping.update({item['_id']: item['content_id']})
-        content_id_base_path_mapping.update({item['content_id']: item['_id']})
+        if item['locale'] == "en":
+            content_id_base_path_mapping.update({item['content_id']: item['_id']})
         for part in item.get('details', {}).get('parts', []):
             page_path_content_id_mapping.update(
                 {os.path.join(item['_id'], part['slug']): item['content_id']})
