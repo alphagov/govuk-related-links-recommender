@@ -403,7 +403,7 @@ jobs:
 
     plan:
       - get: every-two-weeks-generation
-        trigger: true
+        trigger: false
       - task: create-generation-instance
         config:
           params:
@@ -746,7 +746,7 @@ jobs:
       - link-ingestion
     plan:
       - get: every-two-weeks-ingestion
-        trigger: true
+        trigger: false
       - task: create-ingestion-instance
         config:
           params:
