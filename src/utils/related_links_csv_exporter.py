@@ -24,9 +24,9 @@ class RelatedLinksCsvExporter:
         sep = '\t' if file_extension == '.tsv' else ','
 
         row_list = [{'source_content_id': source_cid,
-                     'source_base_path': self.content_id_to_base_path_mapper[source_cid],
+                     'source_base_path': self.content_id_to_base_path_mapper.get(source_cid, 'non-English base path'),
                      'target_content_id': target_cid,
-                     'target_base_path': self.content_id_to_base_path_mapper[target_cid],
+                     'target_base_path': self.content_id_to_base_path_mapper.get(target_cid, 'non-English base path'),
                      'probability': prob,
                      'source_page_views': self.content_ids_to_page_views_mapper.get(source_cid, np.nan),
                      'target_page_views': self.content_ids_to_page_views_mapper.get(target_cid, np.nan)}
