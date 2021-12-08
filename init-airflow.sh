@@ -8,6 +8,7 @@ fi
 
 AWS_COMMAND="${AWS:=aws}"
 
-$AWS_COMMAND s3 sync src s3://${BUCKET}/src
+#$AWS_COMMAND s3 cp requirements-airflow.txt s3://${BUCKET}/requirements.txt
 $AWS_COMMAND s3 sync dags s3://${BUCKET}/dags
+$AWS_COMMAND s3 sync src s3://${BUCKET}/dags/src --exclude __pycache__ 
 

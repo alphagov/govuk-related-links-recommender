@@ -1,0 +1,15 @@
+apache-airflow==2.0.2
+
+pymongo==3.8.0 # we have to connect to old mongo databases
+pyyaml
+html5lib
+beautifulsoup4
+pandas
+numpy
+pyarrow
+tqdm
+fastnode2vec
+gensim
+google-cloud-core
+google-auth
+google-cloud-bigquery

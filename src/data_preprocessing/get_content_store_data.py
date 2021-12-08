@@ -1,5 +1,4 @@
 import json
-import logging.config
 import os
 import warnings
 import numpy as np
@@ -126,7 +125,7 @@ def get_path_content_id_mappings(mongodb_collection):
     :param mongodb_collection:
     :return: Python dictionary {page_path: content_id}, Python dictionary {content_id: base_path}
     """
-    logging.info('querying MongoDB for base_paths, slugs, and content_ids')
+    print('querying MongoDB for base_paths, slugs, and content_ids')
     base_path_content_id_cursor = mongodb_collection.find(
         {"$and": [
             {"content_id": {"$exists": True}},
@@ -143,8 +142,8 @@ def get_path_content_id_mappings(mongodb_collection):
         for part in item.get('details', {}).get('parts', []):
             page_path_content_id_mapping.update(
                 {os.path.join(item['_id'], part['slug']): item['content_id']})
-    logging.info(f'len(page_path_content_id_mapping): {len(page_path_content_id_mapping)}')
-    logging.info(f'len(content_id_base_path_mapping): {len(content_id_base_path_mapping)}')
+    print(f'len(page_path_content_id_mapping): {len(page_path_content_id_mapping)}')
+    print(f'len(content_id_base_path_mapping): {len(content_id_base_path_mapping)}')
     return page_path_content_id_mapping, content_id_base_path_mapping
 
 
@@ -160,7 +159,7 @@ def get_page_text_df(mongodb_collection):
     # concatenate text from all columns (except first 2) into a list -> so we get a list of all the details fields
     # that we queried
     df['all_details'] = df.iloc[:, 2:-1].values.tolist()
-    logging.info(f' df with details text has columns={list(df.columns)} and shape={df.shape}')
+    print(f' df with details text has columns={list(df.columns)} and shape={df.shape}')
     return df[['_id', 'content_id', 'all_details']]
 
 
@@ -191,18 +190,18 @@ def extract_embedded_links_df(page_text_df, base_path_to_content_id_mapping):
         'destination_base_path','destination_content_id', 'link_type']
     """
     page_text_df['embedded_links'] = page_text_df['all_details'].progress_apply(tp.extract_links_from_content_details)
-    logging.info('have applied extract_links_from_content_details to page_text_df')
+    print('have applied extract_links_from_content_details to page_text_df')
 
     embedded_links_df = page_text_df[['_id', 'content_id', 'embedded_links']]
-    logging.info(f'shape of df with link list (wide before melt)={embedded_links_df.shape}')
+    print(f'shape of df with link list (wide before melt)={embedded_links_df.shape}')
 
     embedded_links_df = reshape_df_explode_list_column(embedded_links_df, 'embedded_links')
-    logging.info(f'shape of df after melt (each link in its own row)={embedded_links_df.shape}')
+    print(f'shape of df after melt (each link in its own row)={embedded_links_df.shape}')
 
     embedded_links_df['embedded_links'] = embedded_links_df['embedded_links'].apply(tp.clean_page_path)
     embedded_links_df['destination_content_id'] = embedded_links_df['embedded_links'].map(
         base_path_to_content_id_mapping)
-    logging.info('mapping of page_path to content_id has completed')
+    print('mapping of page_path to content_id has completed')
 
     embedded_links_df.rename(
         columns={
@@ -224,25 +223,25 @@ def get_structural_edges_df(mongodb_collection, page_path_content_id_mapping):
                                  'destination_content_id', 'link_type']
     """
     related_links_df = convert_link_list_to_df(get_links(mongodb_collection, 'related'), 'related')
-    logging.info(f'related links dataframe shape {related_links_df.shape}')
+    print(f'related links dataframe shape {related_links_df.shape}')
 
     collection_links_df = convert_link_list_to_df(get_links(mongodb_collection, 'collection'), 'collection')
-    logging.info(f'collection links dataframe shape {collection_links_df.shape}')
+    print(f'collection links dataframe shape {collection_links_df.shape}')
 
     page_text_df = get_page_text_df(mongodb_collection)
 
     embedded_links_df = extract_embedded_links_df(page_text_df, page_path_content_id_mapping)
-    logging.info(f'embedded links dataframe shape {embedded_links_df.shape}')
+    print(f'embedded links dataframe shape {embedded_links_df.shape}')
 
     structural_edges_df = pd.concat(
         [related_links_df, collection_links_df, embedded_links_df],
         axis=0, sort=True, ignore_index=True)
 
-    logging.info(f'structural edges dataframe shape {structural_edges_df.shape}')
+    print(f'structural edges dataframe shape {structural_edges_df.shape}')
 
     # filter out any links without a destination content ID, as we are building a network based on content_ids
     structural_edges_df.query('destination_content_id.notnull()', inplace=True)
-    logging.info(
+    print(
         f'structural edges dataframe shape f after dropping null destination_content_ids={structural_edges_df.shape}')
     return structural_edges_df
 
@@ -294,36 +293,35 @@ def export_content_id_list(list_name, mongodb_collection, outfile):
 
 if __name__ == "__main__":  # our module is being executed as a program
 
-    data_dir = safe_getenv('DATA_DIR')
     preprocessing_config = read_config_yaml("preprocessing-config.yml")
+    data_dir = preprocessing_config["data_dir"]
 
+    # output files
     content_id_base_path_mapping_filename = os.path.join(data_dir, 'content_id_base_path_mapping.json')
     page_path_content_id_mapping_filename = os.path.join(data_dir, 'page_path_content_id_mapping.json')
     eligible_source_content_ids_filename = os.path.join(data_dir, 'eligible_source_content_ids.pkl')
     eligible_target_content_ids_filename = os.path.join(data_dir, 'eligible_target_content_ids.pkl')
     structural_edges_output_filename = os.path.join(data_dir, preprocessing_config['structural_edges_filename'])
 
-    logging.config.fileConfig('src/logging.conf')
-    module_logger = logging.getLogger('get_content_store_data')
-
-    mongo_client = pymongo.MongoClient(preprocessing_config['mongo_client'])
+    # Input: Mongo database
+    mongo_client = pymongo.MongoClient(globals()['mongodb_uri'])
     # TODO check this is consistent with naming of restored db in AWS
     content_store_db = mongo_client['content_store']
     content_store_collection = content_store_db['content_items']
 
     page_path_content_id_mapping, content_id_base_path_mapping = get_path_content_id_mappings(content_store_collection)
 
-    module_logger.info(f'saving page_path_content_id_mapping to {page_path_content_id_mapping_filename}')
+    print(f'saving page_path_content_id_mapping to {page_path_content_id_mapping_filename}')
     with open(page_path_content_id_mapping_filename, 'w') as page_path_content_id_file:
         json.dump(page_path_content_id_mapping, page_path_content_id_file)
 
-    module_logger.info(f'saving content_id_base_path_mapping to {content_id_base_path_mapping_filename}')
+    print(f'saving content_id_base_path_mapping to {content_id_base_path_mapping_filename}')
     with open(content_id_base_path_mapping_filename, 'w') as content_id_base_path_file:
         json.dump(content_id_base_path_mapping, content_id_base_path_file)
 
     output_df = get_structural_edges_df(content_store_collection, page_path_content_id_mapping)
 
-    module_logger.info(
+    print(
         f'saving structural_edges (output_df) to {structural_edges_output_filename}')
     output_df.to_csv(structural_edges_output_filename, index=False)
 
@@ -334,59 +332,3 @@ if __name__ == "__main__":  # our module is being executed as a program
     export_content_id_list("eligible_target",
                            content_store_collection,
                            eligible_target_content_ids_filename)
-
-
-# This is code from a colleague's blog, with an alternative way of doing this, that we need to compare efficiency with.
-# We haven't done it yet, because for MVP we're sticking with what we have already made work for our use case (getting
-# on-page/embedded links is the tricky thing not tackled by this code).
-# https://memo.barrucadu.co.uk/mapping-govuk.html
-
-# #! /usr/bin/env nix-shell
-# #! nix-shell -i python3 --packages "python3.withPackages(ps: [ps.pymongo])"
-#
-# from pymongo import MongoClient
-# import csv
-# import os
-# import sys
-#
-# ALL_LINKS_CATEGORY = 'all-links'
-# LINK_CATEGORIES = {
-#     'organisations': ['lead_organisations', 'ordered_child_organisations', 'ordered_high_profile_groups',
-#       'ordered_parent_organisation', 'ordered_successor_organisations', 'organisations', 'supporting_organisations',
-#       'worldwide_organisations'],
-#     'people': ['ministers', 'people', 'speaker'],
-#     'publishing-organisations': ['original_primary_publishing_organisation', 'primary_publishing_organisation'],
-#     'step-by-step': ['pages_part_of_step_nav', 'pages_related_to_step_nav', 'part_of_step_navs',
-#       'related_to_step_navs'],
-#     'taxonomy': ['alpha_taxons', 'associated_taxons', 'child_taxons', 'legacy_taxons', 'level_one_taxons',
-#       'parent_taxons', 'root_taxon', 'taxons', 'topic_taxonomy_taxons'],
-# }
-#
-# if 'SHOW_CATEGORIES' in os.environ:
-#     print(ALL_LINKS_CATEGORY)
-#     for category in LINK_CATEGORIES.keys():
-#         print(category)
-#     sys.exit(0)
-#
-# MONGO_URL = os.environ['MONGO_URL']
-# CSV_FILE = os.environ.get('CSV_FILE', 'links.csv')
-# LINK_CATEGORY = os.environ.get('LINK_CATEGORY', ALL_LINKS_CATEGORY)
-#
-#
-# def includes(linkty):
-#     if LINK_CATEGORY == ALL_LINKS_CATEGORY:
-#         return True
-#     return linkty in LINK_CATEGORIES[LINK_CATEGORY]
-#
-#
-# documents = MongoClient(MONGO_URL).content_store['content_items'].find({})
-#
-# with open(CSV_FILE, 'w', newline='') as csvfile:
-#     writer = csv.writer(csvfile, delimiter=';', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-#     for document in documents:
-#         links = []
-#         for linkty, links_of_type in document.get('expanded_links', {}).items():
-#             if includes(linkty):
-#                 links.extend(link['base_path'] for link in links_of_type if 'base_path' in link)
-#         if links != []:
-#             writer.writerow([document['_id']] + links)

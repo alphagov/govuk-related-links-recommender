@@ -2,12 +2,21 @@ from datetime import datetime
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from airflow.models import Variable
+import logging
 import pymongo
+import runpy
+import subprocess
+
+
+logger = logging.getLogger("airflow.task")
+
+
+def run_command(command):
+    return subprocess.check_output(command, shell=True)
 
 
 def init_mongo():
     mongodb_uri = Variable.get('mongodb_uri')
-
     mongo_client = pymongo.MongoClient(mongodb_uri)
     content_store_db = mongo_client.get_default_database()
     content_store_collection = content_store_db['content_items']
@@ -16,13 +25,35 @@ def init_mongo():
 
 
 def init():
-    return init_mongo()
+    return 'init ok'
+
+
+def make_structural_network(mongodb_uri):
+    runpy.run_path(
+        'dags/src/data_preprocessing/get_content_store_data.py',
+        run_name='__main__',
+        init_globals={'mongodb_uri': mongodb_uri})
 
 
 dag = DAG('hello_world', description='Hello World DAG',
           schedule_interval='0 12 * * *',
           start_date=datetime(2017, 3, 20), catchup=False)
 
-hello_operator = PythonOperator(task_id='hello_task', python_callable=init, dag=dag)
 
-hello_operator
+# Operators
+
+make_structural_network_task = PythonOperator(
+    task_id='make_structural_network',
+    python_callable=make_structural_network,
+    op_kwargs={'mongodb_uri': Variable.get('mongodb_uri')},
+    dag=dag)
+
+init_task = PythonOperator(
+    task_id='init_task',
+    python_callable=init,
+    dag=dag)
+
+
+# Start
+
+init_task >> make_structural_network_task
