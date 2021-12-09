@@ -305,8 +305,7 @@ if __name__ == "__main__":  # our module is being executed as a program
 
     # Input: Mongo database
     mongo_client = pymongo.MongoClient(globals()['mongodb_uri'])
-    # TODO check this is consistent with naming of restored db in AWS
-    content_store_db = mongo_client['content_store']
+    content_store_db = mongo_client.get_default_database()
     content_store_collection = content_store_db['content_items']
 
     page_path_content_id_mapping, content_id_base_path_mapping = get_path_content_id_mappings(content_store_collection)
