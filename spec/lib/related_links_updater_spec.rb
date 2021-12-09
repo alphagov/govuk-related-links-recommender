@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'gds-api-adapters'
+require 'gds_api/publishing_api'
 require_relative '../../lib/related_links_updater'
 
 require 'json'

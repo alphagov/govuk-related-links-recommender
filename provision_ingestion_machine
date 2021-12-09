@@ -2,12 +2,6 @@
 
 set -eo pipefail
 
-# Install updates and required packages
-sudo apt-get update -y
-sudo apt-get install -y awscli
-sudo apt-get install -y jq
-sudo apt-get install -y gnupg2
-
 # Install RVM dependencies
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -yq curl g++ gcc autoconf automake bison libc6-dev libffi-dev libgdbm-dev libncurses5-dev libsqlite3-dev libtool libyaml-dev make pkg-config sqlite3 zlib1g-dev libgmp-dev libreadline-dev libssl-dev
 
@@ -16,11 +10,14 @@ curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
 curl -sSL https://rvm.io/pkuczynski.asc | gpg2 --import -
 curl -sSL https://get.rvm.io | bash -s stable
 
-source /home/ubuntu/.rvm/scripts/rvm
-rvm install 2.6.3
+source ~/.rvm/scripts/rvm
+rvm install 2.7.3
 
-# Allow others access to instance
-echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDDAZQOvxUVgi4IWwfEqYQkqU2b9RGpEHfCB48CmwdRP3WY8Cfre/GH6gw+wLvNvIDuUGLr2hwBhvqoWxsC0EeDMTvgYQE6//zb3ZCw6owMdSmkzHfSkcVvM4JGvuNWIOFYIcMtF9DkGddM5jQD9Inzb+TtPaQjrp8u4hZqr0agjSxwQGxa6hl0TfI4zXNg5Q4TXdEDuhauGomUN+6hK4wRfJW2cdXZBadAbDHAsMNrbEPBcaD8z+SJ23qT5mE5N4aGxbscKqNfq0hTdHUUzDY3Y5bw/Odt5Z9JZNE3/amBwMDRBF0oIEs1+jztRgjPZq2o2jl9EFpu7XToZU+1LGs8m4JDAAyf4BgwX5kdIrkO/MOEsGTY/dqnpwzNNBzfE4pxW4P4frqS1xPP4X5DbDiVD2lu4adffaMOmPU8cy9YyMMxEK62yCCMry1TU7SYr/o1gRcIPRk2m3ZifODZEp9AStRwAeWQfn2fgv2naL8wVd24pdl2/LKuxe1txQTwc6KFKOAylUCEHUJ2NDG5x2XSAGmE/oecUgexxIgHR2nhG3YRt30T8qimEPrY7Tarb3Dei/kHTBJkg3wOLRMGG81L0cE9wvTt6em5jtKXU/tvB16lvi5cgNO++Lmy7GlcZYfbdYZi/CELCBEZye5m9vZT7Jzm26JK75HA3sgtqajMKw== suganya.sivaskantharajah@digital.cabinet-office.gov.uk" >> /home/ubuntu/.ssh/authorized_keys
-echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCo6AI0U+VFs2dkrwNDMKcU7j5lhSPFDuboQrsGyC1tv8aUBlCSfVDaPRPT20lYANN7tFgQD9mKXaMlUd9bCJJFs7L3CbE+/kSQCE85rfPFDaTMb3/WzYzwMjDD05pRtvdBwmkS6o8IFA4Yyd29qahYhnrO3jexBIZnNdM4nWZCac+nX/8bWckPOGWIR7fTNWoS8C8tioiUDqa/ZflzGqA0NKv7M0I1kwKqHt25FHaqZxnGmnKEC9QIUGbS4cC1cJQ2AO3NqJGPWhb39QrZwvv+Juh9rU3vuohDfx7Xm1Lh8NMVf3+c1vNTcK+DvaGGLZJ20JUBXlRRFFviLo9eaaf5fHIn5bM9aKFwxoPZtlj73FQpv04bUJf/LlbnGgLeW+B6Pl2w2qFp3u5p5NtvPEnLLPm4ljiPsJwl6vdmZy/xLc8/Ze0xyOeMaENm9MFK8BykgBqXqmEsSntvryP2fp1LgwDOt9ufLpF+yLq6hXl/JKYDJZiCTUjpwSbO/GRbsf2PCjzcwLxKIru3QtR9IZmiopeYRbDvH6Zofs/4M4mQVlBv15CKthVSTwwvcb9vOQyRa2uRW6FkY//g04+2yXpU742Cuh0CgNUd1fJ/vO3kCO0Fup/m3M0B7Vsr4NE5/0XdZSXOd5sF9oB4uVh9vE7apD0+hGbeQHzXz5cRNn52KQ== karl.alec.baker@gmail.com" >> /home/ubuntu/.ssh/authorized_keys
-echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDvuBdxXkJ2Htbt47fm/CV7+uQLOu//OJ7tJv4mlyM0nChhvvI56ZjfYRCdcZNH+eFXzUDUDh1/HK9J8tA2J/ZTg/OqS+UMylQPdc4+LxPHDenhZjvCigf0Uf4ISJdprTCPJj11I/wc7bq1m6C3HGwK5DWAmSIOh7rqLDhuDIZIKdlx3nz8DEAmUFutcA//3sCfHSd8n3B6Rvpzhw5wqqJhG1nS7upJir3lew+XHt+anu6J17iGHTKKuSlZ9ZgXP7poQPizIjIK7sAkI6S45gLcKtJpbMd5pt8Ze80GcH5qoycylz93kUhy8jQJUAR97eDxh7odaFOX0y+Am2EcDJ33PsjDu9QCqJOQu0NiXWLobRIyqtDo08cdDg7yBYgAg5GuPAska/lCG9SFI1gYe7DNRB3LLvBZ4zKwhbiaQ2wdS4K0o4P1OAXdHq2Jp2XcG0jFERdI677v3uUcVEAuQ7GLVHoVKLpdj6+6IbWnh6j5WxVBLaXY2wLMC+dU60M2F1F19ixDEHNb2TUU7f5WIQuJH0N1u+lM3cDjba5cRQuMXDzlaHEwl8XjmHRGC1nwCdTtiNNAbmRe9sX8myXtbnYG0MgUcLkzd0YjVNQXv5jmmvvrRR80Zj2etTQmLQcOKwFkMScQCT9PJenj8RCm+DeCyT+TpRigxmD/6ztr8lHFzw== max.froumentin@digital.cabinet-office.gov.uk" >> /home/ubuntu/.ssh/authorized_keys
+# Set execute permission on scripts
+chmod +x ./run_link_ingestion
+chmod +x ./monitor_related_links_process
+
+sudo touch /var/tmp/related_links_process.log
+sudo chown -R ubuntu:ubuntu /var/tmp/related_links_process.log
+
 echo "Done provisioning machine"

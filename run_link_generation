@@ -1,8 +1,7 @@
 #!/bin/bash
 
-set -ueo pipefail
-
-
+set -eo pipefail
+source ~/.profile
 
 function file_or_die {
     if [ -s $1 ]; then
@@ -13,17 +12,15 @@ function file_or_die {
     fi
 }
 
-
 echo "Starting run_link_generation script..."
 sleep 60
+
+echo "Running link generation in background..."
+echo "Writing log to /var/tmp/related_links_process.log"
 
 export DATA_DIR=$PWD/data
 mkdir -p $DATA_DIR # make sure it exists
 export GOOGLE_APPLICATION_CREDENTIALS=/var/tmp/bigquery.json
-
-# Store Big Query credentials
-echo $BIG_QUERY_CREDENTIALS > /var/tmp/bigquery.json
-chmod 400 /var/tmp/bigquery.json
 
 # Find and download the latest content store backup from S3
 echo "Finding latest content backup..."
