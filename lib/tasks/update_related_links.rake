@@ -1,11 +1,11 @@
-require 'gds-api-adapters'
+require 'gds_api/publishing_api'
 
 namespace :content do
   desc 'Updates suggested related links for content from a JSON file'
   task :update_related_links_from_json, [:json_path,:exclusions_path] do |_, args|
     UPDATES_PER_BATCH = 20000
 
-    publishing_api = GdsApi::PublishingApiV2.new(
+    publishing_api = GdsApi::PublishingApi.new(
       ENV['PUBLISHING_API_URI'],
       bearer_token: ENV['PUBLISHING_API_BEARER_TOKEN']
     )
