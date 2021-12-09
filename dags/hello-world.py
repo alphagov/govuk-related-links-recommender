@@ -3,12 +3,16 @@ from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from airflow.models import Variable
 import logging
+import os
+
+
 import pymongo
 import runpy
 import subprocess
 
 
 logger = logging.getLogger("airflow.task")
+data_directory = 'data'
 
 
 def run_command(command):
@@ -25,6 +29,10 @@ def init_mongo():
 
 
 def init():
+    try:
+        os.mkdir(data_directory)
+    except FileExistsError:
+        pass
     return 'init ok'
 
 
