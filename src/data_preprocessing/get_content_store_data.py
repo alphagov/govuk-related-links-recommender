@@ -159,7 +159,8 @@ def get_page_text_df(mongodb_collection):
     # concatenate text from all columns (except first 2) into a list -> so we get a list of all the details fields
     # that we queried
     df['all_details'] = df.iloc[:, 2:-1].values.tolist()
-    print(f' df with details text has columns={list(df.columns)} and shape={df.shape}')
+    #    print(f'df with details text has columns={list(df.columns)} and shape={df.shape}')
+    print('df with details text done')
     return df[['_id', 'content_id', 'all_details']]
 
 
@@ -230,6 +231,8 @@ def get_structural_edges_df(mongodb_collection, page_path_content_id_mapping):
 
     page_text_df = get_page_text_df(mongodb_collection)
 
+    print('extracting embedded links')
+
     embedded_links_df = extract_embedded_links_df(page_text_df, page_path_content_id_mapping)
     print(f'embedded links dataframe shape {embedded_links_df.shape}')
 
@@ -291,10 +294,15 @@ def export_content_id_list(list_name, mongodb_collection, outfile):
     return content_ids_list
 
 
-if __name__ == "__main__":  # our module is being executed as a program
+# if __name__ == "__main__":  # our module is being executed as a program
+def run(mongodb_uri, data_dir):
+
+    print('starting get_content_store_data')
+    print(f'content store uri: {mongodb_uri}')
+    print(f'data directory: {data_dir}')
 
     preprocessing_config = read_config_yaml("preprocessing-config.yml")
-    data_dir = preprocessing_config["data_dir"]
+    #    data_dir = preprocessing_config["data_dir"]
 
     # output files
     content_id_base_path_mapping_filename = os.path.join(data_dir, 'content_id_base_path_mapping.json')
@@ -304,7 +312,7 @@ if __name__ == "__main__":  # our module is being executed as a program
     structural_edges_output_filename = os.path.join(data_dir, preprocessing_config['structural_edges_filename'])
 
     # Input: Mongo database
-    mongo_client = pymongo.MongoClient(globals()['mongodb_uri'])
+    mongo_client = pymongo.MongoClient(mongodb_uri)
     content_store_db = mongo_client.get_default_database()
     content_store_collection = content_store_db['content_items']
 

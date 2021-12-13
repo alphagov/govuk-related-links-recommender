@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 
 if [[ -z "${BUCKET}" ]]; then
     echo "Please set BUCKET to the name of the S3 bucket that contains the airflow files. Eg:"
@@ -10,5 +10,6 @@ AWS_COMMAND="${AWS:=aws}"
 
 #$AWS_COMMAND s3 cp requirements-airflow.txt s3://${BUCKET}/requirements.txt
 $AWS_COMMAND s3 sync dags s3://${BUCKET}/dags
-$AWS_COMMAND s3 sync src s3://${BUCKET}/dags/src --exclude __pycache__ 
-
+$AWS_COMMAND s3 cp dags/__init.py__  s3://${BUCKET}/dags/__init.py__
+$AWS_COMMAND s3 cp setup-airflow.py s3://${BUCKET}/setup.py
+$AWS_COMMAND s3 sync src s3://${BUCKET}/dags/src
