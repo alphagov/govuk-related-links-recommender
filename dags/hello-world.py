@@ -7,6 +7,7 @@ import os
 
 
 import pymongo
+import runpy
 import subprocess
 
 
@@ -32,7 +33,7 @@ def init():
         os.mkdir(data_directory)
     except FileExistsError:
         pass
-    return 'init ok 5'
+    return 'init ok 2'
 
 
 def end():
@@ -40,7 +41,7 @@ def end():
 
 
 def make_structural_network(mongodb_uri):
-    print('starting make_structural_network 5')
+    print('starting make_structural_network 4')
 
     import src.data_preprocessing.get_content_store_data as gcsd
     gcsd.run(mongodb_uri, data_directory)

@@ -21,8 +21,6 @@ def extract_links_from_html(text):
     :param text: html
     :return: list of page_paths (empty list if there are no links)
     """
-#    print("==== extract_links_from_html")
-#    print(text)
     links = []
     try:
         soup = BeautifulSoup(text, 'html5lib')
@@ -30,8 +28,6 @@ def extract_links_from_html(text):
     # might be fine to except all exceptions here, as it's a low-level function
     except Exception:
         None
-#    print("links")
-#    print(links)
     return [link.replace('https://www.gov.uk/', '/') for link in links
             if (link.startswith('/') or
                 link.startswith('https://www.gov.uk/')) and
@@ -46,26 +42,16 @@ def extract_links_from_content_details(data):
     :param data: This function can accept a nested list or dict, or string
     :return:
     """
-#    print("=== extract_links_from_content_details ===")
-#    print(data)
-#    print("type: ", type(data))
     if type(data) == list:
-#        print("is list")
         return list(chain.from_iterable([
             extract_links_from_content_details(item)
             for item in data
         ]))
     elif type(data) == dict:
-#        print("is dict")
         return extract_links_from_content_details(list(data.values()))
     elif is_html(data):
-#        print("is html")
-#        print(data)
-        x = extract_links_from_html(data)
-#        print(x)
-        return x
+        return extract_links_from_html(data)
     else:
-#        print("is something else")
         return []
 
 

@@ -1,6 +1,6 @@
 import json
 import os
-# import warnings
+import warnings
 import numpy as np
 import pandas as pd
 import pymongo
@@ -9,7 +9,7 @@ import pickle
 from src.utils.miscellaneous import read_config_yaml
 from src.utils import text_preprocessing as tp
 
-# warnings.filterwarnings('ignore', category=UserWarning, module='bs4')
+warnings.filterwarnings('ignore', category=UserWarning, module='bs4')
 
 tqdm.pandas()
 
@@ -71,7 +71,7 @@ FILTER_COLLECTION_LINKS = {"$and": [{"expanded_links.documents": {"$exists": Tru
                                     {"document_type": {"$nin": BLOCKLIST_DOCUMENT_TYPES}},
                                     {"phase": "live"}]}
 
-OUTPUT_DF_COLUMNS = ['destination_base_path', 'destination_content_id', 'source_base_path', 'source_content_id']
+OUTPUT_DF_COLUMNS = ['destination_content_id', 'destination_base_path', 'source_base_path', 'source_content_id']
 
 
 page_path_content_id_mapping = dict()
@@ -112,11 +112,15 @@ def convert_link_list_to_df(link_list, link_type, columns=OUTPUT_DF_COLUMNS):
     except KeyError:
         raise ValueError(
             f'link_type should be one of {KEYS_FOR_LINK_TYPES.keys()}')
+
     df = pd.json_normalize(link_list,
                            record_path=[['expanded_links', link_key]],
                            meta=['_id', 'content_id'],
                            meta_prefix='source_')
-    df.columns = columns
+
+    # FIXME: we don't need a dataframe here
+
+    df.columns = columns # this is dodgy
     df['link_type'] = f'{link_type}_link'
     return df
 
@@ -145,114 +149,80 @@ def get_path_content_id_mappings(mongodb_collection):
                 {os.path.join(item['_id'], part['slug']): item['content_id']})
     print(f'len(page_path_content_id_mapping): {len(page_path_content_id_mapping)}')
     print(f'len(content_id_base_path_mapping): {len(content_id_base_path_mapping)}')
-    return page_path_content_id_mapping, content_id_base_path_mapping
 
 
 def get_page_text_df(mongodb_collection):
     """
-    Queries a MongoDB collection, get specific fields from details using TEXT_PROJECTION, converts this cursor to a
-        DataFrame, with all details fields in one list column
-    :param mongodb_collection:
-    :return: pandas DataFrame with: _id (base_path), content_id, and all_details list column
+    :param content_item_list:
+    :return:
     """
-    print('get_page_text_df: running query')
-    df = pd.DataFrame(columns=['_id', 'content_id', 'all_details'])
-    counter = 0
-    cursor = mongodb_collection.find(FILTER_BASIC, TEXT_PROJECTION, no_cursor_timeout=True)
-    for doc in cursor:
-        counter = counter + 1
-        if counter % 1000 == 0:
-            print(f'processed {counter} results')
-        row = pd.json_normalize(doc)
-        if 'content_id' in row.columns:
-            row.insert(1, 'content_id', row.pop('content_id'))
-            row['all_details'] = row.iloc[:, 2:].values.tolist()
-            row2 = extract_embedded_links_df(
-                row[['_id', 'content_id', 'all_details']],
-                page_path_content_id_mapping)
-            df = df.append(row2)
-    cursor.close()
-    print('get_page_text_df: done')
+    content_item_cursor = mongodb_collection.find(FILTER_BASIC, TEXT_PROJECTION)
+    print('Creating content_store dataframe')
+
+    num_empties = 0
+    all_embedded_links = []
+    for l in tqdm(content_item_cursor):
+        links = extract_embedded_links(l)
+        if len(links) > 0:
+            all_embedded_links = links + all_embedded_links
+        else:
+            num_empties = num_empties + 1
+
+    print('=================================')
+    print(f'num_empties {num_empties}')
+    print('=================================')
+    df = pd.DataFrame(all_embedded_links)
+
+    print(f'Actually got columns: {df.columns}...')
+    print(f'Got {df.shape}')
     return df
 
 
-def reshape_df_explode_list_column(wide_df, list_column):
+def extract_embedded_links(item):
     """
-    Bit like a melt, we have a list column in a DataFrame, and we repeat all other columns for each item in the list
-    TODO: would be nice to bump pandas and call DataFrame.explode, but it breaks other stuff
-    :param wide_df: pandas DataFrame with a list column
-    :param list_column: list column name
-    :return: DataFrame with one row per item in the list_column
-    """
-    # repeat all columns except list_col as many times as the list is long for that row
-    # get a 1D vecotr using concatenate to flatten all values in list vector
-    # and unpack this vector into a new column called list_col
-    return pd.DataFrame({
-        col: np.repeat(wide_df[col].values, wide_df[list_column].str.len())
-        for col in wide_df.columns.difference([list_column])
-    }).assign(**{list_column: np.concatenate(wide_df[list_column].values)})[
-        wide_df.columns.tolist()]
-
-
-def extract_embedded_links_df(page_text_df, base_path_to_content_id_mapping):
-    """
-    Takes a dataframe with  a list column (all_details), returns a dataframe with one in-page (embedded) link per row
-    :param page_text_df: pandas DataFrame with  a list column (all_details)
-    :param base_path_to_content_id_mapping: Python dictionary {page_path: content_id}
+    Takes a mongodb result item, returns a dataframe with one in-page (embedded) link per row
+    :item: one document as returned by mongodb
     :return:  pandas DataFrame  of embedded links with columns ['source_base_path', 'source_content_id',
         'destination_base_path','destination_content_id', 'link_type']
     """
-    links = page_text_df['all_details'].apply(tp.extract_links_from_content_details)
 
-#    print('have applied extract_links_from_content_details to page_text_df')
-    embedded_links_df = page_text_df[['_id', 'content_id']]
-    embedded_links_df['embedded_links'] = links
-#    print(f'shape of df with link list (wide before melt)={embedded_links_df.shape}')
-#    print(embedded_links_df.head(1))
+    embedded_links_1 = tp.extract_links_from_content_details(item['details'])
+    try:
+        item_cid = page_path_content_id_mapping[item['_id']]
+    except KeyError:
+        return []
 
-    embedded_links_df = reshape_df_explode_list_column(embedded_links_df, 'embedded_links')
-#    print(f'shape of df after melt (each link in its own row)={embedded_links_df.shape}')
-#    print(embedded_links_df.head(1))
+    embedded_links = []
+    for link in embedded_links_1:
+        destination_cid = page_path_content_id_mapping.get(link)
+        if destination_cid:
+            embedded_links.append({
+                "source_base_path": item["_id"],
+                "source_content_id": item_cid,
+                "destination_content_id": page_path_content_id_mapping[link],
+                "destination_base_path": tp.clean_page_path(link),
+                "link_type": "embedded_link"
+                })
 
-    embedded_links_df['embedded_links'] = embedded_links_df['embedded_links'].apply(tp.clean_page_path)
-    embedded_links_df['destination_content_id'] = embedded_links_df['embedded_links'].map(
-        base_path_to_content_id_mapping)
-#    print('mapping of page_path to content_id has completed')
-
-    embedded_links_df.rename(
-        columns={
-            '_id': 'source_base_path',
-            'content_id': 'source_content_id',
-            'embedded_links': 'destination_base_path'},
-        inplace=True)
-
-    embedded_links_df['link_type'] = 'embedded_link'
-    return embedded_links_df
+    return embedded_links
 
 
-def get_structural_edges_df(mongodb_collection, page_path_content_id_mapping):
+def get_structural_edges_df(mongodb_collection):
     """
     Gets related, collection, and embedded links for all items in the mongodb collection
     :param mongodb_collection:
-    :param page_path_content_id_mapping: Python dictionary {page_path: content_id}
     :return: pandas DataFrame with columns ['source_base_path', 'source_content_id', 'destination_base_path',
                                  'destination_content_id', 'link_type']
     """
     related_links_df = convert_link_list_to_df(get_links(mongodb_collection, 'related'), 'related')
     print(f'related links dataframe shape {related_links_df.shape}')
-    print(f'columns: {related_links_df.columns}')
 
     collection_links_df = convert_link_list_to_df(get_links(mongodb_collection, 'collection'), 'collection')
     print(f'collection links dataframe shape {collection_links_df.shape}')
-    print(f'columns: {collection_links_df.columns}')
-
-    # DANGER ZONE
-#    page_text_df = get_page_text_df(mongodb_collection)
-    embedded_links_df = get_page_text_df(mongodb_collection)
 
     print('extracting embedded links')
+    embedded_links_df = get_page_text_df(mongodb_collection)
 
-#    embedded_links_df = extract_embedded_links_df(page_text_df, page_path_content_id_mapping)
     print(f'embedded links dataframe shape {embedded_links_df.shape}')
 
     structural_edges_df = pd.concat(
@@ -335,10 +305,7 @@ def run(mongodb_uri, data_dir):
     content_store_db = mongo_client.get_default_database()
     content_store_collection = content_store_db['content_items']
 
-    # fetching and saving contentID <-> path mappings
-
-    page_path_content_id_mapping, content_id_base_path_mapping = get_path_content_id_mappings(content_store_collection)
-    # both are dicts
+    get_path_content_id_mappings(content_store_collection)
 
     print(f'saving page_path_content_id_mapping to {page_path_content_id_mapping_filename}')
     with open(page_path_content_id_mapping_filename, 'w') as page_path_content_id_file:
@@ -348,9 +315,7 @@ def run(mongodb_uri, data_dir):
     with open(content_id_base_path_mapping_filename, 'w') as content_id_base_path_file:
         json.dump(content_id_base_path_mapping, content_id_base_path_file)
 
-    # extract all the structural edges from all pages and save as CSV
-
-    output_df = get_structural_edges_df(content_store_collection, page_path_content_id_mapping)
+    output_df = get_structural_edges_df(content_store_collection)
 
     print(
         f'saving structural_edges (output_df) to {structural_edges_output_filename}')

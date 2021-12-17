@@ -6,7 +6,7 @@ html5lib
 beautifulsoup4
 pandas
 numpy
-pymongoarrow
+pyarrow
 tqdm
 fastnode2vec
 gensim
