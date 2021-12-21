@@ -1,5 +1,5 @@
 # Use edge weights in graph
-weighted_graph: True
+weighted_graph: False
 # Node2vec hyper params
 dimensions: 64
 walk_length: 10
