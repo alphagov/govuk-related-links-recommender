@@ -1,4 +1,3 @@
-from tqdm import tqdm
 import pandas as pd
 import multiprocessing
 from multiprocessing import cpu_count
@@ -10,6 +9,8 @@ from collections import ChainMap
 
 # TODO check probability threshold is correct 0.46
 # TODO check maximum 5 related links is correct
+
+logger = logging.getLogger('related_links_predictor')
 
 
 class RelatedLinksPredictor:
@@ -25,7 +26,6 @@ class RelatedLinksPredictor:
     def __init__(self, source_content_ids, target_content_ids, model,
                  related_links_filter, probability_threshold=0.46, num_links=5):
         self.model = model
-        self.logger = logging.getLogger('related_links_predictor')
         self.eligible_source_content_ids = self._get_eligible_content_ids(source_content_ids)
         self.eligible_target_content_ids = target_content_ids
         self.probability_threshold = probability_threshold
@@ -38,7 +38,7 @@ class RelatedLinksPredictor:
                 source_content_id, self.eligible_target_content_ids, self.model, self.probability_threshold,
                 self.num_links, self.related_links_filter),
             self._split_content_ids(self.eligible_source_content_ids, num_workers)))
-        self.logger.info(f'I\'ve got {num_workers} workers and {len(params)} chunks...')
+        logger.info(f'I\'ve got {num_workers} workers and {len(params)} chunks...')
 
         pool = multiprocessing.Pool(processes=num_workers)
         results = pool.starmap(_predict_related_links_for_content_ids, params)
@@ -47,7 +47,7 @@ class RelatedLinksPredictor:
 
         pool.close()
 
-        self.logger.info(f'got {(len(all_related_links))} links')
+        logger.info(f'got {(len(all_related_links))} links')
         return all_related_links
 
     def _get_eligible_content_ids(self, source_content_ids):
@@ -56,12 +56,11 @@ class RelatedLinksPredictor:
         :param source_content_ids:
         :return:
         """
-        self.logger.info("Getting eligible source content_ids")
+        logger.info("Getting eligible source content_ids")
 
         return [
-            content_id for content_id in tqdm(
-                source_content_ids, desc="eligible_content_ids"
-            ) if content_id in self.model.wv.vocab.keys()
+            content_id for content_id in source_content_ids
+            if content_id in self.model.wv.vocab.keys()
         ]
 
     def _split_content_ids(self, content_ids, chunks):
@@ -92,11 +91,11 @@ def _predict_related_links_for_content_ids(source_content_ids, eligible_target_c
 
     related_links = {}
 
-    print(f"Computing related links for {len(source_content_ids)} content_ids, worker id: {os.getpid()}")
+    logger.info(f"Computing related links for {len(source_content_ids)} content_ids, worker id: {os.getpid()}")
 
     total_links_removed = 0
 
-    for content_id in tqdm(source_content_ids, desc="getting related links"):
+    for content_id in source_content_ids:
         # stick to this approach because actually interacting with the most_similar generator is
         # super slow. Dump everything to a dataframe, then filter and save list values
         potential_related_links = pd.DataFrame(model.wv.most_similar(content_id, topn=1000))
@@ -117,6 +116,6 @@ def _predict_related_links_for_content_ids(source_content_ids, eligible_target_c
 
         related_links[content_id] = filtered_target_cids_with_probabilities
 
-    print(f"Total related links not meeting confidence: {total_links_removed}")
+    logger.info(f"Total related links not meeting confidence: {total_links_removed}")
 
     return related_links
