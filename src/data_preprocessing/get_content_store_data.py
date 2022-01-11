@@ -190,7 +190,7 @@ def extract_embedded_links_df(page_text_df, base_path_to_content_id_mapping):
     :return:  pandas DataFrame  of embedded links with columns ['source_base_path', 'source_content_id',
         'destination_base_path','destination_content_id', 'link_type']
     """
-    page_text_df['embedded_links'] = page_text_df['all_details'].progress_apply(tp.extract_links_from_content_details)
+    page_text_df['embedded_links'] = page_text_df['all_details'].apply(tp.extract_links_from_content_details)
     logging.info('have applied extract_links_from_content_details to page_text_df')
 
     embedded_links_df = page_text_df[['_id', 'content_id', 'embedded_links']]
