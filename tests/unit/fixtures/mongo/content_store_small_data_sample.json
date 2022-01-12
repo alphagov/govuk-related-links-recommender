@@ -1,0 +1,1437 @@
+[
+  {
+    "_id": "/aaib-reports/aaib-investigation-to-pioneer-300-g-dewy",
+    "description": {
+      "value": "Engine failure on base leg, Frensham, 16 August 2014."
+    },
+    "content_purpose_document_supertype": "reports",
+    "content_purpose_subgroup": "incidents",
+    "content_purpose_supergroup": "transparency",
+    "email_document_supertype": "other",
+    "government_document_supertype": "other",
+    "navigation_document_supertype": "other",
+    "search_user_need_document_supertype": "government",
+    "user_journey_document_supertype": "thing",
+    "locale": "en",
+    "details": {
+      "metadata": {
+        "date_of_occurrence": "2014-08-16",
+        "aircraft_category": [
+          "general-aviation-fixed-wing"
+        ],
+        "report_type": "correspondence-investigation",
+        "location": "Churt, Surrey",
+        "aircraft_type": "Pioneer 300",
+        "registration": "G-DEWY",
+        "bulk_published": false,
+        "document_type": "aaib_report"
+      },
+      "change_history": [
+        {
+          "public_timestamp": "2015-01-09T16:01:24Z",
+          "note": "First published."
+        }
+      ],
+      "body": [
+        {
+          "content_type": "text/html",
+          "content": "<h2 id=\"summary\">Summary:</h2>\n\n<p>The aircraft suffered an engine failure whilst it was positioning to land, flying over a wooded area.  The aircraft hit the trees and the pilot sustained serious injuries.  The reason for the engine failure was not positively determined. </p>\n\n<h3 id=\"download-report\">Download report:</h3>\n\n<p><a rel=\"external\" href=\"https://assets.digital.cabinet-office.gov.uk/media/54ae3fd340f0b62391000003/Pioneer_300_G-DEWY_01-15.pdf\">Pioneer 300 G-DEWY 01-15</a> </p>\n"
+        },
+        {
+          "content_type": "text/govspeak",
+          "content": "## Summary:\r\n\r\nThe aircraft suffered an engine failure whilst it was positioning to land, flying over a wooded area.  The aircraft hit the trees and the pilot sustained serious injuries.  The reason for the engine failure was not positively determined. \r\n\r\n### Download report:\r\n\r\n[InlineAttachment:Pioneer 300 G-DEWY 01-15.pdf] "
+        }
+      ],
+      "max_cache_time": 10,
+      "attachments": [
+        {
+          "content_id": "e4f8b853-bdea-4d11-afd3-5f63fa36386e",
+          "title": "Pioneer 300 G-DEWY 01-15",
+          "url": "https://assets.digital.cabinet-office.gov.uk/media/54ae3fd340f0b62391000003/Pioneer_300_G-DEWY_01-15.pdf",
+          "updated_at": "2015-01-14T10:29:44Z",
+          "created_at": "2015-01-08T08:29:07Z",
+          "content_type": "application/pdf"
+        }
+      ],
+      "headers": [
+        {
+          "text": "Summary:",
+          "level": 2,
+          "id": "summary",
+          "headers": [
+            {
+              "text": "Download report:",
+              "level": 3,
+              "id": "download-report"
+            }
+          ]
+        }
+      ]
+    },
+    "routes": [
+      {
+        "path": "/aaib-reports/aaib-investigation-to-pioneer-300-g-dewy",
+        "type": "exact"
+      }
+    ],
+    "redirects": [],
+    "links": {},
+    "expanded_links": {
+      "organisations": [
+        {
+          "analytics_identifier": "OT248",
+          "api_path": "/api/content/government/organisations/air-accidents-investigation-branch",
+          "base_path": "/government/organisations/air-accidents-investigation-branch",
+          "content_id": "38eb5d8f-2d89-480c-8655-e2e7ac23f8f4",
+          "description": "The Air Accidents Investigation Branch investigates civil aircraft accidents and serious incidents within the UK, its overseas territories and crown dependencies. AAIB works with the Department for Transport .",
+          "document_type": "organisation",
+          "locale": "en",
+          "schema_name": "organisation",
+          "title": "Air Accidents Investigation Branch",
+          "withdrawn": false,
+          "details": {
+            "logo": {
+              "formatted_title": "Air Accidents<br/>Investigation Branch",
+              "image": {
+                "url": "https://assets.publishing.service.gov.uk/government/uploads/system/uploads/organisation/logo/248/aaib_logo.png",
+                "alt_text": "Air Accidents Investigation Branch"
+              }
+            },
+            "brand": "department-for-transport",
+            "default_news_image": {
+              "url": "https://assets.publishing.service.gov.uk/government/uploads/system/uploads/default_news_organisation_image_data/file/165/s300_AAIB_Default_News_Image.jpg",
+              "high_resolution_url": "https://assets.publishing.service.gov.uk/government/uploads/system/uploads/default_news_organisation_image_data/file/165/s960_AAIB_Default_News_Image.jpg"
+            }
+          },
+          "links": {}
+        }
+      ],
+      "primary_publishing_organisation": [
+        {
+          "analytics_identifier": "OT248",
+          "api_path": "/api/content/government/organisations/air-accidents-investigation-branch",
+          "base_path": "/government/organisations/air-accidents-investigation-branch",
+          "content_id": "38eb5d8f-2d89-480c-8655-e2e7ac23f8f4",
+          "description": "The Air Accidents Investigation Branch investigates civil aircraft accidents and serious incidents within the UK, its overseas territories and crown dependencies. AAIB works with the Department for Transport .",
+          "document_type": "organisation",
+          "locale": "en",
+          "schema_name": "organisation",
+          "title": "Air Accidents Investigation Branch",
+          "withdrawn": false,
+          "details": {
+            "logo": {
+              "formatted_title": "Air Accidents<br/>Investigation Branch",
+              "image": {
+                "url": "https://assets.publishing.service.gov.uk/government/uploads/system/uploads/organisation/logo/248/aaib_logo.png",
+                "alt_text": "Air Accidents Investigation Branch"
+              }
+            },
+            "brand": "department-for-transport",
+            "default_news_image": {
+              "url": "https://assets.publishing.service.gov.uk/government/uploads/system/uploads/default_news_organisation_image_data/file/165/s300_AAIB_Default_News_Image.jpg",
+              "high_resolution_url": "https://assets.publishing.service.gov.uk/government/uploads/system/uploads/default_news_organisation_image_data/file/165/s960_AAIB_Default_News_Image.jpg"
+            }
+          },
+          "links": {}
+        }
+      ],
+      "taxons": [
+        {
+          "analytics_identifier": null,
+          "api_path": "/api/content/transport/air-accidents-and-serious-incidents",
+          "base_path": "/transport/air-accidents-and-serious-incidents",
+          "content_id": "951ece54-c6df-4fbc-aa18-1bc629815fe2",
+          "description": "Investigation into aircraft accidents and serious incidents.",
+          "document_type": "taxon",
+          "locale": "en",
+          "public_updated_at": "2018-06-14T11:42:57Z",
+          "schema_name": "taxon",
+          "title": "Air accidents and serious incidents",
+          "withdrawn": false,
+          "details": {
+            "internal_name": "Air accidents and serious incidents",
+            "notes_for_editors": "",
+            "visible_to_departmental_editors": false
+          },
+          "phase": "live",
+          "links": {
+            "parent_taxons": [
+              {
+                "analytics_identifier": null,
+                "api_path": "/api/content/transport/aviation",
+                "base_path": "/transport/aviation",
+                "content_id": "51efa3dd-e9bc-42b2-aa26-06bf5f543015",
+                "description": "Aviation and airspace policy, airport expansion, airline routes, passenger experience and air accidents.",
+                "document_type": "taxon",
+                "locale": "en",
+                "public_updated_at": "2018-06-14T09:27:19Z",
+                "schema_name": "taxon",
+                "title": "Aviation",
+                "withdrawn": false,
+                "details": {
+                  "internal_name": "Aviation",
+                  "notes_for_editors": "",
+                  "visible_to_departmental_editors": false
+                },
+                "phase": "live",
+                "links": {
+                  "parent_taxons": [
+                    {
+                      "analytics_identifier": null,
+                      "api_path": "/api/content/transport",
+                      "base_path": "/transport",
+                      "content_id": "a4038b29-b332-4f13-98b1-1c9709e216bc",
+                      "description": "Aviation, roads, rail, maritime, driving, freight, public transport, safety, environment and transport accessibility.",
+                      "document_type": "taxon",
+                      "locale": "en",
+                      "public_updated_at": "2018-06-15T14:31:46Z",
+                      "schema_name": "taxon",
+                      "title": "Transport",
+                      "withdrawn": false,
+                      "details": {
+                        "internal_name": "Transport",
+                        "notes_for_editors": "",
+                        "visible_to_departmental_editors": true
+                      },
+                      "phase": "live",
+                      "links": {
+                        "root_taxon": [
+                          {
+                            "analytics_identifier": null,
+                            "api_path": "/api/content/",
+                            "base_path": "/",
+                            "content_id": "f3bbdec2-0e62-4520-a7fd-6ffd5d36e03a",
+                            "description": "",
+                            "document_type": "homepage",
+                            "locale": "en",
+                            "public_updated_at": "2018-06-12T15:28:48Z",
+                            "schema_name": "homepage",
+                            "title": "GOV.UK homepage",
+                            "withdrawn": false,
+                            "links": {}
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "finder": [
+        {
+          "analytics_identifier": null,
+          "api_path": "/api/content/aaib-reports",
+          "base_path": "/aaib-reports",
+          "content_id": "b7574bba-969f-4c49-855a-ae1586258ff6",
+          "description": "Find reports of AAIB investigations into air accidents and incidents",
+          "document_type": "finder",
+          "locale": "en",
+          "public_updated_at": "2018-11-22T09:18:20Z",
+          "schema_name": "finder",
+          "title": "Air Accidents Investigation Branch reports",
+          "withdrawn": false,
+          "details": {
+            "facets": [
+              {
+                "key": "aircraft_category",
+                "name": "Aircraft category",
+                "type": "text",
+                "preposition": "in aircraft category",
+                "display_as_result_metadata": true,
+                "filterable": true,
+                "allowed_values": [
+                  {
+                    "label": "Commercial - fixed wing",
+                    "value": "commercial-fixed-wing"
+                  },
+                  {
+                    "label": "Commercial - rotorcraft",
+                    "value": "commercial-rotorcraft"
+                  },
+                  {
+                    "label": "General aviation - fixed wing",
+                    "value": "general-aviation-fixed-wing"
+                  },
+                  {
+                    "label": "General aviation - rotorcraft",
+                    "value": "general-aviation-rotorcraft"
+                  },
+                  {
+                    "label": "Sport aviation and balloons",
+                    "value": "sport-aviation-and-balloons"
+                  },
+                  {
+                    "label": "Unmanned Aircraft Systems (UAS)",
+                    "value": "unmanned-aircraft-systems"
+                  }
+                ]
+              },
+              {
+                "key": "report_type",
+                "name": "Report type",
+                "type": "text",
+                "preposition": "of type",
+                "display_as_result_metadata": true,
+                "filterable": true,
+                "allowed_values": [
+                  {
+                    "label": "Annual safety report",
+                    "value": "annual-safety-report"
+                  },
+                  {
+                    "label": "Bulletin - Correspondence investigation",
+                    "value": "correspondence-investigation"
+                  },
+                  {
+                    "label": "Bulletin - Field investigation",
+                    "value": "field-investigation"
+                  },
+                  {
+                    "label": "Bulletin - Pre-1997 uncategorised monthly report",
+                    "value": "pre-1997-monthly-report"
+                  },
+                  {
+                    "label": "Foreign report",
+                    "value": "foreign-report"
+                  },
+                  {
+                    "label": "Formal report",
+                    "value": "formal-report"
+                  },
+                  {
+                    "label": "Special bulletin",
+                    "value": "special-bulletin"
+                  },
+                  {
+                    "label": "Safety study",
+                    "value": "safety-study"
+                  }
+                ]
+              },
+              {
+                "key": "date_of_occurrence",
+                "name": "Date of occurrence",
+                "short_name": "Occurred",
+                "type": "date",
+                "preposition": "occurred",
+                "display_as_result_metadata": true,
+                "filterable": true
+              },
+              {
+                "key": "aircraft_type",
+                "name": "Aircraft type",
+                "type": "text",
+                "display_as_result_metadata": false,
+                "filterable": false
+              },
+              {
+                "key": "location",
+                "name": "Location",
+                "type": "text",
+                "display_as_result_metadata": false,
+                "filterable": false
+              },
+              {
+                "key": "registration",
+                "name": "Registration",
+                "type": "text",
+                "display_as_result_metadata": false,
+                "filterable": false
+              }
+            ]
+          },
+          "links": {}
+        }
+      ],
+      "available_translations": [
+        {
+          "title": "AAIB investigation to Pioneer 300, G-DEWY",
+          "public_updated_at": "2015-01-09T16:01:24Z",
+          "analytics_identifier": null,
+          "document_type": "aaib_report",
+          "schema_name": "specialist_document",
+          "base_path": "/aaib-reports/aaib-investigation-to-pioneer-300-g-dewy",
+          "description": "Engine failure on base leg, Frensham, 16 August 2014.",
+          "api_path": "/api/content/aaib-reports/aaib-investigation-to-pioneer-300-g-dewy",
+          "withdrawn": false,
+          "content_id": "797bbffc-a3db-46d4-b439-9df93c225241",
+          "locale": "en"
+        }
+      ]
+    },
+    "access_limited": {},
+    "phase": "live",
+    "withdrawn_notice": {},
+    "title": "AAIB investigation to Pioneer 300, G-DEWY",
+    "public_updated_at": {
+      "$date": "2015-01-09T16:01:24.000Z"
+    },
+    "publishing_app": "specialist-publisher",
+    "rendering_app": "government-frontend",
+    "analytics_identifier": null,
+    "document_type": "aaib_report",
+    "schema_name": "specialist_document",
+    "first_published_at": {
+      "$date": "2015-01-09T16:01:24.000Z"
+    },
+    "content_id": "797bbffc-a3db-46d4-b439-9df93c225241",
+    "payload_version": 23651891,
+    "created_at": null,
+    "updated_at": {
+      "$date": "2019-03-06T10:14:22.361Z"
+    }
+  },
+  {
+    "_id": "/agency-workers-your-rights",
+    "description": {
+      "value": "As an agency worker, you have certain rights when using temp, recruitment agencies or employment agencies to find work - pay, holidays, equal treatment, fees"
+    },
+    "content_purpose_document_supertype": "guidance",
+    "content_purpose_subgroup": "transactions",
+    "content_purpose_supergroup": "services",
+    "email_document_supertype": "other",
+    "government_document_supertype": "other",
+    "navigation_document_supertype": "guidance",
+    "search_user_need_document_supertype": "core",
+    "user_journey_document_supertype": "thing",
+    "locale": "en",
+    "details": {
+      "parts": [
+        {
+          "title": "When you're an agency worker",
+          "slug": "when-youre-an-agency-worker",
+          "body": [
+            {
+              "content_type": "text/govspeak",
+              "content": "You're an agency worker if you have a contract with an agency but you work temporarily for a hirer. Agencies can include recruitment agencies, for example 'temp agencies'.\r\n\r\nYou're also an agency worker if you look for work through entertainment and modelling agencies.\r\n\r\nYou're not an agency worker if you:\r\n\r\n+ find work through an agency but work for yourself - you may be self-employed\r\n+ use an agency to find permanent or fixed-term [employment](/employment-status/employee) - check with the company that hired you\r\n+ take a ['pay between assignments' contract](/agency-workers-your-rights/pay) - you're an employee of the agency\r\n\r\n[Contact ACAS](https://www.gov.uk/pay-and-work-rights) if you're unsure if you're an agency worker."
+            },
+            {
+              "content_type": "text/html",
+              "content": "<p>You’re an agency worker if you have a contract with an agency but you work temporarily for a hirer. Agencies can include recruitment agencies, for example ‘temp agencies’.</p>\n\n<p>You’re also an agency worker if you look for work through entertainment and modelling agencies.</p>\n\n<p>You’re not an agency worker if you:</p>\n\n<ul>\n  <li>find work through an agency but work for yourself - you may be self-employed\n</li>\n  <li>use an agency to find permanent or fixed-term <a href=\"/employment-status/employee\">employment</a> - check with the company that hired you</li>\n  <li>take a <a href=\"/agency-workers-your-rights/pay\">‘pay between assignments’ contract</a> - you’re an employee of the agency</li>\n</ul>\n\n<p><a href=\"https://www.gov.uk/pay-and-work-rights\">Contact ACAS</a> if you’re unsure if you’re an agency worker.</p>\n"
+            }
+          ]
+        },
+        {
+          "title": "Fees",
+          "slug": "fees",
+          "body": [
+            {
+              "content_type": "text/govspeak",
+              "content": "Recruitment agencies can't charge you a fee for finding or trying to find you work. \r\n\r\nThey can charge you for certain services, for example CV writing, training or transport. You have the right to cancel these as long as you give notice.\r\n\r\nIf any agency offers you services it:\r\n\r\n+ must give you full written details of the fee and conditions before charging you - including details of your right to cancel and the notice period\r\n+ can’t make you use these services as a condition for finding you work\r\n\r\n^There are different rules for entertainment and modelling agencies.^\r\n\r\n##When you want to cancel a service\r\n\r\nYou can cancel paid services without a penalty. You must give a minimum of:\r\n\r\n+ 10 working days' written notice to the agency to cancel living accommodation\r\n+ 5 working days' notice for all other services, such as training courses\r\n\r\nYou can [complain to Acas](/pay-and-work-rights) if you think your agency has unfairly charged you or it won't refund you during the notice period.\r\n"
+            },
+            {
+              "content_type": "text/html",
+              "content": "<p>Recruitment agencies can’t charge you a fee for finding or trying to find you work.</p>\n\n<p>They can charge you for certain services, for example CV writing, training or transport. You have the right to cancel these as long as you give notice.</p>\n\n<p>If any agency offers you services it:</p>\n\n<ul>\n  <li>must give you full written details of the fee and conditions before charging you - including details of your right to cancel and the notice period</li>\n  <li>can’t make you use these services as a condition for finding you work</li>\n</ul>\n\n<div role=\"note\" aria-label=\"Information\" class=\"application-notice info-notice\">\n<p>There are different rules for entertainment and modelling agencies.</p>\n</div>\n\n<h2 id=\"when-you-want-to-cancel-a-service\">When you want to cancel a service</h2>\n\n<p>You can cancel paid services without a penalty. You must give a minimum of:</p>\n\n<ul>\n  <li>10 working days’ written notice to the agency to cancel living accommodation</li>\n  <li>5 working days’ notice for all other services, such as training courses</li>\n</ul>\n\n<p>You can <a href=\"/pay-and-work-rights\">complain to Acas</a> if you think your agency has unfairly charged you or it won’t refund you during the notice period.</p>\n"
+            }
+          ]
+        },
+        {
+          "title": "What your agency must give you",
+          "slug": "basic-information-you-should-receive",
+          "body": [
+            {
+              "content_type": "text/govspeak",
+              "content": "Your agency must give you written terms of employment before looking for work for you.\r\n\r\nThese should include:\r\n\r\n+ whether you're employed under a contract for services or a contract of employment\r\n+ your notice period\r\n+ your pay\r\n+ your holiday entitlement\r\n\r\nWhen you're offered a job the agency must tell you:\r\n\r\n+ your start date\r\n+ how long the contract is likely to last\r\n+ the type of work\r\n+ about any expenses you may have to pay\r\n+ the location\r\n+ your hours\r\n+ about any health and safety risks\r\n+ about any experience, training or qualifications needed for the role\r\n\r\n##If your agency changes your terms\r\n\r\nAn agency can’t change your terms and conditions without telling you. If you agree to changes you must be given a new document with the full details of the changes and the date they changed.\r\n\r\n^An agency can't give information about you to any third parties (including current employers or hirers) without your permission.^"
+            },
+            {
+              "content_type": "text/html",
+              "content": "<p>Your agency must give you written terms of employment before looking for work for you.</p>\n\n<p>These should include:</p>\n\n<ul>\n  <li>whether you’re employed under a contract for services or a contract of employment</li>\n  <li>your notice period</li>\n  <li>your pay</li>\n  <li>your holiday entitlement</li>\n</ul>\n\n<p>When you’re offered a job the agency must tell you:</p>\n\n<ul>\n  <li>your start date</li>\n  <li>how long the contract is likely to last</li>\n  <li>the type of work</li>\n  <li>about any expenses you may have to pay</li>\n  <li>the location</li>\n  <li>your hours</li>\n  <li>about any health and safety risks</li>\n  <li>about any experience, training or qualifications needed for the role</li>\n</ul>\n\n<h2 id=\"if-your-agency-changes-your-terms\">If your agency changes your terms</h2>\n\n<p>An agency can’t change your terms and conditions without telling you. If you agree to changes you must be given a new document with the full details of the changes and the date they changed.</p>\n\n<div role=\"note\" aria-label=\"Information\" class=\"application-notice info-notice\">\n<p>An agency can’t give information about you to any third parties (including current employers or hirers) without your permission.</p>\n</div>\n"
+            }
+          ]
+        },
+        {
+          "title": "Equal treatment",
+          "slug": "your-rights-as-a-temporary-agency-worker",
+          "body": [
+            {
+              "content_type": "text/govspeak",
+              "content": "From the day you start work you have a [worker's employment rights](/employment-status/worker).\r\n\r\nYou also have the same rights as your permanent colleagues to use any shared facilities and services provided by your employer, for example:\r\n\r\n+ a canteen or food and drinks machines\r\n+ a workplace creche or mother and baby room\r\n+ car parking or transport services, like a local pick-up service or transport between sites\r\n\r\n##Rights after 12 weeks\r\n\r\nAfter 12 weeks in the job you qualify for the same rights as someone employed directly. This is known as 'equal treatment'.\r\n\r\nYour rights include:\r\n\r\n- 'equal pay' - the same pay as a permanent colleague doing the same job\r\n- automatic pension enrolment\r\n- paid annual leave\r\n\r\n^You won't be entitled to equal pay if you're offered a ['pay between assignments' contract](/agency-workers-your-rights/pay).^\r\n\r\n##How to count your 12 week period\r\n\r\nStart counting your 12 week qualifying period from your first day at work.\r\n\r\nYou don't have to be at work for 12 weeks in a row - some types of leave count and there can be breaks.\r\n\r\n###Don't count days on sick leave or a break\r\n\r\nThe qualifying period will pause for sick leave or breaks. Don't count the days when:\r\n\r\n+ you take a break of 6 weeks or less\r\n+ you're on leave due to sickness or injury for up to 28 weeks\r\n+ you take annual leave you're entitled to\r\n+ the workplace closes, for example for Christmas or industrial action\r\n+ you're on jury service for up to 28 weeks\r\n\r\n###Count time off for pregnancy, paternity or adoption\r\n\r\nYour 12 week qualifying period will continue through time off you have for:\r\n\r\n+ pregnancy and up to 26 weeks after childbirth\r\n+ adoption leave\r\n+ paternity leave\r\n\r\nIf your leave is more than 12 weeks you'll qualify for equal treatment when you return to work.\r\n\r\n###Start from zero for a new job or role\r\n\r\nYour 12 weeks will start again if you:\r\n\r\n+ get a new job at a different workplace\r\n+ have a break of more than 6 weeks between jobs at the same workplace\r\n+ stay at your workplace but take a new role that's 'substantively different'\r\n\r\nA substantively different role is one that's completely new, different work. It could be a combination of different:\r\n\r\n+ skills, or requiring new training\r\n+ pay rate\r\n+ location\r\n+ working hours"
+            },
+            {
+              "content_type": "text/html",
+              "content": "<p>From the day you start work you have a <a href=\"/employment-status/worker\">worker’s employment rights</a>.</p>\n\n<p>You also have the same rights as your permanent colleagues to use any shared facilities and services provided by your employer, for example:</p>\n\n<ul>\n  <li>a canteen or food and drinks machines</li>\n  <li>a workplace creche or mother and baby room</li>\n  <li>car parking or transport services, like a local pick-up service or transport between sites</li>\n</ul>\n\n<h2 id=\"rights-after-12-weeks\">Rights after 12 weeks</h2>\n\n<p>After 12 weeks in the job you qualify for the same rights as someone employed directly. This is known as ‘equal treatment’.</p>\n\n<p>Your rights include:</p>\n\n<ul>\n  <li>‘equal pay’ - the same pay as a permanent colleague doing the same job</li>\n  <li>automatic pension enrolment</li>\n  <li>paid annual leave</li>\n</ul>\n\n<div role=\"note\" aria-label=\"Information\" class=\"application-notice info-notice\">\n<p>You won’t be entitled to equal pay if you’re offered a <a href=\"/agency-workers-your-rights/pay\">‘pay between assignments’ contract</a>.</p>\n</div>\n\n<h2 id=\"how-to-count-your-12-week-period\">How to count your 12 week period</h2>\n\n<p>Start counting your 12 week qualifying period from your first day at work.</p>\n\n<p>You don’t have to be at work for 12 weeks in a row - some types of leave count and there can be breaks.</p>\n\n<h3 id=\"dont-count-days-on-sick-leave-or-a-break\">Don’t count days on sick leave or a break</h3>\n\n<p>The qualifying period will pause for sick leave or breaks. Don’t count the days when:</p>\n\n<ul>\n  <li>you take a break of 6 weeks or less</li>\n  <li>you’re on leave due to sickness or injury for up to 28 weeks</li>\n  <li>you take annual leave you’re entitled to</li>\n  <li>the workplace closes, for example for Christmas or industrial action</li>\n  <li>you’re on jury service for up to 28 weeks</li>\n</ul>\n\n<h3 id=\"count-time-off-for-pregnancy-paternity-or-adoption\">Count time off for pregnancy, paternity or adoption</h3>\n\n<p>Your 12 week qualifying period will continue through time off you have for:</p>\n\n<ul>\n  <li>\npregnancy and up to 26 weeks after childbirth</li>\n  <li>adoption leave</li>\n  <li>paternity leave</li>\n</ul>\n\n<p>If your leave is more than 12 weeks you’ll qualify for equal treatment when you return to work.</p>\n\n<h3 id=\"start-from-zero-for-a-new-job-or-role\">Start from zero for a new job or role</h3>\n\n<p>Your 12 weeks will start again if you:</p>\n\n<ul>\n  <li>get a new job at a different workplace</li>\n  <li>have a break of more than 6 weeks between jobs at the same workplace</li>\n  <li>stay at your workplace but take a new role that’s ‘substantively different’</li>\n</ul>\n\n<p>A substantively different role is one that’s completely new, different work. It could be a combination of different:</p>\n\n<ul>\n  <li>skills, or requiring new training</li>\n  <li>pay rate</li>\n  <li>location</li>\n  <li>working hours</li>\n</ul>\n"
+            }
+          ]
+        },
+        {
+          "title": "Pay",
+          "slug": "pay",
+          "body": [
+            {
+              "content_type": "text/govspeak",
+              "content": "You're entitled to the [National Minimum Wage](/national-minimum-wage/what-is-the-minimum-wage) for all the hours you work, even if you haven't recorded them on a timesheet.\r\n\r\nAfter 12 weeks you can ask to be paid the same as a permanent employee doing the same job.\r\n\r\n##If your agency withholds your pay\r\n\r\nYour agency can delay paying you while they get proof of the hours you worked, but only for a reasonable period of time.\r\n\r\nYour agency can't refuse to pay you because your hirer's unhappy with your work - this is a contractual issue between your agency and the hirer.\r\n\r\nYou can make a claim to an [employment tribunal](/employment-tribunals) if your agency is refusing to pay you.\r\n\r\n##'Pay between assignments' contracts\r\n\r\nIf your agency offers you a 'pay between assignments' contract you'll be an [employee](/employment-status/employee) of the agency, not an agency worker.\r\n\r\nYou'll get paid even when you're not working. You must get an [employment contract](/employment-contracts-and-conditions).\r\n\r\n^You're not entitled to equal pay under a pay between assignments contract. The rest of your rights will stay the same.^\r\n\r\nYou must get 50% of your previous pay, calculated at the highest rate of pay received during any one week.\r\n\r\nThe agency must give you a contract stating:\r\n\r\n+ the type of work\r\n+ that you're giving up the right to equal pay\r\n+ minimum pay rates and how they're calculated\r\n+ where you're expected to work (your agency can't offer you work outside a reasonable travel time unless you agree)\r\n+ minimum and maximum working hours (the minimum must be at least one hour)\r\n\r\nThe agency can't ask you to come into its office for an hour to avoid paying you between jobs.\r\n\r\nYou'll only get 'pay between assignments' for full weeks when you don't have any work.\r\n\r\nIf the agency ends the contract:\r\n\r\n+ it must give you 4 weeks' pay between assignments\r\n+ you may be entitled to certain rights, such as [notice pay](/redundant-your-rights/notice-periods) and [redundancy pay](/redundant-your-rights/redundancy-pay)\r\n"
+            },
+            {
+              "content_type": "text/html",
+              "content": "<p>You’re entitled to the <a href=\"/national-minimum-wage/what-is-the-minimum-wage\">National Minimum Wage</a> for all the hours you work, even if you haven’t recorded them on a timesheet.</p>\n\n<p>After 12 weeks you can ask to be paid the same as a permanent employee doing the same job.</p>\n\n<h2 id=\"if-your-agency-withholds-your-pay\">If your agency withholds your pay</h2>\n\n<p>Your agency can delay paying you while they get proof of the hours you worked, but only for a reasonable period of time.</p>\n\n<p>Your agency can’t refuse to pay you because your hirer’s unhappy with your work - this is a contractual issue between your agency and the hirer.</p>\n\n<p>You can make a claim to an <a href=\"/employment-tribunals\">employment tribunal</a> if your agency is refusing to pay you.</p>\n\n<h2 id=\"pay-between-assignments-contracts\">‘Pay between assignments’ contracts</h2>\n\n<p>If your agency offers you a ‘pay between assignments’ contract you’ll be an <a href=\"/employment-status/employee\">employee</a> of the agency, not an agency worker.</p>\n\n<p>You’ll get paid even when you’re not working. You must get an <a href=\"/employment-contracts-and-conditions\">employment contract</a>.</p>\n\n<div role=\"note\" aria-label=\"Information\" class=\"application-notice info-notice\">\n<p>You’re not entitled to equal pay under a pay between assignments contract. The rest of your rights will stay the same.</p>\n</div>\n\n<p>You must get 50% of your previous pay, calculated at the highest rate of pay received during any one week.</p>\n\n<p>The agency must give you a contract stating:</p>\n\n<ul>\n  <li>the type of work</li>\n  <li>that you’re giving up the right to equal pay</li>\n  <li>minimum pay rates and how they’re calculated</li>\n  <li>where you’re expected to work (your agency can’t offer you work outside a reasonable travel time unless you agree)</li>\n  <li>minimum and maximum working hours (the minimum must be at least one hour)</li>\n</ul>\n\n<p>The agency can’t ask you to come into its office for an hour to avoid paying you between jobs.</p>\n\n<p>You’ll only get ‘pay between assignments’ for full weeks when you don’t have any work.</p>\n\n<p>If the agency ends the contract:</p>\n\n<ul>\n  <li>it must give you 4 weeks’ pay between assignments</li>\n  <li>you may be entitled to certain rights, such as <a href=\"/redundant-your-rights/notice-periods\">notice pay</a> and <a href=\"/redundant-your-rights/redundancy-pay\">redundancy pay</a>\n</li>\n</ul>\n"
+            }
+          ]
+        },
+        {
+          "title": "Maternity rights",
+          "slug": "maternity-rights-for-agency-workers",
+          "body": [
+            {
+              "content_type": "text/govspeak",
+              "content": "You may be able to get [Statutory Maternity Pay](/maternity-pay-leave/pay), but you can't get [Statutory Maternity Leave](/maternity-pay-leave/leave).\r\n\r\n^If you're on a 'pay between assignments' contract you're an employee of the agency, not an agency worker. You have [employee's pregnancy rights](/working-when-pregnant-your-rights).^\r\n\r\nIt's illegal to discriminate against you on the grounds that:\r\n\r\n+ you're pregnant\r\n+ you've given birth in the last 6 months\r\n+ you're breastfeeding\r\n\r\nIt's discrimination if your:\r\n\r\n+ agency refuses to place you in a job\r\n+ hirer refuses to hire you\r\n+ job was terminated because you're pregnant\r\n+ agency refuses to keep you on its books\r\n+ agency offers you only short jobs and gives longer ones to other agency workers\r\n+ hirer won't let you come back after having leave due to maternity\r\n\r\n[Contact Acas](/pay-and-work-rights) if you believe you've been discriminated against.\r\n\r\n##If there's a risk to your health\r\n\r\nYour hirer should make reasonable adjustments so you can do your job. If this isn't possible your agency must find you alternative work or pay you at the same rate for the expected length of your contract.\r\n\r\n##Antenatal care\r\n\r\nAfter 12 weeks in the job you can get paid time off to go to 'antenatal care' if you can't arrange it outside working hours. \r\n\r\nAntenatal care includes antenatal classes, appointments and parenting classes if they've been recommended by a doctor or midwife.\r\n\r\nYou must also be paid for the travel time if it's during working hours."
+            },
+            {
+              "content_type": "text/html",
+              "content": "<p>You may be able to get <a href=\"/maternity-pay-leave/pay\">Statutory Maternity Pay</a>, but you can’t get <a href=\"/maternity-pay-leave/leave\">Statutory Maternity Leave</a>.</p>\n\n<div role=\"note\" aria-label=\"Information\" class=\"application-notice info-notice\">\n<p>If you’re on a ‘pay between assignments’ contract you’re an employee of the agency, not an agency worker. You have <a href=\"/working-when-pregnant-your-rights\">employee’s pregnancy rights</a>.</p>\n</div>\n\n<p>It’s illegal to discriminate against you on the grounds that:</p>\n\n<ul>\n  <li>you’re pregnant</li>\n  <li>you’ve given birth in the last 6 months</li>\n  <li>you’re breastfeeding</li>\n</ul>\n\n<p>It’s discrimination if your:</p>\n\n<ul>\n  <li>agency refuses to place you in a job</li>\n  <li>hirer refuses to hire you</li>\n  <li>job was terminated because you’re pregnant</li>\n  <li>agency refuses to keep you on its books</li>\n  <li>agency offers you only short jobs and gives longer ones to other agency workers</li>\n  <li>hirer won’t let you come back after having leave due to maternity</li>\n</ul>\n\n<p><a href=\"/pay-and-work-rights\">Contact Acas</a> if you believe you’ve been discriminated against.</p>\n\n<h2 id=\"if-theres-a-risk-to-your-health\">If there’s a risk to your health</h2>\n\n<p>Your hirer should make reasonable adjustments so you can do your job. If this isn’t possible your agency must find you alternative work or pay you at the same rate for the expected length of your contract.</p>\n\n<h2 id=\"antenatal-care\">Antenatal care</h2>\n\n<p>After 12 weeks in the job you can get paid time off to go to ‘antenatal care’ if you can’t arrange it outside working hours.</p>\n\n<p>Antenatal care includes antenatal classes, appointments and parenting classes if they’ve been recommended by a doctor or midwife.</p>\n\n<p>You must also be paid for the travel time if it’s during working hours.</p>\n"
+            }
+          ]
+        },
+        {
+          "title": "Entertainment agencies",
+          "slug": "entertainment-and-modelling-agencies",
+          "body": [
+            {
+              "content_type": "text/govspeak",
+              "content": "Entertainment agencies can charge you a fee:\r\n\r\n- for finding you work, for example taking a commission (percentage fee) from your earnings\r\n- to publish your details online or in a publication\r\n\r\nThey must tell you in writing if a fee is involved.\r\n\r\n##If they’re publishing your details\r\n\r\nOnce you receive the contract, you have a 30-day 'cooling off' period when you:\r\n\r\n- can cancel or withdraw from it without getting a penalty\r\n- don’t have to pay\r\n\r\nThe agency must show you what it plans to publish about you before it’s published.  \r\n\r\nYou then have up to 7 days after the cooling off period to say if you don’t want the information to be published. If you’re happy you must pay after the 7 days.  \r\n\r\n$E\r\n\r\n###Example: \r\nYou’ve paid to be promoted on a casting agency’s website. The agency shows you the photos 29 days after you signed the contract and you’re not happy with them. You have 8 days to demand a refund.\r\n\r\n$E\r\n\r\nIf the agency charged you but didn’t publish your name, you have the right to a refund for up to 60 days.\r\n\r\n[Contact Acas](/pay-and-work-rights) if you believe you've been charged unfairly.\r\n"
+            },
+            {
+              "content_type": "text/html",
+              "content": "<p>Entertainment agencies can charge you a fee:</p>\n\n<ul>\n  <li>for finding you work, for example taking a commission (percentage fee) from your earnings</li>\n  <li>to publish your details online or in a publication</li>\n</ul>\n\n<p>They must tell you in writing if a fee is involved.</p>\n\n<h2 id=\"if-theyre-publishing-your-details\">If they’re publishing your details</h2>\n\n<p>Once you receive the contract, you have a 30-day ‘cooling off’ period when you:</p>\n\n<ul>\n  <li>can cancel or withdraw from it without getting a penalty</li>\n  <li>don’t have to pay</li>\n</ul>\n\n<p>The agency must show you what it plans to publish about you before it’s published.</p>\n\n<p>You then have up to 7 days after the cooling off period to say if you don’t want the information to be published. If you’re happy you must pay after the 7 days.</p>\n\n<div class=\"example\">\n<h3 id=\"example\">Example:</h3>\n<p>You’ve paid to be promoted on a casting agency’s website. The agency shows you the photos 29 days after you signed the contract and you’re not happy with them. You have 8 days to demand a refund.</p>\n</div>\n\n<p>If the agency charged you but didn’t publish your name, you have the right to a refund for up to 60 days.</p>\n\n<p><a href=\"/pay-and-work-rights\">Contact Acas</a> if you believe you’ve been charged unfairly.</p>\n"
+            }
+          ]
+        },
+        {
+          "title": "Modelling agencies",
+          "slug": "modelling-agencies",
+          "body": [
+            {
+              "content_type": "text/govspeak",
+              "content": "Fashion and photographic model agencies can charge you a fee for finding you work. They can take a commission (percentage fee) from your earnings.\r\n\r\nThey can also charge a fee to publish your details online or in a publication. They can't charge this fee to you upfront but they can take it from your earnings if they find you work.\r\n\r\nThey must tell you in writing if a fee is involved.\r\n\r\n[Contact Acas](/pay-and-work-rights) if you believe you've been charged unfairly."
+            },
+            {
+              "content_type": "text/html",
+              "content": "<p>Fashion and photographic model agencies can charge you a fee for finding you work. They can take a commission (percentage fee) from your earnings.</p>\n\n<p>They can also charge a fee to publish your details online or in a publication. They can’t charge this fee to you upfront but they can take it from your earnings if they find you work.</p>\n\n<p>They must tell you in writing if a fee is involved.</p>\n\n<p><a href=\"/pay-and-work-rights\">Contact Acas</a> if you believe you’ve been charged unfairly.</p>\n"
+            }
+          ]
+        }
+      ],
+      "external_related_links": []
+    },
+    "routes": [
+      {
+        "path": "/agency-workers-your-rights",
+        "type": "prefix"
+      }
+    ],
+    "redirects": [],
+    "links": {},
+    "expanded_links": {
+      "mainstream_browse_pages": [
+        {
+          "analytics_identifier": null,
+          "api_path": "/api/content/browse/working/contract-working-hours",
+          "base_path": "/browse/working/contract-working-hours",
+          "content_id": "6b2f82a9-17c6-4a26-9c8a-9b4b10234891",
+          "description": "Includes employment status, workers' rights and changes to contracts",
+          "document_type": "mainstream_browse_page",
+          "locale": "en",
+          "public_updated_at": "2015-06-24T13:56:42Z",
+          "schema_name": "mainstream_browse_page",
+          "title": "Your contract and working hours",
+          "withdrawn": false,
+          "links": {}
+        }
+      ],
+      "ordered_related_items": [
+        {
+          "analytics_identifier": null,
+          "api_path": "/api/content/employment-contracts-and-conditions",
+          "base_path": "/employment-contracts-and-conditions",
+          "content_id": "65c41235-b98f-4991-a1cb-fb4b9d1be105",
+          "description": "A contract is an agreement between employee and employer setting out implied and explicit terms  and conditions - written statement of particulars, collective agreements",
+          "document_type": "guide",
+          "locale": "en",
+          "public_updated_at": "2012-05-18T17:08:34Z",
+          "schema_name": "guide",
+          "title": "Employment contracts",
+          "withdrawn": false,
+          "links": {
+            "mainstream_browse_pages": [
+              {
+                "analytics_identifier": null,
+                "api_path": "/api/content/browse/employing-people/contracts",
+                "base_path": "/browse/employing-people/contracts",
+                "content_id": "dbad809a-29b0-4be7-b3d9-9b0b302c4f44",
+                "description": "Includes types of worker, employee rights, overtime and changes to contracts",
+                "document_type": "mainstream_browse_page",
+                "locale": "en",
+                "public_updated_at": "2015-06-24T13:56:38Z",
+                "schema_name": "mainstream_browse_page",
+                "title": "Contracts of employment and working hours",
+                "withdrawn": false,
+                "links": {
+                  "parent": [
+                    {
+                      "analytics_identifier": null,
+                      "api_path": "/api/content/browse/employing-people",
+                      "base_path": "/browse/employing-people",
+                      "content_id": "a0a4c44e-5e8a-44f6-9e64-32ab2c9ba065",
+                      "description": "Includes pay, contracts and hiring",
+                      "document_type": "mainstream_browse_page",
+                      "locale": "en",
+                      "public_updated_at": "2015-04-08T10:48:44Z",
+                      "schema_name": "mainstream_browse_page",
+                      "title": "Employing people",
+                      "withdrawn": false,
+                      "links": {}
+                    }
+                  ]
+                }
+              },
+              {
+                "analytics_identifier": null,
+                "api_path": "/api/content/browse/working/contract-working-hours",
+                "base_path": "/browse/working/contract-working-hours",
+                "content_id": "6b2f82a9-17c6-4a26-9c8a-9b4b10234891",
+                "description": "Includes employment status, workers' rights and changes to contracts",
+                "document_type": "mainstream_browse_page",
+                "locale": "en",
+                "public_updated_at": "2015-06-24T13:56:42Z",
+                "schema_name": "mainstream_browse_page",
+                "title": "Your contract and working hours",
+                "withdrawn": false,
+                "links": {
+                  "parent": [
+                    {
+                      "analytics_identifier": null,
+                      "api_path": "/api/content/browse/working",
+                      "base_path": "/browse/working",
+                      "content_id": "a24f0662-bbfe-4b77-9ec0-e73240e88b9a",
+                      "description": "Includes holidays and finding a job",
+                      "document_type": "mainstream_browse_page",
+                      "locale": "en",
+                      "public_updated_at": "2015-04-08T10:48:40Z",
+                      "schema_name": "mainstream_browse_page",
+                      "title": "Working, jobs and pensions",
+                      "withdrawn": false,
+                      "links": {}
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "analytics_identifier": null,
+          "api_path": "/api/content/fixed-term-contracts",
+          "base_path": "/fixed-term-contracts",
+          "content_id": "9e6aa652-9939-49c3-a400-245662a31e05",
+          "description": "Employees' rights at work under fixed-term contracts - and what happens if a contract is renewed or ended",
+          "document_type": "guide",
+          "locale": "en",
+          "public_updated_at": "2016-05-23T14:40:32Z",
+          "schema_name": "guide",
+          "title": "Fixed-term employment contracts",
+          "withdrawn": false,
+          "links": {
+            "mainstream_browse_pages": [
+              {
+                "analytics_identifier": null,
+                "api_path": "/api/content/browse/employing-people/contracts",
+                "base_path": "/browse/employing-people/contracts",
+                "content_id": "dbad809a-29b0-4be7-b3d9-9b0b302c4f44",
+                "description": "Includes types of worker, employee rights, overtime and changes to contracts",
+                "document_type": "mainstream_browse_page",
+                "locale": "en",
+                "public_updated_at": "2015-06-24T13:56:38Z",
+                "schema_name": "mainstream_browse_page",
+                "title": "Contracts of employment and working hours",
+                "withdrawn": false,
+                "links": {
+                  "parent": [
+                    {
+                      "analytics_identifier": null,
+                      "api_path": "/api/content/browse/employing-people",
+                      "base_path": "/browse/employing-people",
+                      "content_id": "a0a4c44e-5e8a-44f6-9e64-32ab2c9ba065",
+                      "description": "Includes pay, contracts and hiring",
+                      "document_type": "mainstream_browse_page",
+                      "locale": "en",
+                      "public_updated_at": "2015-04-08T10:48:44Z",
+                      "schema_name": "mainstream_browse_page",
+                      "title": "Employing people",
+                      "withdrawn": false,
+                      "links": {}
+                    }
+                  ]
+                }
+              },
+              {
+                "analytics_identifier": null,
+                "api_path": "/api/content/browse/working/contract-working-hours",
+                "base_path": "/browse/working/contract-working-hours",
+                "content_id": "6b2f82a9-17c6-4a26-9c8a-9b4b10234891",
+                "description": "Includes employment status, workers' rights and changes to contracts",
+                "document_type": "mainstream_browse_page",
+                "locale": "en",
+                "public_updated_at": "2015-06-24T13:56:42Z",
+                "schema_name": "mainstream_browse_page",
+                "title": "Your contract and working hours",
+                "withdrawn": false,
+                "links": {
+                  "parent": [
+                    {
+                      "analytics_identifier": null,
+                      "api_path": "/api/content/browse/working",
+                      "base_path": "/browse/working",
+                      "content_id": "a24f0662-bbfe-4b77-9ec0-e73240e88b9a",
+                      "description": "Includes holidays and finding a job",
+                      "document_type": "mainstream_browse_page",
+                      "locale": "en",
+                      "public_updated_at": "2015-04-08T10:48:40Z",
+                      "schema_name": "mainstream_browse_page",
+                      "title": "Working, jobs and pensions",
+                      "withdrawn": false,
+                      "links": {}
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "organisations": [
+        {
+          "analytics_identifier": "D1198",
+          "api_path": "/api/content/government/organisations/department-for-business-energy-and-industrial-strategy",
+          "base_path": "/government/organisations/department-for-business-energy-and-industrial-strategy",
+          "content_id": "2bde479a-97f2-42b5-986a-287a623c2a1c",
+          "description": "We are building an economy that works for everyone, so that there are great places in every part of the UK for people to work and for businesses to invest, innovate and grow. BEIS is a ministerial department, supported by 41 agencies and public bodies .",
+          "document_type": "organisation",
+          "locale": "en",
+          "schema_name": "organisation",
+          "title": "Department for Business, Energy & Industrial Strategy",
+          "withdrawn": false,
+          "details": {
+            "logo": {
+              "formatted_title": "Department for<br/>Business, Energy<br/>&amp; Industrial Strategy",
+              "crest": "single-identity"
+            },
+            "brand": "department-for-business-innovation-skills",
+            "default_news_image": {
+              "url": "https://assets.publishing.service.gov.uk/government/uploads/system/uploads/default_news_organisation_image_data/file/199/s300_beis-sign-1vs.jpg",
+              "high_resolution_url": "https://assets.publishing.service.gov.uk/government/uploads/system/uploads/default_news_organisation_image_data/file/199/s960_beis-sign-1vs.jpg"
+            }
+          },
+          "links": {}
+        },
+        {
+          "analytics_identifier": "D10",
+          "api_path": "/api/content/government/organisations/department-for-work-pensions",
+          "base_path": "/government/organisations/department-for-work-pensions",
+          "content_id": "b548a09f-8b35-4104-89f4-f1a40bf3136d",
+          "description": "The Department for Work and Pensions (DWP) is responsible for welfare, pensions and child maintenance policy. As the UK’s biggest public service department it administers the State Pension and a range of working age, disability and ill health benefits to around 20 million claimants and customers. DWP is a ministerial department, supported by 15 agencies and public bodies .",
+          "document_type": "organisation",
+          "locale": "en",
+          "schema_name": "organisation",
+          "title": "Department for Work and Pensions",
+          "withdrawn": false,
+          "details": {
+            "logo": {
+              "formatted_title": "Department<br/>for Work &amp; <br/>Pensions",
+              "crest": "single-identity"
+            },
+            "brand": "department-for-work-pensions",
+            "default_news_image": {
+              "url": "https://assets.publishing.service.gov.uk/government/uploads/system/uploads/default_news_organisation_image_data/file/35/s300_dwp-caxton-house-logo-960.jpg",
+              "high_resolution_url": "https://assets.publishing.service.gov.uk/government/uploads/system/uploads/default_news_organisation_image_data/file/35/s960_dwp-caxton-house-logo-960.jpg"
+            }
+          },
+          "links": {}
+        }
+      ],
+      "parent": [
+        {
+          "analytics_identifier": null,
+          "api_path": "/api/content/browse/working/contract-working-hours",
+          "base_path": "/browse/working/contract-working-hours",
+          "content_id": "6b2f82a9-17c6-4a26-9c8a-9b4b10234891",
+          "description": "Includes employment status, workers' rights and changes to contracts",
+          "document_type": "mainstream_browse_page",
+          "locale": "en",
+          "public_updated_at": "2015-06-24T13:56:42Z",
+          "schema_name": "mainstream_browse_page",
+          "title": "Your contract and working hours",
+          "withdrawn": false,
+          "links": {
+            "parent": [
+              {
+                "analytics_identifier": null,
+                "api_path": "/api/content/browse/working",
+                "base_path": "/browse/working",
+                "content_id": "a24f0662-bbfe-4b77-9ec0-e73240e88b9a",
+                "description": "Includes holidays and finding a job",
+                "document_type": "mainstream_browse_page",
+                "locale": "en",
+                "public_updated_at": "2015-04-08T10:48:40Z",
+                "schema_name": "mainstream_browse_page",
+                "title": "Working, jobs and pensions",
+                "withdrawn": false,
+                "links": {}
+              }
+            ]
+          }
+        }
+      ],
+      "primary_publishing_organisation": [
+        {
+          "analytics_identifier": "OT1056",
+          "api_path": "/api/content/government/organisations/government-digital-service",
+          "base_path": "/government/organisations/government-digital-service",
+          "content_id": "af07d5a5-df63-4ddc-9383-6a666845ebe9",
+          "description": "We help government work better for everyone by leading digital transformation. GDS is part of the Cabinet Office .",
+          "document_type": "organisation",
+          "locale": "en",
+          "schema_name": "organisation",
+          "title": "Government Digital Service",
+          "withdrawn": false,
+          "details": {
+            "logo": {
+              "formatted_title": "Government Digital Service",
+              "crest": "single-identity"
+            },
+            "brand": "cabinet-office",
+            "default_news_image": null
+          },
+          "links": {}
+        }
+      ],
+      "taxons": [
+        {
+          "analytics_identifier": null,
+          "api_path": "/api/content/employment/contract-working-hours",
+          "base_path": "/employment/contract-working-hours",
+          "content_id": "23a712ff-23b3-4f5a-83f1-44ac679fe615",
+          "description": "Includes employment status, workers' rights and changes to contracts",
+          "document_type": "taxon",
+          "locale": "en",
+          "public_updated_at": "2018-09-03T19:27:01Z",
+          "schema_name": "taxon",
+          "title": "Contracts and working hours",
+          "withdrawn": false,
+          "details": {
+            "internal_name": "Contracts and working hours [M]",
+            "notes_for_editors": "",
+            "visible_to_departmental_editors": false
+          },
+          "phase": "live",
+          "links": {
+            "parent_taxons": [
+              {
+                "analytics_identifier": null,
+                "api_path": "/api/content/employment/working",
+                "base_path": "/employment/working",
+                "content_id": "092348a4-b896-4f8f-a0dc-e6d4605a4904",
+                "description": "Includes holidays and finding a job",
+                "document_type": "taxon",
+                "locale": "en",
+                "public_updated_at": "2018-08-22T11:08:23Z",
+                "schema_name": "taxon",
+                "title": "Working, jobs and pensions",
+                "withdrawn": false,
+                "details": {
+                  "internal_name": "Working, jobs and pensions [M] (merged, level 2, work theme)",
+                  "notes_for_editors": "",
+                  "visible_to_departmental_editors": false
+                },
+                "phase": "live",
+                "links": {
+                  "parent_taxons": [
+                    {
+                      "analytics_identifier": null,
+                      "api_path": "/api/content/work",
+                      "base_path": "/work",
+                      "content_id": "d0f1e5a3-c8f4-4780-8678-994f19104b21",
+                      "description": "",
+                      "document_type": "taxon",
+                      "locale": "en",
+                      "public_updated_at": "2018-09-16T20:33:40Z",
+                      "schema_name": "taxon",
+                      "title": "Work",
+                      "withdrawn": false,
+                      "details": {
+                        "internal_name": "Work",
+                        "notes_for_editors": "",
+                        "visible_to_departmental_editors": true
+                      },
+                      "phase": "live",
+                      "links": {
+                        "root_taxon": [
+                          {
+                            "analytics_identifier": null,
+                            "api_path": "/api/content/",
+                            "base_path": "/",
+                            "content_id": "f3bbdec2-0e62-4520-a7fd-6ffd5d36e03a",
+                            "description": "",
+                            "document_type": "homepage",
+                            "locale": "en",
+                            "public_updated_at": "2018-06-12T15:28:48Z",
+                            "schema_name": "homepage",
+                            "title": "GOV.UK homepage",
+                            "withdrawn": false,
+                            "links": {}
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "available_translations": [
+        {
+          "title": "Your rights as an agency worker",
+          "public_updated_at": "2015-03-09T17:14:33Z",
+          "analytics_identifier": null,
+          "document_type": "guide",
+          "schema_name": "guide",
+          "base_path": "/agency-workers-your-rights",
+          "description": "As an agency worker, you have certain rights when using temp, recruitment agencies or employment agencies to find work - pay, holidays, equal treatment, fees",
+          "api_path": "/api/content/agency-workers-your-rights",
+          "withdrawn": false,
+          "content_id": "6395a828-671d-4e0c-bc0b-719e3da51ca8",
+          "locale": "en"
+        }
+      ]
+    },
+    "access_limited": {},
+    "phase": "live",
+    "withdrawn_notice": {},
+    "title": "Your rights as an agency worker",
+    "public_updated_at": {
+      "$date": "2015-03-09T17:14:33.000Z"
+    },
+    "publishing_app": "publisher",
+    "rendering_app": "government-frontend",
+    "analytics_identifier": null,
+    "document_type": "guide",
+    "schema_name": "guide",
+    "first_published_at": {
+      "$date": "2012-01-26T13:34:31.000Z"
+    },
+    "content_id": "6395a828-671d-4e0c-bc0b-719e3da51ca8",
+    "publishing_request_id": "3593-1504180442.872-10.3.3.1-410",
+    "payload_version": 23739013,
+    "created_at": null,
+    "updated_at": {
+      "$date": "2019-03-06T14:29:39.640Z"
+    }
+  },
+  {
+    "_id": "/countryside-stewardship-grants/organic-conversion-horticulture-or4",
+    "description": {
+      "value": "Find out about eligibility and requirements for the organic conversion - horticulture option.\r\n\r\n"
+    },
+    "content_purpose_document_supertype": "grants-and-funding",
+    "content_purpose_subgroup": "business_support",
+    "content_purpose_supergroup": "guidance_and_regulation",
+    "email_document_supertype": "other",
+    "government_document_supertype": "other",
+    "navigation_document_supertype": "other",
+    "search_user_need_document_supertype": "government",
+    "user_journey_document_supertype": "thing",
+    "locale": "en",
+    "details": {
+      "body": [
+        {
+          "content_type": "text/govspeak",
+          "content": "## How much will be paid\r\n  \r\n£400 per hectare (ha) per year, for up to 2 years.\r\n\r\n##Where to use this option \r\n\r\nAvailable for Mid Tier and Higher Tier\r\n\r\nRotational\r\n\r\nWhole or part parcel \r\n\r\nOnly on:\r\n\r\n* land registered as ‘in conversion’ with a Defra-licensed organic control body \r\n* arable land, temporary grassland or on permanent grassland where cultivation is part of the conversion plan\r\n\r\n##Where this option cannot be used\r\n\r\n* on parcels that have previously been registered with an organic control body by the applicant\r\n* on parcels for which the applicant has previously received conversion aid\r\n\r\n##How this option will benefit the environment\r\n\r\nIt helps to convert rotational land used to produce vegetables or salads into organic status land.\r\n\r\nIf successful there will be an increase in the overall area of land used to produce organic products.\r\n\r\n##Requirements\r\n\r\n* follow the conversion plan agreed with an organic control body for the land and associated stock \r\n* comply with organic standards from the start of organic conversion to the end of the agreement\r\n* make sure that all land has completed conversion and is registered as ‘fully organic’ before the end of the agreement\r\n* enter a maximum area of 20ha into the option \r\n* keep at least 1 horticultural crop in each field parcel (or part parcel) during the agreement\r\n\r\n###Keeping records\r\n\r\nAgreement holders will need to keep the following records and supply them on request, either:\r\n\r\n* a copy of the conversion plan agreed with the organic control body\r\n* a fully completed viability plan and evidence land is improved permanent grassland or rough grazing\r\n\r\nAgreement holders who have undertaken a viability assessment with their application must start their organic conversion process and submit a copy of the conversion plan (agreed with the organic control body) if requested.\r\n\r\nAll agreement holders will need to supply a valid organic certificate and schedule for all the parcels entered into this option on their annual payment claim if requested.\r\n\r\nRPA will not request the above information if you have already supplied it for a Basic Payment Scheme (BPS) claim.\r\n\r\n##Related Mid Tier options\r\n\r\nThe [Organic management – horticultural land option (OT4)](https://www.gov.uk/countryside-stewardship-grants/organic-land-management-horticulture-ot4), should follow on from this option, when the organic conversion period is completed.  \r\n\r\nOther Countryside Stewardship options and supplements relevant to arable and rotational land management may be used on the same land area where eligibility rules allow.  \r\n\r\n##Advice and suggestions for how to carry out this option\r\n\r\nThe following section gives advice on carrying out this option successfully but does not form part of the requirements for this option.\r\n\r\nPermanent ineligible features may be eligible as part of the option area if registered with a control body.\r\n\r\n##Further information\r\n\r\nSee the [Mid Tier manual](https://www.gov.uk/government/publications/countryside-stewardship-mid-tier-including-water-quality-capital-items-manual) or [Higher Tier manual](https://www.gov.uk/government/publications/countryside-stewardship-higher-tier-manual) to find out more about the scheme and how to apply.\r\n"
+        },
+        {
+          "content_type": "text/html",
+          "content": "<h2 id=\"how-much-will-be-paid\">How much will be paid</h2>\n\n<p>£400 per hectare (ha) per year, for up to 2 years.</p>\n\n<h2 id=\"where-to-use-this-option\">Where to use this option</h2>\n\n<p>Available for Mid Tier and Higher Tier</p>\n\n<p>Rotational</p>\n\n<p>Whole or part parcel</p>\n\n<p>Only on:</p>\n\n<ul>\n  <li>land registered as ‘in conversion’ with a Defra-licensed organic control body</li>\n  <li>arable land, temporary grassland or on permanent grassland where cultivation is part of the conversion plan</li>\n</ul>\n\n<h2 id=\"where-this-option-cannot-be-used\">Where this option cannot be used</h2>\n\n<ul>\n  <li>on parcels that have previously been registered with an organic control body by the applicant</li>\n  <li>on parcels for which the applicant has previously received conversion aid</li>\n</ul>\n\n<h2 id=\"how-this-option-will-benefit-the-environment\">How this option will benefit the environment</h2>\n\n<p>It helps to convert rotational land used to produce vegetables or salads into organic status land.</p>\n\n<p>If successful there will be an increase in the overall area of land used to produce organic products.</p>\n\n<h2 id=\"requirements\">Requirements</h2>\n\n<ul>\n  <li>follow the conversion plan agreed with an organic control body for the land and associated stock</li>\n  <li>comply with organic standards from the start of organic conversion to the end of the agreement</li>\n  <li>make sure that all land has completed conversion and is registered as ‘fully organic’ before the end of the agreement</li>\n  <li>enter a maximum area of 20ha into the option</li>\n  <li>keep at least 1 horticultural crop in each field parcel (or part parcel) during the agreement</li>\n</ul>\n\n<h3 id=\"keeping-records\">Keeping records</h3>\n\n<p>Agreement holders will need to keep the following records and supply them on request, either:</p>\n\n<ul>\n  <li>a copy of the conversion plan agreed with the organic control body</li>\n  <li>a fully completed viability plan and evidence land is improved permanent grassland or rough grazing</li>\n</ul>\n\n<p>Agreement holders who have undertaken a viability assessment with their application must start their organic conversion process and submit a copy of the conversion plan (agreed with the organic control body) if requested.</p>\n\n<p>All agreement holders will need to supply a valid organic certificate and schedule for all the parcels entered into this option on their annual payment claim if requested.</p>\n\n<p>RPA will not request the above information if you have already supplied it for a Basic Payment Scheme (BPS) claim.</p>\n\n<h2 id=\"related-mid-tier-options\">Related Mid Tier options</h2>\n\n<p>The <a href=\"https://www.gov.uk/countryside-stewardship-grants/organic-land-management-horticulture-ot4\">Organic management – horticultural land option (OT4)</a>, should follow on from this option, when the organic conversion period is completed.</p>\n\n<p>Other Countryside Stewardship options and supplements relevant to arable and rotational land management may be used on the same land area where eligibility rules allow.</p>\n\n<h2 id=\"advice-and-suggestions-for-how-to-carry-out-this-option\">Advice and suggestions for how to carry out this option</h2>\n\n<p>The following section gives advice on carrying out this option successfully but does not form part of the requirements for this option.</p>\n\n<p>Permanent ineligible features may be eligible as part of the option area if registered with a control body.</p>\n\n<h2 id=\"further-information\">Further information</h2>\n\n<p>See the <a href=\"https://www.gov.uk/government/publications/countryside-stewardship-mid-tier-including-water-quality-capital-items-manual\">Mid Tier manual</a> or <a href=\"https://www.gov.uk/government/publications/countryside-stewardship-higher-tier-manual\">Higher Tier manual</a> to find out more about the scheme and how to apply.</p>\n"
+        }
+      ],
+      "metadata": {
+        "grant_type": "option",
+        "land_use": [
+          "organic-land",
+          "uplands",
+          "water-quality"
+        ],
+        "tiers_or_standalone_items": [
+          "higher-tier",
+          "mid-tier"
+        ],
+        "funding_amount": [
+          "301-to-400"
+        ]
+      },
+      "max_cache_time": 10,
+      "temporary_update_type": false,
+      "headers": [
+        {
+          "text": "How much will be paid",
+          "level": 2,
+          "id": "how-much-will-be-paid"
+        },
+        {
+          "text": "Where to use this option",
+          "level": 2,
+          "id": "where-to-use-this-option"
+        },
+        {
+          "text": "Where this option cannot be used",
+          "level": 2,
+          "id": "where-this-option-cannot-be-used"
+        },
+        {
+          "text": "How this option will benefit the environment",
+          "level": 2,
+          "id": "how-this-option-will-benefit-the-environment"
+        },
+        {
+          "text": "Requirements",
+          "level": 2,
+          "id": "requirements",
+          "headers": [
+            {
+              "text": "Keeping records",
+              "level": 3,
+              "id": "keeping-records"
+            }
+          ]
+        },
+        {
+          "text": "Related Mid Tier options",
+          "level": 2,
+          "id": "related-mid-tier-options"
+        },
+        {
+          "text": "Advice and suggestions for how to carry out this option",
+          "level": 2,
+          "id": "advice-and-suggestions-for-how-to-carry-out-this-option"
+        },
+        {
+          "text": "Further information",
+          "level": 2,
+          "id": "further-information"
+        }
+      ],
+      "change_history": [
+        {
+          "note": "First published.",
+          "public_timestamp": "2015-04-02T10:53:53.000Z"
+        },
+        {
+          "note": "Information updated for applications in 2016.",
+          "public_timestamp": "2016-03-29T15:39:02.000Z"
+        }
+      ]
+    },
+    "routes": [
+      {
+        "path": "/countryside-stewardship-grants/organic-conversion-horticulture-or4",
+        "type": "exact"
+      }
+    ],
+    "redirects": [],
+    "links": {},
+    "expanded_links": {
+      "organisations": [
+        {
+          "analytics_identifier": "EA58",
+          "api_path": "/api/content/government/organisations/rural-payments-agency",
+          "base_path": "/government/organisations/rural-payments-agency",
+          "content_id": "e8fae147-6232-4163-a3f1-1c15b755a8a4",
+          "description": "We pay out over £2 billion each year to support a thriving farming and food sector. RPA is an executive agency, sponsored by the Department for Environment, Food & Rural Affairs , supported by 1 public body .",
+          "document_type": "organisation",
+          "locale": "en",
+          "schema_name": "organisation",
+          "title": "Rural Payments Agency",
+          "withdrawn": false,
+          "details": {
+            "logo": {
+              "formatted_title": "Rural Payments <br/>Agency",
+              "crest": "single-identity"
+            },
+            "brand": "department-for-environment-food-rural-affairs",
+            "default_news_image": null
+          },
+          "links": {}
+        },
+        {
+          "analytics_identifier": "PB202",
+          "api_path": "/api/content/government/organisations/natural-england",
+          "base_path": "/government/organisations/natural-england",
+          "content_id": "d3ce4ba7-bc75-46b4-89d9-38cb3240376d",
+          "description": "We’re the government’s adviser for the natural environment in England, helping to protect England’s nature and landscapes for people to enjoy and for the services they provide. Natural England is an executive non-departmental public body, sponsored by the Department for Environment, Food & Rural Affairs .",
+          "document_type": "organisation",
+          "locale": "en",
+          "schema_name": "organisation",
+          "title": "Natural England",
+          "withdrawn": false,
+          "details": {
+            "logo": {
+              "formatted_title": "Natural England",
+              "image": {
+                "url": "https://assets.publishing.service.gov.uk/government/uploads/system/uploads/organisation/logo/202/NatEng_logo_New-Green.png",
+                "alt_text": "Natural England"
+              }
+            },
+            "brand": "department-for-environment-food-rural-affairs",
+            "default_news_image": {
+              "url": "https://assets.publishing.service.gov.uk/government/uploads/system/uploads/default_news_organisation_image_data/file/132/s300_natural-england6.jpg",
+              "high_resolution_url": "https://assets.publishing.service.gov.uk/government/uploads/system/uploads/default_news_organisation_image_data/file/132/s960_natural-england6.jpg"
+            }
+          },
+          "links": {}
+        }
+      ],
+      "primary_publishing_organisation": [
+        {
+          "analytics_identifier": "EA58",
+          "api_path": "/api/content/government/organisations/rural-payments-agency",
+          "base_path": "/government/organisations/rural-payments-agency",
+          "content_id": "e8fae147-6232-4163-a3f1-1c15b755a8a4",
+          "description": "We pay out over £2 billion each year to support a thriving farming and food sector. RPA is an executive agency, sponsored by the Department for Environment, Food & Rural Affairs , supported by 1 public body .",
+          "document_type": "organisation",
+          "locale": "en",
+          "schema_name": "organisation",
+          "title": "Rural Payments Agency",
+          "withdrawn": false,
+          "details": {
+            "logo": {
+              "formatted_title": "Rural Payments <br/>Agency",
+              "crest": "single-identity"
+            },
+            "brand": "department-for-environment-food-rural-affairs",
+            "default_news_image": null
+          },
+          "links": {}
+        }
+      ],
+      "taxons": [
+        {
+          "analytics_identifier": null,
+          "api_path": "/api/content/environment/countryside",
+          "base_path": "/environment/countryside",
+          "content_id": "9129d716-365b-44ba-9856-383423fe1e41",
+          "description": null,
+          "document_type": "taxon",
+          "locale": "en",
+          "public_updated_at": "2018-09-05T16:13:11Z",
+          "schema_name": "taxon",
+          "title": "Countryside",
+          "withdrawn": false,
+          "details": {
+            "internal_name": "Countryside [M]",
+            "notes_for_editors": "",
+            "visible_to_departmental_editors": false
+          },
+          "phase": "live",
+          "links": {
+            "parent_taxons": [
+              {
+                "analytics_identifier": null,
+                "api_path": "/api/content/environment/rural-and-countryside",
+                "base_path": "/environment/rural-and-countryside",
+                "content_id": "9949c2c1-ff96-4b4f-b584-c700e316c9de",
+                "description": null,
+                "document_type": "taxon",
+                "locale": "en",
+                "public_updated_at": "2018-09-05T16:13:10Z",
+                "schema_name": "taxon",
+                "title": "Rural and countryside",
+                "withdrawn": false,
+                "details": {
+                  "internal_name": "Rural and countryside (merged, level 2)",
+                  "notes_for_editors": "",
+                  "visible_to_departmental_editors": false
+                },
+                "phase": "live",
+                "links": {
+                  "parent_taxons": [
+                    {
+                      "analytics_identifier": null,
+                      "api_path": "/api/content/environment",
+                      "base_path": "/environment",
+                      "content_id": "3cf97f69-84de-41ae-bc7b-7e2cc238fa58",
+                      "description": "",
+                      "document_type": "taxon",
+                      "locale": "en",
+                      "public_updated_at": "2018-09-16T13:39:00Z",
+                      "schema_name": "taxon",
+                      "title": "Environment",
+                      "withdrawn": false,
+                      "details": {
+                        "internal_name": "Environment",
+                        "notes_for_editors": "",
+                        "visible_to_departmental_editors": true
+                      },
+                      "phase": "live",
+                      "links": {
+                        "root_taxon": [
+                          {
+                            "analytics_identifier": null,
+                            "api_path": "/api/content/",
+                            "base_path": "/",
+                            "content_id": "f3bbdec2-0e62-4520-a7fd-6ffd5d36e03a",
+                            "description": "",
+                            "document_type": "homepage",
+                            "locale": "en",
+                            "public_updated_at": "2018-06-12T15:28:48Z",
+                            "schema_name": "homepage",
+                            "title": "GOV.UK homepage",
+                            "withdrawn": false,
+                            "links": {}
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "finder": [
+        {
+          "analytics_identifier": null,
+          "api_path": "/api/content/countryside-stewardship-grants",
+          "base_path": "/countryside-stewardship-grants",
+          "content_id": "0eb7b150-879a-4c44-becc-718e23a77e2c",
+          "description": "Find information about Countryside Stewardship options, capital items and supplements",
+          "document_type": "finder",
+          "locale": "en",
+          "public_updated_at": "2019-01-23T09:23:40Z",
+          "schema_name": "finder",
+          "title": "Countryside Stewardship grants",
+          "withdrawn": false,
+          "details": {
+            "facets": [
+              {
+                "key": "grant_type",
+                "name": "Grant type",
+                "type": "text",
+                "preposition": "of type",
+                "display_as_result_metadata": false,
+                "filterable": true,
+                "allowed_values": [
+                  {
+                    "label": "Option",
+                    "value": "option"
+                  },
+                  {
+                    "label": "Capital item",
+                    "value": "capital-item"
+                  },
+                  {
+                    "label": "Supplement",
+                    "value": "supplement"
+                  }
+                ]
+              },
+              {
+                "key": "land_use",
+                "name": "Land use",
+                "type": "text",
+                "preposition": "for",
+                "display_as_result_metadata": false,
+                "filterable": true,
+                "allowed_values": [
+                  {
+                    "label": "Arable land",
+                    "value": "arable-land"
+                  },
+                  {
+                    "label": "Boundaries",
+                    "value": "boundaries"
+                  },
+                  {
+                    "label": "Coast",
+                    "value": "coast"
+                  },
+                  {
+                    "label": "Educational access",
+                    "value": "educational-access"
+                  },
+                  {
+                    "label": "Flood risk",
+                    "value": "flood-risk"
+                  },
+                  {
+                    "label": "Grassland",
+                    "value": "grassland"
+                  },
+                  {
+                    "label": "Historic environment",
+                    "value": "historic-environment"
+                  },
+                  {
+                    "label": "Livestock management",
+                    "value": "livestock-management"
+                  },
+                  {
+                    "label": "Organic land",
+                    "value": "organic-land"
+                  },
+                  {
+                    "label": "Priority habitats",
+                    "value": "priority-habitats"
+                  },
+                  {
+                    "label": "Trees (non-woodland)",
+                    "value": "trees-non-woodland"
+                  },
+                  {
+                    "label": "Uplands",
+                    "value": "uplands"
+                  },
+                  {
+                    "label": "Vegetation control",
+                    "value": "vegetation-control"
+                  },
+                  {
+                    "label": "Water quality",
+                    "value": "water-quality"
+                  },
+                  {
+                    "label": "Pollinators and wildlife",
+                    "value": "wildlife-package"
+                  },
+                  {
+                    "label": "Woodland",
+                    "value": "woodland"
+                  }
+                ]
+              },
+              {
+                "key": "tiers_or_standalone_items",
+                "name": "Tiers or standalone items",
+                "type": "text",
+                "preposition": "for",
+                "display_as_result_metadata": false,
+                "filterable": true,
+                "allowed_values": [
+                  {
+                    "label": "Higher Tier",
+                    "value": "higher-tier"
+                  },
+                  {
+                    "label": "Mid Tier",
+                    "value": "mid-tier"
+                  },
+                  {
+                    "label": "Offer: Arable",
+                    "value": "offer-arable"
+                  },
+                  {
+                    "label": "Offer: Lowland Grazing",
+                    "value": "offer-lowland-grazing"
+                  },
+                  {
+                    "label": "Offer: Mixed Farming",
+                    "value": "offer-mixed-farming"
+                  },
+                  {
+                    "label": "Offer: Upland",
+                    "value": "offer-upland"
+                  },
+                  {
+                    "label": "Standalone capital items",
+                    "value": "standalone-capital-items"
+                  }
+                ]
+              },
+              {
+                "key": "funding_amount",
+                "name": "Funding (per unit per year)",
+                "type": "text",
+                "preposition": "of",
+                "display_as_result_metadata": false,
+                "filterable": true,
+                "allowed_values": [
+                  {
+                    "label": "Up to £100",
+                    "value": "up-to-100"
+                  },
+                  {
+                    "label": "£101 to £200",
+                    "value": "101-to-200"
+                  },
+                  {
+                    "label": "£201 to £300",
+                    "value": "201-to-300"
+                  },
+                  {
+                    "label": "£301 to £400",
+                    "value": "301-to-400"
+                  },
+                  {
+                    "label": "£401 to £500",
+                    "value": "401-to-500"
+                  },
+                  {
+                    "label": "More than £500",
+                    "value": "more-than-500"
+                  },
+                  {
+                    "label": "Up to 50% actual costs",
+                    "value": "up-to-50-actual-costs"
+                  },
+                  {
+                    "label": "More than 50% actual costs",
+                    "value": "more-than-50-actual-costs"
+                  }
+                ]
+              }
+            ]
+          },
+          "links": {}
+        }
+      ],
+      "available_translations": [
+        {
+          "title": "OR4: Organic conversion - horticulture",
+          "public_updated_at": "2016-03-29T15:39:02Z",
+          "analytics_identifier": null,
+          "document_type": "countryside_stewardship_grant",
+          "schema_name": "specialist_document",
+          "base_path": "/countryside-stewardship-grants/organic-conversion-horticulture-or4",
+          "description": "Find out about eligibility and requirements for the organic conversion - horticulture option.\r\n\r\n",
+          "api_path": "/api/content/countryside-stewardship-grants/organic-conversion-horticulture-or4",
+          "withdrawn": false,
+          "content_id": "3d7ab8cd-2385-4b9a-b3d6-7446febf2e07",
+          "locale": "en"
+        }
+      ]
+    },
+    "access_limited": {},
+    "phase": "live",
+    "withdrawn_notice": {},
+    "title": "OR4: Organic conversion - horticulture",
+    "public_updated_at": {
+      "$date": "2016-03-29T15:39:02.000Z"
+    },
+    "publishing_app": "specialist-publisher",
+    "rendering_app": "government-frontend",
+    "analytics_identifier": null,
+    "document_type": "countryside_stewardship_grant",
+    "schema_name": "specialist_document",
+    "first_published_at": {
+      "$date": "2015-04-02T10:53:53.000Z"
+    },
+    "content_id": "3d7ab8cd-2385-4b9a-b3d6-7446febf2e07",
+    "publishing_request_id": "28573-1550159228.979-148.253.221.44-1577",
+    "payload_version": 23635432,
+    "created_at": null,
+    "updated_at": {
+      "$date": "2019-03-06T10:05:09.122Z"
+    }
+  }
+]

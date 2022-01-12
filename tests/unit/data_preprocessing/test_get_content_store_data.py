@@ -9,13 +9,54 @@ from src.data_preprocessing.get_content_store_data import (
     convert_link_list_to_df,
     get_path_content_id_mappings,
     get_page_text_df,
-    reshape_df_explode_list_column,
-    extract_embedded_links_df,
+    extract_embedded_links,
     get_structural_edges_df,
     export_content_id_list
 )
 
 # flake8: noqa
+
+@pytest.fixture(scope="session")
+def content_store_items_fixture():
+    return [{
+        "_id": "/adhd-and-driving",
+        "content_id": "8e5b0f09-66d5-4826-801d-b038a2ebfdda",
+        "details": {
+            "body": "<p>You must tell <abbr title=\"Driver Vehicle and Licensing Agency\">DVLA</abbr> if your attention deficit hyperactivity disorder (<abbr title=\"attention deficit hyperactivity disorder\">ADHD</abbr>) or your <abbr title=\"attention deficit hyperactivity disorder\">ADHD</abbr> medication affects your ability to drive safely.</p>\n\n<div role=\"note\" aria-label=\"Warning\" class=\"application-notice help-notice\">\n<p>You can be fined up to £1,000 if you do not tell DVLA about a medical condition that affects your driving. You may be prosecuted if you’re involved in an accident as a result.</p>\n</div>\n\n<h2 id=\"if-youre-applying-for-your-provisional-learners-driving-licence\">If you’re applying for your provisional (learners) driving licence</h2>\n\n<p>You do not need to tell <abbr title=\"Driver Vehicle and Licensing Agency\">DVLA</abbr> about your condition unless you think that it may affect your ability to drive safely.</p>\n\n<p>Ask your doctor if you’re not sure if your condition will affect your driving.</p>\n\n<h2 id=\"car-or-motorcycle-licence\">Car or motorcycle licence</h2>\n\n<p>If you already have a car or motorcycle licence you need to tell <abbr title=\"Driver Vehicle and Licensing Agency\">DVLA</abbr> if:</p>\n\n<ul>\n  <li>there is a change to your condition that may make you an unsafe driver</li>\n  <li>you are prescribed medication that causes side effects that will affect your driving</li>\n</ul>\n\n<p><a href=\"/government/publications/a1-report-your-medical-condition\">Fill in form A1</a> and send it to <abbr title=\"Driver Vehicle and Licensing Agency\">DVLA</abbr>. The address is on the form.</p>\n\n<h2 id=\"bus-coach-or-lorry-licence\">Bus, coach or lorry licence</h2>\n\n<p>If you already have a bus, coach or lorry licence you need to tell <abbr title=\"Driver Vehicle and Licensing Agency\">DVLA</abbr> if:</p>\n\n<ul>\n  <li>there is a change to your condition that may make you an unsafe driver</li>\n  <li>you are prescribed medication that causes side effects that will affect your driving</li>\n</ul>\n\n<p><a href=\"/government/publications/report-your-medical-condition-form-a1v\">Fill in form A1V</a> and send it to <abbr title=\"Driver Vehicle and Licensing Agency\">DVLA</abbr>. The address is on the form.</p>\n\n"
+        }
+    }, {
+        "_id": "/aaib-reports/aaib-investigation-to-pioneer-300-g-dewy",
+        "details": {
+            "body": [{
+                "content_type": "text/html",
+                "content": "<h2 id=\"summary\">Summary:</h2>\n\n<p>The aircraft suffered an engine failure whilst it was positioning to land, flying over a wooded area.  The aircraft hit the trees and the pilot sustained serious injuries.  The reason for the engine failure was not positively determined. </p>\n\n<h3 id=\"download-report\">Download report:</h3>\n\n<p><a rel=\"external\" href=\"https://assets.digital.cabinet-office.gov.uk/media/54ae3fd340f0b62391000003/Pioneer_300_G-DEWY_01-15.pdf\">Pioneer 300 G-DEWY 01-15</a> </p>\n"
+            }]
+        },
+        "content_id": "797bbffc-a3db-46d4-b439-9df93c225241"
+    }, {
+        "_id": "/agency-workers-your-rights",
+        "details": {
+            "parts": [{
+                "title": "When you're an agency worker",
+                "slug": "when-youre-an-agency-worker",
+                "body": [{
+                    "content_type": "text/html",
+                    "content": "<p>You’re an agency worker if you have a contract with an agency but you work temporarily for a hirer. Agencies can include recruitment agencies, for example ‘temp agencies’.</p>\n\n<p>You’re also an agency worker if you look for work through <a href=\"/agency-workers-your-rights/entertainment-and-modelling-agencies\">entertainment and modelling agencies</a>.</p>\n\n<p>You’re not an agency worker if you:</p>\n\n<ul>\n  <li>find work through an agency but work for yourself - you may be <a href=\"/working-for-yourself/what-counts-as-self-employed\">self-employed</a>\n</li>\n  <li>use an agency to find permanent or fixed-term <a href=\"/employment-status/employee\">employment</a> - check with the company that hired you</li>\n  <li>take a <a href=\"/agency-workers-your-rights/pay\">‘pay between assignments’ contract</a> - you’re an employee of the agency</li>\n</ul>\n\n<p><a href=\"https://www.gov.uk/pay-and-work-rights\">Contact ACAS</a> if you’re unsure if you’re an agency worker.</p>\n"
+                }]
+            }]
+        },
+        "content_id": "6395a828-671d-4e0c-bc0b-719e3da51ca8"
+    }]
+
+
+
+def page_path_content_id_mapping_fixture():
+    return {
+        "/adhd-and-driving": "8e5b0f09-66d5-4826-801d-b038a2ebfdda",
+        "/government/publications/a1-report-your-medical-condition": "10937415-9284-4b0f-b124-a51c4def4a37",
+        "/government/publications/report-your-medical-condition-form-a1v": "9a3070f0-c3db-4ca5-a375-dfa1bccee628"
+    }
+
 
 @pytest.fixture(scope="session")
 def related_links_link_list_fixture():
@@ -1257,41 +1298,30 @@ def test_get_path_content_id_mapping(
     assert content_id_base_path_mapping == content_id_base_path_mapping_fixture
 
 
-def test_get_page_text_df(mongodb):
-    pd_testing.assert_frame_equal(
-        get_page_text_df(mongodb.content_store_data_sample).sort_values(
-            by=['_id'])[['_id', 'content_id']].reset_index(drop=True),
-        pd.read_csv('tests/unit/text_df.csv')[['_id', 'content_id']].sort_values(
-            by=['_id']).reset_index(drop=True))
-    # TODO can't get the test to pass when including details. Can't think  of any reason that the 2 should differ!
-    assert get_page_text_df(mongodb.content_store_data_sample).shape == pd.read_csv('tests/unit/text_df.csv').shape
-    #
-
-
-def test_reshape_df_explode_list_column():
-    wide_df = pd.DataFrame({'A': [1, 2], 'B': [2, 2], 'C': [[1, 2], [1, 2]]})
-    long_df = pd.DataFrame({'A': [1, 1, 2, 2], 'B': [2, 2, 2, 2], 'C': [1, 2, 1, 2]})
-    pd_testing.assert_frame_equal(reshape_df_explode_list_column(wide_df, 'C'),
-                                  long_df)
-
-
-def test_extract_embedded_links_df():
+def test_get_page_text_df(mongodb, structural_edges_fixture):
     with open('tests/unit/fixtures/base_path_content_id_mapping.json', 'r') as infile:
-        mapping = json.load(infile)
-    pd_testing.assert_frame_equal(extract_embedded_links_df(pd.read_csv('tests/unit/text_df.csv'),
-                                                            mapping),
-                                  pd.read_csv('tests/unit/embedded_links.csv'))
+        page_path_content_id_mapping = json.load(infile)
+    test = get_page_text_df(mongodb.content_store_small_data_sample, page_path_content_id_mapping)
+    ref = pd.read_csv('tests/unit/fixtures/embedded_links_fixture.csv')
+    pd_testing.assert_frame_equal(test, ref)
+
+
+def test_extract_embedded_links(content_store_items_fixture):
+    item = content_store_items_fixture[0]
+    embedded_links = extract_embedded_links(item)
+    assert embedded_links == [{'source_base_path': '/adhd-and-driving', 'source_content_id': '8e5b0f09-66d5-4826-801d-b038a2ebfdda', 'destination_base_path': '/government/publications/a1-report-your-medical-condition', 'link_type': 'embedded_link'}, {'source_base_path': '/adhd-and-driving', 'source_content_id': '8e5b0f09-66d5-4826-801d-b038a2ebfdda', 'destination_base_path': '/government/publications/report-your-medical-condition-form-a1v', 'link_type': 'embedded_link'}]
 
 
 def test_get_structural_edges_df(mongodb, structural_edges_fixture):
-    # print(get_all_links_df(mongodb.content_store_data_sample).head())
     with open('tests/unit/fixtures/base_path_content_id_mapping.json', 'r') as infile:
-        mapping = json.load(infile)
-    pd_testing.assert_frame_equal(
-        get_structural_edges_df(mongodb.content_store_data_sample, mapping).sort_values(
-            by=['source_content_id', 'destination_content_id']).reset_index(drop=True),
-        structural_edges_fixture.sort_values(
-            by=['source_content_id', 'destination_content_id']).reset_index(drop=True))
+        page_path_content_id_mapping = json.load(infile)
+
+    result = get_structural_edges_df(mongodb.content_store_data_sample, page_path_content_id_mapping).sort_values(
+        by=['source_content_id', 'destination_content_id']).reset_index(drop=True)
+    reference = structural_edges_fixture.sort_values(
+        by=['source_content_id', 'destination_content_id']).reset_index(drop=True)
+
+    pd_testing.assert_frame_equal(result, reference)
 
 
 def test_export_content_id_list(mongodb):

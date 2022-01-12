@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 from itertools import chain
+import re
 
 
 def is_html(text):
@@ -62,4 +63,6 @@ def clean_page_path(page_path, sep='#'):
     :param sep: default '#' that we want to get rid of, we use rsplit to take away the right-most part of the string
     :return: a nice clean page_path, more hope of matching to our content ID mapping
     """
-    return page_path.replace('//', '/').rsplit(sep, 1)[0]
+    clean = page_path.replace('//', '/').rsplit(sep, 1)[0]
+    no_trailing_slash = re.sub('/$', '', clean)
+    return no_trailing_slash
