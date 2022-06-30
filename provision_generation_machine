@@ -12,7 +12,7 @@ sudo service mongod start
 
 # Install Python 3 and Pip
 sudo apt-get install -y python3.6
-sudo apt install -y python3-pip
+sudo apt-get install -y python3-pip
 
 # Set execute permission on scripts
 chmod +x ./run_link_generation

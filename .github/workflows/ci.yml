@@ -12,7 +12,7 @@ jobs:
         shell: bash
         run: |
           set -eo pipefail
-          pip install -r requirements.txt
+          python3.6 -m pip install -r requirements-original.txt
           flake8 src
           pytest tests/unit
 
