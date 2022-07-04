@@ -3,18 +3,23 @@ on: [push]
 jobs:
   Run-Python-Tests-and-Linting:
     runs-on: ubuntu-latest
-    container:
-      image: python:3.6
     steps:
-      - name: Checkout
+      -
+        name: Checkout
         uses: actions/checkout@v2
-      - name: Run Tests and Linting
-        shell: bash
-        run: |
-          set -eo pipefail
-          pip install -r requirements.txt
-          flake8 src
-          pytest tests/unit
+      -
+        name: Build tests container
+        uses: docker/build-push-action@v3
+        with:
+          push: false
+          tags: related-links-tests:latest
+      -
+        name: Run tests
+        uses: addnab/docker-run-action@v3
+        with:
+            image: related-links-tests:latest
+            run: flake8 src && pytest tests/unit
+            options: -v ${{ github.workspace }}:/opt
 
   Run-Ruby-Tests:
     runs-on: ubuntu-latest

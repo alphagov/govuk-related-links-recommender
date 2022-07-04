@@ -22,6 +22,24 @@ export DATA_DIR=$PWD/data
 mkdir -p $DATA_DIR # make sure it exists
 export GOOGLE_APPLICATION_CREDENTIALS=/var/tmp/bigquery.json
 
+###########################################################################################
+# Python setup
+###########################################################################################
+
+echo "### Installing python packages"
+cd /var/data/github/govuk-related-links-recommender
+echo "Installing setuptools first"
+python3.6 -m pip install --upgrade setuptools
+echo "Installing local requirements"
+python3.6 -m pip install -r requirements-original.txt
+
+echo "Python version installed:"
+python3.6 -V
+
+###########################################################################################
+# Create a local copy of the content store
+###########################################################################################
+
 # Find and download the latest content store backup from S3
 echo "Finding latest content backup..."
 LATEST_CONTENT_BACKUP_PATH=$(aws s3api list-objects-v2 --bucket $CONTENT_STORE_BUCKET --prefix mongo-api --query "Contents[?contains(Key, '-content_store_production.gz')]" | jq  -c "max_by(.LastModified)|.Key" | xargs)
@@ -37,13 +55,11 @@ ls -lat content_store_production
 # Restore content store data to MongoDb
 mongorestore -d content_store -c content_items /var/data/content_store_production/content_items.bson
 
-# Install requirements
+###########################################################################################
+# Start related-links generation
+###########################################################################################
+
 cd /var/data/github/govuk-related-links-recommender
-pip3 install -r requirements.txt
-
-echo "Python version installed:"
-python3.6 -V
-
 
 echo -e "\n\n### Starting related links generation process\n"
 
