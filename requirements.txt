@@ -63,7 +63,7 @@ netifaces==0.10.4
 networkx==2.3
 node2vec==0.3.0
 nodeenv==1.6.0
-numpy==1.16.4
+numpy==1.22.0
 oauthlib==2.0.6
 olefile==0.45.1
 packaging==21.3
