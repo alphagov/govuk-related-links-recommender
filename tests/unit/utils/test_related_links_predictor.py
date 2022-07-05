@@ -12,6 +12,21 @@ def rounded_related_links(links, digits):
     scores, they can slightly vary with no consequences on the final output. The
     test below isn't meant to check that, so it uses this function to round off
     the scores, so that it's the actual related links result that is compared.
+    
+    The structure of `links` is as follows:
+    
+    ```
+    links = {
+        '03680a95-4cd4-46e6-b6d9-ec7aa5fb988e': [
+            ['d9293a00-0e80-4039-b5cd-298b5153b2a3', 0.98765],
+            ['eec5b7ac-2248-4ffc-a061-b95d9de988b3', 0.97654]
+        ].
+        '12344a95-4cd4-46e6-b6d9-ec7aa5dg234f': [
+            ['d9293a00-0e80-4039-b5cd-298b5153b2a3', 0.98765],
+            ['eec5b7ac-2248-4ffc-a061-b95d9de988b3', 0.97654]
+        ]
+    }
+    ```
     """
 
     rounded_off_links = {}
