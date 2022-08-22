@@ -62,6 +62,7 @@ def test_get_excluded_document_types():
                  'uk_market_conformity_assessment_body',
                  'working_group',
                  'world_location',
+                 'world_location_news',
                  'worldwide_organisation']
 
     assert doc_types == read_config_yaml("document_types_excluded_from_the_topic_taxonomy.yml")[
