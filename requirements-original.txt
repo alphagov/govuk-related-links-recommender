@@ -12,7 +12,7 @@ tqdm==4.32.2
 node2vec==0.3.0
 gensim==3.8.0
 networkx==2.3
-protobuf==3.19.4
+protobuf==3.19.5
 google-api-core==1.16.0
 google-auth==1.6.3
 google-cloud-bigquery==1.17.0

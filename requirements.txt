@@ -74,7 +74,7 @@ Pillow==5.1.0
 platformdirs==2.4.0
 pluggy==0.13.1
 pre-commit==2.14.1
-protobuf==3.19.4
+protobuf==3.19.5
 py==1.11.0
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
