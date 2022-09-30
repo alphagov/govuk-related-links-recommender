@@ -48,7 +48,7 @@ importlib-resources==5.4.0
 incremental==16.10.1
 Jinja2==2.10
 jmespath==0.9.3
-joblib==1.1.0
+joblib==1.2.0
 jsonpatch==1.16
 jsonpointer==1.10
 jsonschema==2.6.0
