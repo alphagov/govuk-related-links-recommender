@@ -113,7 +113,7 @@ ssh-import-id==5.7
 systemd-python==234
 toml==0.10.2
 tqdm==4.32.2
-Twisted==17.9.0
+Twisted==22.10.0
 typing-extensions==4.1.1
 ubuntu-advantage-tools==27.6
 ufw==0.36
