@@ -6,6 +6,7 @@ def test_get_excluded_document_types():
     doc_types = ['about',
                  'about_our_services',
                  'access_and_opening',
+                 'animal_disease_case',
                  'business_support_finder',
                  'coming_soon',
                  'complaints_procedure',
