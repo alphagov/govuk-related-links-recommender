@@ -196,3 +196,8 @@ Gets the top 5 most similar nodes for every node (not explicitly excluded in the
 - '/staying-uk-eu-citizen'
 - '/report-driving-medical-condition'
 - '/check-flood-risk' (edited)
+
+## Licence
+
+[MIT License](LICENCE)
+
