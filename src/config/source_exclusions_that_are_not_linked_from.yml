@@ -20,6 +20,7 @@ content_ids:
  - 2b3617a4-3230-46bd-b7a9-9dbea78508b4 # /check-flood-risk
  - 91cd6143-69d5-4f27-99ff-a52fb0d51c78 # /guidance/brexit-guidance-for-businesses
  - 6555e0bf-c270-4cf9-a0c5-d20b95fab7f1 # /guidance/brexit-guidance-for-individuals-and-families
+ - 601a9d33-7631-11e4-a3cb-005056011aef # /government/publications/introducing-govuk-verify
 document_types:
  - fatality_notice
  - guide
