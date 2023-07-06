@@ -61,7 +61,7 @@ pyxdg==0.25
 PyYAML==5.4
 requests==2.27.1
 rsa==4.8
-scipy==1.5.4
+scipy==1.10.0
 SecretStorage==2.3.1
 sentinels==1.0.0
 six==1.11.0
