@@ -5,7 +5,7 @@ atomicwrites==1.4.0
 attrs==21.4.0
 beautifulsoup4==4.7.1
 cachetools==4.2.4
-certifi==2022.6.15
+certifi==2023.7.22
 cfgv==3.3.1
 charset-normalizer==2.0.12
 cryptography==2.1.4

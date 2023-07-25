@@ -9,7 +9,7 @@ beautifulsoup4==4.7.1
 blinker==1.4
 botocore==1.16.19
 cachetools==4.2.4
-certifi==2022.6.15
+certifi==2023.7.22
 cfgv==3.3.1
 chardet==3.0.4
 charset-normalizer==2.0.12
