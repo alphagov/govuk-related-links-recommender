@@ -19,7 +19,7 @@ colorama==0.3.7
 command-not-found==0.3
 configobj==5.0.6
 constantly==15.1.0
-cryptography==2.1.4
+cryptography==41.0.3
 decorator==5.1.1
 detect-secrets==1.0.3
 distlib==0.3.4
