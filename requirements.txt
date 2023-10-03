@@ -70,7 +70,7 @@ packaging==21.3
 PAM==0.4.2
 pandas==0.24.2
 pexpect==4.2.1
-Pillow==5.1.0
+Pillow==10.0.1
 platformdirs==2.4.0
 pluggy==0.13.1
 pre-commit==2.14.1
