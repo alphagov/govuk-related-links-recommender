@@ -24,7 +24,7 @@ GEM
     plek (4.0.0)
     progressbar (1.10.1)
     public_suffix (4.0.6)
-    rake (12.3.3)
+    rake (13.0.6)
     require_all (2.0.0)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
