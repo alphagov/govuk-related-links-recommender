@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'gds-api-adapters', '~> 76.0'
+gem 'gds-api-adapters', '~> 91.1'
 gem 'rake'
 gem 'require_all'
 gem 'progressbar'
