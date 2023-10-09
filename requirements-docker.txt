@@ -70,7 +70,7 @@ soupsieve==2.3.2.post1
 toml==0.10.2
 tqdm==4.32.2
 typing-extensions==4.1.1
-urllib3==1.26.9
+urllib3==2.0.6
 virtualenv==20.15.1
 wcwidth==0.2.5
 webencodings==0.5.1

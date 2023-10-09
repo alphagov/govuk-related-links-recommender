@@ -118,7 +118,7 @@ typing-extensions==4.1.1
 ubuntu-advantage-tools==27.6
 ufw==0.36
 unattended-upgrades==0.1
-urllib3==1.26.9
+urllib3==2.0.6
 virtualenv==20.15.1
 wcwidth==0.2.5
 webencodings==0.5.1
