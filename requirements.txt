@@ -119,7 +119,7 @@ ubuntu-advantage-tools==27.6
 ufw==0.36
 unattended-upgrades==0.1
 urllib3==1.26.9
-virtualenv==20.15.1
+virtualenv==20.24.5
 wcwidth==0.2.5
 webencodings==0.5.1
 zipp==3.6.0
