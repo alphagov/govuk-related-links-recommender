@@ -64,7 +64,7 @@ networkx==2.3
 node2vec==0.3.0
 nodeenv==1.6.0
 numpy==1.16.4
-oauthlib==2.0.6
+oauthlib==3.2.2
 olefile==0.45.1
 packaging==21.3
 PAM==0.4.2
