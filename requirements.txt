@@ -47,7 +47,7 @@ importlib-metadata==4.8.3
 importlib-resources==5.4.0
 incremental==16.10.1
 Jinja2==2.10
-jmespath==0.9.3
+jmespath==1.0.1
 joblib==1.1.0
 jsonpatch==1.16
 jsonpointer==1.10
