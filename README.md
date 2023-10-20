@@ -1,6 +1,8 @@
 govuk-related-links-recommender
 ==============================
 
+> This repo was archived in October 2023 as it [hasn't been running anywhere since April 2023](https://github.com/alphagov/govuk-puppet/commit/54e72f6785224d4fb2eb6be44aa8c443aaa40c63), and prior to that, had been broken for "several months" on Jenkins (where [it had been running since December 2021](https://github.com/alphagov/govuk-puppet/pull/11337)).
+
 Main things this repo does:
 
 1) Training an ML model for creating suggested related links like these (on the right sidebar) https://www.gov.uk/government/collections/health-certificates-for-animal-and-animal-product-imports-to-great-britain
